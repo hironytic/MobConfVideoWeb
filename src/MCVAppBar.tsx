@@ -1,5 +1,5 @@
 //
-// App.tsx
+// MCVAppBar.tsx
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,41 +22,41 @@
 // THE SOFTWARE.
 //
 
-import { Button } from '@material-ui/core';
+import { AppBar, Tab, Tabs, Toolbar, Typography } from "@material-ui/core";
+import { Theme, withStyles } from '@material-ui/core/styles';
+import ListIcon from '@material-ui/icons/List';
+import VideoIcon from '@material-ui/icons/VideoLabel';
 import * as React from 'react';
-import './App.css';
-import MCVAppBar from './MCVAppBar';
 
-interface IState {
+const styles = (theme: Theme) => ({
+});
+
+interface IProps {
+  title: string,
   pageIndex: number,
+  onPageIndexChange?: (event: React.ChangeEvent<{}>, value: any) => void
 }
 
-class App extends React.Component<{}, IState> {
-  public state = {
-    pageIndex: 0,
-  }
-
+class MCVAppBar extends React.Component<IProps> {
   public render() {
     return (
-      <div className="App">
-        <MCVAppBar  title="ほげほげ"
-                    pageIndex={this.state.pageIndex}
-                    onPageIndexChange={this.handlePageIndexChange} />
-        <p className="App-intro">
-          To get started, edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <Button variant="contained" color="primary">
-          Hello World
-        </Button>
-      </div>
+      <AppBar position="static">
+      <Toolbar>
+        {/* <IconButton color="inherit" aria-label="Menu">
+          <MenuIcon />
+        </IconButton> */}
+        <Typography variant="title" color="inherit">
+          {this.props.title}
+        </Typography>
+        <div style={{flexGrow: 1}} />
+        <Tabs value={this.props.pageIndex} onChange={this.props.onPageIndexChange}>
+          <Tab label="リクエスト" icon={<ListIcon />} />
+          <Tab label="動画" icon={<VideoIcon />} />
+        </Tabs>
+      </Toolbar>
+    </AppBar>
     );
-  }
-
-  private handlePageIndexChange = (event: React.ChangeEvent<{}>, value: any) => {
-    this.setState({
-      pageIndex: value,
-    });
   }
 }
 
-export default App;
+export default withStyles(styles)(MCVAppBar);
