@@ -24,9 +24,9 @@
 
 import { Button } from '@material-ui/core';
 import * as React from 'react';
+import { DefaultEventRepository } from 'src/repository/EventRepository';
 import './App.css';
 import MCVAppBar from './MCVAppBar';
-import { DefaultEventRepository } from './repository/EventRepository';
 
 interface IState {
   pageIndex: number,
