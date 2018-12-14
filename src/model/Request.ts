@@ -1,5 +1,5 @@
 //
-// App.tsx
+// Request.ts
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,46 +22,45 @@
 // THE SOFTWARE.
 //
 
-import { Button } from '@material-ui/core';
-import * as React from 'react';
-import './App.css';
-import MCVAppBar from './MCVAppBar';
-import { DefaultEventRepository } from './repository/EventRepository';
+import firebase from "firebase/app";
+import "firebase/firestore";
 
-interface IState {
-  pageIndex: number,
+interface IRequestData {
+  sessionId: string;
+  title: string;
+  conference: string;
+  video: string;
+  slide: string;
+  memo: string;
+  watched: boolean;
 }
 
-class App extends React.Component<{}, IState> {
-  public state = {
-    pageIndex: 0,
-  }
-
-  public render() {
-    const repo = new DefaultEventRepository();
-    repo.getAllEventsObservable().subscribe((data) => {
-      console.log(data);
-    });
-    return (
-      <div className="App">
-        <MCVAppBar  title="ほげほげ"
-                    pageIndex={this.state.pageIndex}
-                    onPageIndexChange={this.handlePageIndexChange} />
-        <p className="App-intro">
-          To get started, edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <Button variant="contained" color="primary">
-          Hello World
-        </Button>
-      </div>
+class Request {
+  public static fromSnapshot(snapshot: firebase.firestore.DocumentSnapshot): Request {
+    const data = snapshot.data() as IRequestData;
+    return new Request(
+      snapshot.id,
+      data.sessionId,
+      data.title,
+      data.conference,
+      data.video,
+      data.slide,
+      data.memo,
+      data.watched,
     );
   }
 
-  private handlePageIndexChange = (event: React.ChangeEvent<{}>, value: any) => {
-    this.setState({
-      pageIndex: value,
-    });
-  }
+  public constructor(
+    public id: string,
+    public sessionId: string,
+    public title: string,
+    public conference: string,
+    public videoUrl: string,
+    public slideUrl: string,
+    public memo: string,
+    public isWatched: boolean
+  ) { }
+
 }
 
-export default App;
+export default Request;

@@ -1,5 +1,5 @@
 //
-// App.tsx
+// RequestRepository.ts
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,46 +22,34 @@
 // THE SOFTWARE.
 //
 
-import { Button } from '@material-ui/core';
-import * as React from 'react';
-import './App.css';
-import MCVAppBar from './MCVAppBar';
-import { DefaultEventRepository } from './repository/EventRepository';
+import firebase from "firebase/app";
+import "firebase/firestore";
+import { Observable } from 'rxjs';
+import Request from "src/model/Request";
 
-interface IState {
-  pageIndex: number,
+interface IRequestRepository {
+  getAllRequestsObservable(eventId: string): Observable<Request[]>;
 }
 
-class App extends React.Component<{}, IState> {
-  public state = {
-    pageIndex: 0,
-  }
+class DefaultRequestRepository implements IRequestRepository {
+  public getAllRequestsObservable(eventId: string): Observable<Request[]> {
+    return new Observable((subscriber) => {
+      const canceller = firebase
+        .firestore()
+        .collection("events")
+        .doc(eventId)
+        .collection("requests")
+        .orderBy("requestedAt", "asc")
+        .onSnapshot((snapshot) => {
+          const requests = snapshot.docs.map((doc) => Request.fromSnapshot(doc));
+          subscriber.next(requests);
+        }, (error) => {
+          subscriber.error(error);
+        });
 
-  public render() {
-    const repo = new DefaultEventRepository();
-    repo.getAllEventsObservable().subscribe((data) => {
-      console.log(data);
-    });
-    return (
-      <div className="App">
-        <MCVAppBar  title="ほげほげ"
-                    pageIndex={this.state.pageIndex}
-                    onPageIndexChange={this.handlePageIndexChange} />
-        <p className="App-intro">
-          To get started, edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <Button variant="contained" color="primary">
-          Hello World
-        </Button>
-      </div>
-    );
-  }
-
-  private handlePageIndexChange = (event: React.ChangeEvent<{}>, value: any) => {
-    this.setState({
-      pageIndex: value,
+      return canceller;
     });
   }
 }
 
-export default App;
+export { IRequestRepository, DefaultRequestRepository };

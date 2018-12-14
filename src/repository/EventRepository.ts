@@ -1,5 +1,5 @@
 //
-// App.tsx
+// EventRepository.ts
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,46 +22,32 @@
 // THE SOFTWARE.
 //
 
-import { Button } from '@material-ui/core';
-import * as React from 'react';
-import './App.css';
-import MCVAppBar from './MCVAppBar';
-import { DefaultEventRepository } from './repository/EventRepository';
+import firebase from "firebase/app";
+import "firebase/firestore";
+import { Observable } from 'rxjs';
+import Event from 'src/model/Event';
 
-interface IState {
-  pageIndex: number,
+interface IEventRepository {
+  getAllEventsObservable(): Observable<Event[]>;
 }
 
-class App extends React.Component<{}, IState> {
-  public state = {
-    pageIndex: 0,
-  }
+class DefaultEventRepository implements IEventRepository {
+  public getAllEventsObservable(): Observable<Event[]> {
+    return new Observable((subscriber) => {
+      const canceller = firebase
+        .firestore()
+        .collection("events")
+        .orderBy("starts", "asc")
+        .onSnapshot((snapshot) => {
+          const events = snapshot.docs.map((doc) => Event.fromSnapshot(doc));
+          subscriber.next(events);
+        }, (error) => {
+          subscriber.error(error);
+        });
 
-  public render() {
-    const repo = new DefaultEventRepository();
-    repo.getAllEventsObservable().subscribe((data) => {
-      console.log(data);
-    });
-    return (
-      <div className="App">
-        <MCVAppBar  title="ほげほげ"
-                    pageIndex={this.state.pageIndex}
-                    onPageIndexChange={this.handlePageIndexChange} />
-        <p className="App-intro">
-          To get started, edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <Button variant="contained" color="primary">
-          Hello World
-        </Button>
-      </div>
-    );
-  }
-
-  private handlePageIndexChange = (event: React.ChangeEvent<{}>, value: any) => {
-    this.setState({
-      pageIndex: value,
+      return canceller;
     });
   }
 }
 
-export default App;
+export { IEventRepository, DefaultEventRepository };

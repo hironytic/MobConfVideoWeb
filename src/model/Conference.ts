@@ -1,5 +1,5 @@
 //
-// App.tsx
+// Conference.ts
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,46 +22,29 @@
 // THE SOFTWARE.
 //
 
-import { Button } from '@material-ui/core';
-import * as React from 'react';
-import './App.css';
-import MCVAppBar from './MCVAppBar';
-import { DefaultEventRepository } from './repository/EventRepository';
+import firebase from "firebase/app";
+import "firebase/firestore";
 
-interface IState {
-  pageIndex: number,
+interface IConferenceData {
+  name: string;
+  starts: firebase.firestore.Timestamp;
 }
 
-class App extends React.Component<{}, IState> {
-  public state = {
-    pageIndex: 0,
-  }
-
-  public render() {
-    const repo = new DefaultEventRepository();
-    repo.getAllEventsObservable().subscribe((data) => {
-      console.log(data);
-    });
-    return (
-      <div className="App">
-        <MCVAppBar  title="ほげほげ"
-                    pageIndex={this.state.pageIndex}
-                    onPageIndexChange={this.handlePageIndexChange} />
-        <p className="App-intro">
-          To get started, edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <Button variant="contained" color="primary">
-          Hello World
-        </Button>
-      </div>
+class Conference {
+  public static fromSnapshot(snapshot: firebase.firestore.DocumentSnapshot): Conference {
+    const data = snapshot.data() as IConferenceData
+    return new Conference(
+      snapshot.id,
+      data.name,
+      data.starts.toDate(),
     );
   }
 
-  private handlePageIndexChange = (event: React.ChangeEvent<{}>, value: any) => {
-    this.setState({
-      pageIndex: value,
-    });
-  }
+  public constructor(
+    public id: string,
+    public name: string,
+    public starts: Date
+  ) {}
 }
 
-export default App;
+export default Conference;
