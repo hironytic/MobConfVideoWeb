@@ -1,4 +1,5 @@
 import firebase from 'firebase/app';
+import "firebase/firestore";
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import firebaseConfig from './FirebaseConfig';

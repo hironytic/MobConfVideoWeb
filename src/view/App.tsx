@@ -24,9 +24,12 @@
 
 import { Button } from '@material-ui/core';
 import * as React from 'react';
-import { DefaultEventRepository } from 'src/repository/EventRepository';
+import BlocProvider from 'src/common/BlocProvider';
 import './App.css';
 import MCVAppBar from './MCVAppBar';
+import { DefaultRequestBloc } from './request/RequestBloc';
+import RequestContext from './request/RequestContext';
+import RequestPage from './request/RequestPage';
 
 interface IState {
   pageIndex: number,
@@ -38,23 +41,54 @@ class App extends React.Component<{}, IState> {
   }
 
   public render() {
-    const repo = new DefaultEventRepository();
-    repo.getAllEventsObservable().subscribe((data) => {
-      console.log(data);
-    });
+    const requestBlocCreator = () => DefaultRequestBloc.create();
     return (
-      <div className="App">
-        <MCVAppBar  title="ほげほげ"
-                    pageIndex={this.state.pageIndex}
-                    onPageIndexChange={this.handlePageIndexChange} />
-        <p className="App-intro">
-          To get started, edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <Button variant="contained" color="primary">
-          Hello World
-        </Button>
-      </div>
+      <BlocProvider context={RequestContext} creator={requestBlocCreator}>
+        <div className="App">
+          <MCVAppBar  title={this.getPageTitle()}
+                      pageIndex={this.state.pageIndex}
+                      onPageIndexChange={this.handlePageIndexChange} />
+          { this.renderPage() }
+        </div>
+      </BlocProvider>
     );
+  }
+
+  private getPageTitle(): string {
+    switch (this.state.pageIndex) {
+      case 0:
+        return "リクエスト";
+
+      case 1:
+        return "動画を見つける";
+
+      default:
+        return "";
+    }
+  }
+
+  private renderPage() {
+    switch (this.state.pageIndex) {
+      case 0:
+        return (
+          <RequestPage />
+        );
+
+      case 1:
+        return (
+          <div>
+            <p className="App-intro">
+              To get started, edit <code>src/App.tsx</code> and save to reload.
+            </p>
+            <Button variant="contained" color="primary">
+              Hello World
+            </Button>
+          </div>
+        );
+
+      default:
+          return (<div />);
+    }
   }
 
   private handlePageIndexChange = (event: React.ChangeEvent<{}>, value: any) => {

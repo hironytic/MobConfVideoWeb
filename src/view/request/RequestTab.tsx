@@ -1,5 +1,5 @@
 //
-// MCVAppBar.tsx
+// RequestTab.tsx
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,37 +22,24 @@
 // THE SOFTWARE.
 //
 
-import { AppBar, Tab, Tabs, Toolbar, Typography } from "@material-ui/core";
-import ListIcon from '@material-ui/icons/List';
-import VideoIcon from '@material-ui/icons/VideoLabel';
-import * as React from 'react';
+import React from 'react';
+import { IRequestBloc } from './RequestBloc';
+import RequestContext from './RequestContext';
 
-interface IProps {
-  title: string,
-  pageIndex: number,
-  onPageIndexChange?: (event: React.ChangeEvent<{}>, value: any) => void
-}
-
-class MCVAppBar extends React.Component<IProps> {
+class RequestTab extends React.Component {
   public render() {
     return (
-      <AppBar position="static">
-      <Toolbar>
-        {/* <IconButton color="inherit" aria-label="Menu">
-          <MenuIcon />
-        </IconButton> */}
-        <Typography variant="title" color="inherit">
-          {this.props.title}
-        </Typography>
-        <div style={{flexGrow: 1}} />
-        <Tabs value={this.props.pageIndex} onChange={this.props.onPageIndexChange}>
-          <Tab label="リクエスト" icon={<ListIcon />} />
-          <Tab label="動画" icon={<VideoIcon />} />
-        </Tabs>
-      </Toolbar>
-    </AppBar>
+      <RequestContext.Consumer>
+        {(bloc) => this.renderBody(bloc)}
+      </RequestContext.Consumer>
+    );
+  }
+
+  private renderBody(bloc: IRequestBloc) {
+    return (
+      <div>製作中</div>
     );
   }
 }
 
-export default MCVAppBar;
+export default RequestTab;

@@ -1,5 +1,5 @@
 //
-// MCVAppBar.tsx
+// BlocProvider.tsx
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,37 +22,46 @@
 // THE SOFTWARE.
 //
 
-import { AppBar, Tab, Tabs, Toolbar, Typography } from "@material-ui/core";
-import ListIcon from '@material-ui/icons/List';
-import VideoIcon from '@material-ui/icons/VideoLabel';
-import * as React from 'react';
+import React from 'react';
 
-interface IProps {
-  title: string,
-  pageIndex: number,
-  onPageIndexChange?: (event: React.ChangeEvent<{}>, value: any) => void
+type BlocCreator<T extends IBloc> = () => T;
+
+interface IProps<T extends IBloc> {
+  context: React.Context<T>;
+  creator: BlocCreator<T>;
 }
 
-class MCVAppBar extends React.Component<IProps> {
+
+class BlocProvider<T extends IBloc> extends React.Component<IProps<T>> {
+  private bloc?: T;
+
+  public componentWillMount() {
+    this.bloc = this.props.creator();
+  }
+
+  public componentWillUnmount() {
+    if (this.bloc !== undefined) {
+      this.bloc.dispose();
+      this.bloc = undefined;
+    }
+  }
+
+  public componentWillReceiveProps() {
+    if (this.bloc !== undefined) {
+      this.bloc.dispose();
+    }
+    this.bloc = this.props.creator();
+    this.setState({});
+  }
+
   public render() {
+    const Provider = this.props.context.Provider;
     return (
-      <AppBar position="static">
-      <Toolbar>
-        {/* <IconButton color="inherit" aria-label="Menu">
-          <MenuIcon />
-        </IconButton> */}
-        <Typography variant="title" color="inherit">
-          {this.props.title}
-        </Typography>
-        <div style={{flexGrow: 1}} />
-        <Tabs value={this.props.pageIndex} onChange={this.props.onPageIndexChange}>
-          <Tab label="リクエスト" icon={<ListIcon />} />
-          <Tab label="動画" icon={<VideoIcon />} />
-        </Tabs>
-      </Toolbar>
-    </AppBar>
-    );
+      <Provider value={this.bloc!}>
+        {this.props.children}
+      </Provider>
+    )
   }
 }
 
-export default MCVAppBar;
+export default BlocProvider;
