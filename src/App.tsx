@@ -1,5 +1,5 @@
 //
-// IBloc.ts
+// App.tsx
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,8 +22,24 @@
 // THE SOFTWARE.
 //
 
-interface IBloc {
-  dispose(): void;
+import * as React from 'react';
+import BlocProvider from 'src/common/BlocProvider';
+import './App.css';
+import Home from './view/home/Home';
+import DefaultRequestBloc from './view/request/DefaultRequestBloc';
+import RequestContext from './view/request/RequestContext';
+
+class App extends React.Component {
+  public render() {
+    const requestBlocCreator = () => DefaultRequestBloc.create();
+    return (
+      <BlocProvider context={RequestContext} creator={requestBlocCreator}>
+        <div className="App">
+          <Home/>
+        </div>
+      </BlocProvider>
+    );
+  }
 }
 
-export default IBloc;
+export default App;

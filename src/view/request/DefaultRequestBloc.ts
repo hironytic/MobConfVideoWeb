@@ -23,7 +23,7 @@
 //
 
 import { ConnectableObservable, Observable, Observer, of, Subject, Subscription } from "rxjs";
-import { publishBehavior, startWith } from 'rxjs/operators';
+import { publishBehavior } from 'rxjs/operators';
 import Event from "src/model/Event";
 import IRequestBloc from './IRequestBloc';
 
@@ -41,8 +41,7 @@ class DefaultRequestBloc implements IRequestBloc {
     subscription.add(allEvents.connect());
 
     const currentEventIndex = currentEventIndexChanged.pipe(
-      startWith<number>(0),
-      publishBehavior(1),
+      publishBehavior(0),
     ) as ConnectableObservable<number>;
     subscription.add(currentEventIndex.connect());
 

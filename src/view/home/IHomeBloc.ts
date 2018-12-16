@@ -1,5 +1,5 @@
 //
-// IBloc.ts
+// IHomeBloc.ts
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,8 +22,15 @@
 // THE SOFTWARE.
 //
 
-interface IBloc {
-  dispose(): void;
+import { Observable, Observer } from 'rxjs';
+import IBloc from "src/common/IBloc";
+
+interface IHomeBloc extends IBloc {
+  // inputs
+  currentPageIndexChanged: Observer<number>;
+
+  // outputs
+  currentPageIndex: Observable<number>;
 }
 
-export default IBloc;
+export default IHomeBloc;

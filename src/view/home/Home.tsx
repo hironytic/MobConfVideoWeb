@@ -1,5 +1,5 @@
 //
-// App.tsx
+// Home.tsx
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -25,50 +25,33 @@
 import { Button } from '@material-ui/core';
 import * as React from 'react';
 import BlocProvider from 'src/common/BlocProvider';
-import './App.css';
-import MCVAppBar from './MCVAppBar';
-import DefaultRequestBloc from './request/DefaultRequestBloc';
-import RequestContext from './request/RequestContext';
-import RequestPage from './request/RequestPage';
+import Snapshot from 'src/common/Snapshot';
+import RequestPage from '../request/RequestPage';
+import DefaultHomeBloc from './DefaultHomeBloc';
+import HomeAppBar from './HomeAppBar';
+import HomeContext from './HomeContext';
 
-interface IState {
-  pageIndex: number,
-}
-
-class App extends React.Component<{}, IState> {
-  public state = {
-    pageIndex: 0,
-  }
-
+class Home extends React.Component {
   public render() {
-    const requestBlocCreator = () => DefaultRequestBloc.create();
+    const homeBlocCreator = () => DefaultHomeBloc.create();
     return (
-      <BlocProvider context={RequestContext} creator={requestBlocCreator}>
-        <div className="App">
-          <MCVAppBar  title={this.getPageTitle()}
-                      pageIndex={this.state.pageIndex}
-                      onPageIndexChange={this.handlePageIndexChange} />
-          { this.renderPage() }
+      <BlocProvider context={HomeContext} creator={homeBlocCreator}>
+        <div>
+          <HomeAppBar/>
+          <HomeContext.Consumer>
+            {(bloc) => (
+              <Snapshot source={bloc.currentPageIndex} initialValue={0}>
+                {(pageIndex: number) => this.renderPage(pageIndex)}
+              </Snapshot>
+            )}
+          </HomeContext.Consumer>
         </div>
       </BlocProvider>
     );
   }
 
-  private getPageTitle(): string {
-    switch (this.state.pageIndex) {
-      case 0:
-        return "リクエスト";
-
-      case 1:
-        return "動画を見つける";
-
-      default:
-        return "";
-    }
-  }
-
-  private renderPage() {
-    switch (this.state.pageIndex) {
+  private renderPage(pageIndex: number) {
+    switch (pageIndex) {
       case 0:
         return (
           <RequestPage />
@@ -90,12 +73,6 @@ class App extends React.Component<{}, IState> {
           return (<div />);
     }
   }
-
-  private handlePageIndexChange = (event: React.ChangeEvent<{}>, value: any) => {
-    this.setState({
-      pageIndex: value,
-    });
-  }
 }
 
-export default App;
+export default Home;
