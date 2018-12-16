@@ -22,28 +22,16 @@
 // THE SOFTWARE.
 //
 
-import { Card, CardActionArea, CircularProgress, createStyles, Theme, Typography, withStyles, WithStyles } from '@material-ui/core';
+import { Card, CardActionArea, CircularProgress, Theme, Typography, withTheme } from '@material-ui/core';
 import React, { Key } from 'react';
 import Snapshot from 'src/common/Snapshot';
 import Request from 'src/model/Request';
 import { IRequestList, IRequestListError, IRequestListLoaded, RequestListState } from './RequestBloc';
 import RequestContext from './RequestContext';
 
-const styles = (theme: Theme) => createStyles({
-  request: {
-    marginBottom: 10,
-    marginLeft: "auto",
-    marginRight: "auto",
-    maxWidth: 600,
-    textAlign: "start",
-  },
-  progress: {
-    margin: theme.spacing.unit * 2,
-  }
-});
-
-interface IProps extends WithStyles<typeof styles> {
+interface IProps {
   key?: Key,
+  theme: Theme,
 }
 
 class RequestTab extends React.Component<IProps> {
@@ -78,14 +66,17 @@ class RequestTab extends React.Component<IProps> {
   private renderLoadingBody() {
     return (
       <div>
-        <CircularProgress className={this.props.classes.progress}/>
+        <CircularProgress style={{margin: this.props.theme.spacing.unit * 2}}/>
       </div>
     );
   }
 
   private renderLoadedBody(loaded: IRequestListLoaded) {
     return (
-      <div style={{marginTop: 20, padding: 8}}>
+      <div style={{
+        marginTop: 20,
+        padding: 8
+      }}>
         {loaded.requests.map((request) => this.renderRequestItem(request))}
       </div>
     )
@@ -93,7 +84,13 @@ class RequestTab extends React.Component<IProps> {
 
   private renderRequestItem(request: Request) {
     return (
-      <Card className={this.props.classes.request}>
+      <Card key={request.id} style={{
+        marginBottom: 10,
+        marginLeft: "auto",
+        marginRight: "auto",
+        maxWidth: 600,
+        textAlign: "start",
+      }}>
         <CardActionArea style={{padding: 20}}>
           <Typography variant="body1" color="textSecondary">
             {request.conference}
@@ -111,4 +108,4 @@ class RequestTab extends React.Component<IProps> {
   }
 }
 
-export default withStyles(styles)(RequestTab);
+export default withTheme()(RequestTab);
