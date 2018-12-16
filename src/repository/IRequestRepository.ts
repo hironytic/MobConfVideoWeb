@@ -1,5 +1,5 @@
 //
-// RequestRepository.ts
+// IRequestRepository.ts
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,8 +22,6 @@
 // THE SOFTWARE.
 //
 
-import firebase from "firebase/app";
-import "firebase/firestore";
 import { Observable } from 'rxjs';
 import Request from "src/model/Request";
 
@@ -31,25 +29,4 @@ interface IRequestRepository {
   getAllRequestsObservable(eventId: string): Observable<Request[]>;
 }
 
-class DefaultRequestRepository implements IRequestRepository {
-  public getAllRequestsObservable(eventId: string): Observable<Request[]> {
-    return new Observable((subscriber) => {
-      const canceller = firebase
-        .firestore()
-        .collection("events")
-        .doc(eventId)
-        .collection("requests")
-        .orderBy("requestedAt", "asc")
-        .onSnapshot((snapshot) => {
-          const requests = snapshot.docs.map((doc) => Request.fromSnapshot(doc));
-          subscriber.next(requests);
-        }, (error) => {
-          subscriber.error(error);
-        });
-
-      return canceller;
-    });
-  }
-}
-
-export { IRequestRepository, DefaultRequestRepository };
+export default IRequestRepository;

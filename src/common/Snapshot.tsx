@@ -22,10 +22,11 @@
 // THE SOFTWARE.
 //
 
-import React, { ReactNode } from 'react';
+import React, { Key, ReactNode } from 'react';
 import { Observable, Subscription } from 'rxjs';
 
 interface IProps<T> {
+  key?: Key,
   source: Observable<T>;
   initialValue: T;
 }

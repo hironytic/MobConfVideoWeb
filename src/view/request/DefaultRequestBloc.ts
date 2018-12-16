@@ -1,5 +1,5 @@
 //
-// RequestBloc.ts
+// DefaultRequestBloc.ts
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -25,15 +25,7 @@
 import { ConnectableObservable, Observable, Observer, of, Subject, Subscription } from "rxjs";
 import { publishBehavior, startWith } from 'rxjs/operators';
 import Event from "src/model/Event";
-
-interface IRequestBloc extends IBloc {
-  // inputs
-  currentEventIndexChanged: Observer<number>;
-
-  // outputs
-  allEvents: Observable<Event[]>;
-  currentEventIndex: Observable<number>;
-}
+import IRequestBloc from './IRequestBloc';
 
 class DefaultRequestBloc implements IRequestBloc {
   public static create(): DefaultRequestBloc {
@@ -78,5 +70,4 @@ class DefaultRequestBloc implements IRequestBloc {
   }
 }
 
-export { IRequestBloc, DefaultRequestBloc };
-
+export default DefaultRequestBloc;

@@ -1,5 +1,5 @@
 //
-// IBloc.ts
+// IRequestBloc.ts
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,8 +22,16 @@
 // THE SOFTWARE.
 //
 
-interface IBloc {
-  dispose(): void
-}
+import { Observable, Observer } from "rxjs";
+import IBloc from 'src/common/IBloc';
+import Event from "src/model/Event";
 
-export default IBloc;
+interface IRequestBloc extends IBloc {
+  // inputs
+  currentEventIndexChanged: Observer<number>;
+
+  // outputs
+  allEvents: Observable<Event[]>;
+  currentEventIndex: Observable<number>;
+}
+export default IRequestBloc;

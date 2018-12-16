@@ -22,15 +22,16 @@
 // THE SOFTWARE.
 //
 
-import React from 'react';
+import React, { Key } from 'react';
+import IBloc from './IBloc';
 
 type BlocCreator<T extends IBloc> = () => T;
 
 interface IProps<T extends IBloc> {
+  key?: Key;
   context: React.Context<T>;
   creator: BlocCreator<T>;
 }
-
 
 class BlocProvider<T extends IBloc> extends React.Component<IProps<T>> {
   private bloc?: T;

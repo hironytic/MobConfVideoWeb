@@ -1,5 +1,5 @@
 //
-// IBloc.ts
+// DefaultEventRepository.ts
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,8 +22,29 @@
 // THE SOFTWARE.
 //
 
-interface IBloc {
-  dispose(): void
+import firebase from "firebase/app";
+import "firebase/firestore";
+import { Observable } from 'rxjs';
+import Event from 'src/model/Event';
+import IEventRepository from './IEventRepository';
+
+class DefaultEventRepository implements IEventRepository {
+  public getAllEventsObservable(): Observable<Event[]> {
+    return new Observable((subscriber) => {
+      const canceller = firebase
+        .firestore()
+        .collection("events")
+        .orderBy("starts", "asc")
+        .onSnapshot((snapshot) => {
+          const events = snapshot.docs.map((doc) => Event.fromSnapshot(doc));
+          subscriber.next(events);
+        }, (error) => {
+          subscriber.error(error);
+        });
+
+      return canceller;
+    });
+  }
 }
 
-export default IBloc;
+export default DefaultEventRepository;

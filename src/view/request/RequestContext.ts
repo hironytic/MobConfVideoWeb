@@ -24,7 +24,7 @@
 
 import React from 'react';
 import { never, Subject } from 'rxjs';
-import { IRequestBloc } from './RequestBloc';
+import IRequestBloc from './IRequestBloc';
 
 class NullBloc implements IRequestBloc {
   public currentEventIndexChanged = new Subject();

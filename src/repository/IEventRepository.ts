@@ -1,5 +1,5 @@
 //
-// IBloc.ts
+// IEventRepository.ts
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,8 +22,11 @@
 // THE SOFTWARE.
 //
 
-interface IBloc {
-  dispose(): void
+import { Observable } from 'rxjs';
+import Event from 'src/model/Event';
+
+interface IEventRepository {
+  getAllEventsObservable(): Observable<Event[]>;
 }
 
-export default IBloc;
+export default IEventRepository;

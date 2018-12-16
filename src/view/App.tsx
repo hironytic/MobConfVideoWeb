@@ -27,7 +27,7 @@ import * as React from 'react';
 import BlocProvider from 'src/common/BlocProvider';
 import './App.css';
 import MCVAppBar from './MCVAppBar';
-import { DefaultRequestBloc } from './request/RequestBloc';
+import DefaultRequestBloc from './request/DefaultRequestBloc';
 import RequestContext from './request/RequestContext';
 import RequestPage from './request/RequestPage';
 

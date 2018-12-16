@@ -1,5 +1,5 @@
 //
-// EventRepository.ts
+// DefaultRequestRepository.ts
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -25,22 +25,21 @@
 import firebase from "firebase/app";
 import "firebase/firestore";
 import { Observable } from 'rxjs';
-import Event from 'src/model/Event';
+import Request from "src/model/Request";
+import IRequestRepository from './IRequestRepository';
 
-interface IEventRepository {
-  getAllEventsObservable(): Observable<Event[]>;
-}
-
-class DefaultEventRepository implements IEventRepository {
-  public getAllEventsObservable(): Observable<Event[]> {
+class DefaultRequestRepository implements IRequestRepository {
+  public getAllRequestsObservable(eventId: string): Observable<Request[]> {
     return new Observable((subscriber) => {
       const canceller = firebase
         .firestore()
         .collection("events")
-        .orderBy("starts", "asc")
+        .doc(eventId)
+        .collection("requests")
+        .orderBy("requestedAt", "asc")
         .onSnapshot((snapshot) => {
-          const events = snapshot.docs.map((doc) => Event.fromSnapshot(doc));
-          subscriber.next(events);
+          const requests = snapshot.docs.map((doc) => Request.fromSnapshot(doc));
+          subscriber.next(requests);
         }, (error) => {
           subscriber.error(error);
         });
@@ -50,4 +49,4 @@ class DefaultEventRepository implements IEventRepository {
   }
 }
 
-export { IEventRepository, DefaultEventRepository };
+export default DefaultRequestRepository;
