@@ -25,8 +25,10 @@
 import { Observable, Observer } from "rxjs";
 import { IBloc } from 'src/common/Bloc';
 import Event from "src/model/Event";
+import Request from "src/model/Request";
 
 export enum RequestListState {
+  NotLoaded,
   Loading,
   Loaded,
   Error,

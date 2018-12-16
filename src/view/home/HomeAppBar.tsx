@@ -36,7 +36,7 @@ class HomeAppBar extends React.Component {
         {(bloc) => {
           const currentPageIndexChanged = (_: React.ChangeEvent<{}>, value: number) => bloc.currentPageIndexChanged.next(value);          
           return (
-            <AppBar position="static">
+            <AppBar position="sticky">
               <Snapshot source={bloc.currentPageIndex} initialValue={0}>
                 {(currentPageIndex: number) => (
                   <Toolbar>

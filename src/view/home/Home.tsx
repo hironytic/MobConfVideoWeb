@@ -36,7 +36,7 @@ class Home extends React.Component {
     const homeBlocCreator = () => DefaultHomeBloc.create();
     return (
       <BlocProvider context={HomeContext} creator={homeBlocCreator}>
-        <div>
+        <React.Fragment>
           <HomeAppBar/>
           <HomeContext.Consumer>
             {(bloc) => (
@@ -45,7 +45,7 @@ class Home extends React.Component {
               </Snapshot>
             )}
           </HomeContext.Consumer>
-        </div>
+        </React.Fragment>
       </BlocProvider>
     );
   }
@@ -70,7 +70,7 @@ class Home extends React.Component {
         );
 
       default:
-          return (<div />);
+          return (<React.Fragment/>);
     }
   }
 }

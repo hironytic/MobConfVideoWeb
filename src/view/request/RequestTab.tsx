@@ -22,24 +22,93 @@
 // THE SOFTWARE.
 //
 
-import React from 'react';
-import { IRequestBloc } from './RequestBloc';
+import { Card, CardActionArea, CircularProgress, createStyles, Theme, Typography, withStyles, WithStyles } from '@material-ui/core';
+import React, { Key } from 'react';
+import Snapshot from 'src/common/Snapshot';
+import Request from 'src/model/Request';
+import { IRequestList, IRequestListError, IRequestListLoaded, RequestListState } from './RequestBloc';
 import RequestContext from './RequestContext';
 
-class RequestTab extends React.Component {
+const styles = (theme: Theme) => createStyles({
+  request: {
+    marginBottom: 10,
+    marginLeft: "auto",
+    marginRight: "auto",
+    maxWidth: 600,
+    textAlign: "start",
+  },
+  progress: {
+    margin: theme.spacing.unit * 2,
+  }
+});
+
+interface IProps extends WithStyles<typeof styles> {
+  key?: Key,
+}
+
+class RequestTab extends React.Component<IProps> {
   public render() {
     return (
       <RequestContext.Consumer>
-        {(bloc) => this.renderBody(bloc)}
+        {(bloc) => (
+          <Snapshot source={bloc.requestList} initialValue={{state: RequestListState.NotLoaded}}>
+            {(requestList: IRequestList) => this.renderBody(requestList)}
+          </Snapshot>
+        )}
       </RequestContext.Consumer>
     );
   }
 
-  private renderBody(bloc: IRequestBloc) {
+  private renderBody(requestList: IRequestList) {
+    switch (requestList.state) {
+      case RequestListState.NotLoaded:
+        return (<React.Fragment/>);
+
+      case RequestListState.Loading:
+        return this.renderLoadingBody();
+      
+      case RequestListState.Loaded:
+        return this.renderLoadedBody(requestList.loaded!);
+      
+      case RequestListState.Error:
+        return this.renderErrorBody(requestList.error!);      
+    }
+  }
+
+  private renderLoadingBody() {
     return (
-      <div>製作中</div>
+      <div>
+        <CircularProgress className={this.props.classes.progress}/>
+      </div>
     );
+  }
+
+  private renderLoadedBody(loaded: IRequestListLoaded) {
+    return (
+      <div style={{marginTop: 20, padding: 8}}>
+        {loaded.requests.map((request) => this.renderRequestItem(request))}
+      </div>
+    )
+  }
+
+  private renderRequestItem(request: Request) {
+    return (
+      <Card className={this.props.classes.request}>
+        <CardActionArea style={{padding: 20}}>
+          <Typography variant="body1" color="textSecondary">
+            {request.conference}
+          </Typography>
+          <Typography variant="subheading" color="textPrimary">
+            {request.title}
+          </Typography>
+        </CardActionArea>
+      </Card>
+    )
+  }
+
+  private renderErrorBody(error: IRequestListError) {
+    return (<div />);
   }
 }
 
-export default RequestTab;
+export default withStyles(styles)(RequestTab);

@@ -26,12 +26,12 @@ import firebase from "firebase/app";
 import "firebase/firestore";
 
 interface IRequestData {
-  sessionId: string;
+  sessionId?: string;
   title: string;
   conference: string;
   video: string;
-  slide: string;
-  memo: string;
+  slide?: string;
+  memo?: string;
   watched: boolean;
 }
 
@@ -52,12 +52,12 @@ class Request {
 
   public constructor(
     public id: string,
-    public sessionId: string,
+    public sessionId: string | undefined,
     public title: string,
     public conference: string,
     public videoUrl: string,
-    public slideUrl: string,
-    public memo: string,
+    public slideUrl: string | undefined,
+    public memo: string | undefined,
     public isWatched: boolean
   ) { }
 

@@ -38,7 +38,7 @@ interface IProps {
 class RequestPage extends React.Component<IProps> {
   public render() {
     return (
-      <div>
+      <React.Fragment>
         <RequestContext.Consumer>
           {(bloc) => {
             const source = combineLatest(bloc.allEvents, bloc.currentEventIndex)
@@ -48,7 +48,9 @@ class RequestPage extends React.Component<IProps> {
                 {([events, tabIndex]: [Event[], number]) => {
                   if (events.length === 0) {
                     return (
-                      <CircularProgress size={25} style={{margin: this.props.theme.spacing.unit * 2}}/>
+                      <div>
+                        <CircularProgress size={18} style={{margin: this.props.theme.spacing.unit * 2}}/>
+                      </div>
                     );
                   }
                   return (
@@ -64,7 +66,7 @@ class RequestPage extends React.Component<IProps> {
           }}
         </RequestContext.Consumer>
         <RequestTab />
-      </div>
+      </React.Fragment>
     );
   }
 
