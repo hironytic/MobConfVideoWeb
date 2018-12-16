@@ -23,7 +23,7 @@
 //
 
 import { Observable, Observer } from "rxjs";
-import IBloc from 'src/common/IBloc';
+import { IBloc } from 'src/common/Bloc';
 import Event from "src/model/Event";
 
 export enum RequestListState {

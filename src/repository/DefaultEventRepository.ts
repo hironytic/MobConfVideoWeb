@@ -26,7 +26,7 @@ import firebase from "firebase/app";
 import "firebase/firestore";
 import { Observable } from 'rxjs';
 import Event from 'src/model/Event';
-import IEventRepository from './IEventRepository';
+import { IEventRepository } from './EventRepository';
 
 class DefaultEventRepository implements IEventRepository {
   public getAllEventsObservable(): Observable<Event[]> {

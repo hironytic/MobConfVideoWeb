@@ -25,7 +25,7 @@
 import { ConnectableObservable, never, Observable, Observer, Subject, Subscription } from "rxjs";
 import { publishBehavior } from 'rxjs/operators';
 import Event from "src/model/Event";
-import IEventRepository from 'src/repository/IEventRepository';
+import { IEventRepository } from 'src/repository/EventRepository';
 import { IRequestBloc, IRequestList } from './RequestBloc';
 
 class DefaultRequestBloc implements IRequestBloc {

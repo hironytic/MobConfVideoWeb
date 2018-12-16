@@ -1,5 +1,5 @@
 //
-// IEventRepository.ts
+// IRequestRepository.ts
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -23,10 +23,8 @@
 //
 
 import { Observable } from 'rxjs';
-import Event from 'src/model/Event';
+import Request from "src/model/Request";
 
-interface IEventRepository {
-  getAllEventsObservable(): Observable<Event[]>;
+export interface IRequestRepository {
+  getAllRequestsObservable(eventId: string): Observable<Request[]>;
 }
-
-export default IEventRepository;

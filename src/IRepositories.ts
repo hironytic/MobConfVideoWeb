@@ -22,8 +22,8 @@
 // THE SOFTWARE.
 //
 
-import IEventRepository from "./repository/IEventRepository";
-import IRequestRepository from './repository/IRequestRepository';
+import { IEventRepository } from "./repository/EventRepository";
+import { IRequestRepository } from './repository/RequestRepository';
 
 interface IRepositories {
   eventRepository: IEventRepository;

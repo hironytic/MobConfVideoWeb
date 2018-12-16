@@ -26,7 +26,7 @@ import firebase from "firebase/app";
 import "firebase/firestore";
 import { Observable } from 'rxjs';
 import Request from "src/model/Request";
-import IRequestRepository from './IRequestRepository';
+import { IRequestRepository } from './RequestRepository';
 
 class DefaultRequestRepository implements IRequestRepository {
   public getAllRequestsObservable(eventId: string): Observable<Request[]> {

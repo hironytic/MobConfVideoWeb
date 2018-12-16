@@ -22,8 +22,6 @@
 // THE SOFTWARE.
 //
 
-interface IBloc {
+export interface IBloc {
   dispose(): void;
 }
-
-export default IBloc;

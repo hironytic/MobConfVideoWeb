@@ -23,14 +23,12 @@
 //
 
 import { Observable, Observer } from 'rxjs';
-import IBloc from "src/common/IBloc";
+import { IBloc } from "src/common/Bloc";
 
-interface IHomeBloc extends IBloc {
+export interface IHomeBloc extends IBloc {
   // inputs
   currentPageIndexChanged: Observer<number>;
 
   // outputs
   currentPageIndex: Observable<number>;
 }
-
-export default IHomeBloc;

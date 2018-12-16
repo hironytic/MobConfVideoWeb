@@ -23,7 +23,7 @@
 //
 
 import React from 'react';
-import IHomeBloc from './IHomeBloc';
+import { IHomeBloc } from './HomeBloc';
 
 const HomeContext = React.createContext<IHomeBloc>(undefined!);
 export default HomeContext;

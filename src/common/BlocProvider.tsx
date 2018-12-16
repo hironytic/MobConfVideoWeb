@@ -23,7 +23,7 @@
 //
 
 import React, { Key } from 'react';
-import IBloc from './IBloc';
+import { IBloc } from './Bloc';
 
 type BlocCreator<T extends IBloc> = () => T;
 

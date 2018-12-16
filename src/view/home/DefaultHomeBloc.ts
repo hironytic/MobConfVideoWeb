@@ -24,7 +24,7 @@
 
 import { ConnectableObservable, Observable, Observer, Subject, Subscription } from 'rxjs';
 import { publishBehavior } from 'rxjs/operators';
-import IHomeBloc from "./IHomeBloc";
+import { IHomeBloc } from "./HomeBloc";
 
 class DefaultHomeBloc implements IHomeBloc {
   public static create(): DefaultHomeBloc {
