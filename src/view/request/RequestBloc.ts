@@ -50,10 +50,10 @@ export interface IRequestList {
 
 export interface IRequestBloc extends IBloc {
   // inputs
-  currentEventIndexChanged: Observer<number>;
+  currentEventIdChanged: Observer<string | false>;
 
   // outputs
   allEvents: Observable<Event[]>;
-  currentEventIndex: Observable<number>;
+  currentEventId: Observable<string | false>;
   requestList: Observable<IRequestList>;
 }

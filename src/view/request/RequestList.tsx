@@ -1,5 +1,5 @@
 //
-// RequestTab.tsx
+// RequestList.tsx
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,7 +22,8 @@
 // THE SOFTWARE.
 //
 
-import { Card, CardActionArea, CircularProgress, Theme, Typography, withTheme } from '@material-ui/core';
+import { Card, CardActionArea, CircularProgress, Grid, Theme, Typography, withTheme } from '@material-ui/core';
+import CheckIcon from '@material-ui/icons/Check';
 import React, { Key } from 'react';
 import Snapshot from 'src/common/Snapshot';
 import Request from 'src/model/Request';
@@ -34,7 +35,7 @@ interface IProps {
   theme: Theme,
 }
 
-class RequestTab extends React.Component<IProps> {
+class RequestList extends React.Component<IProps> {
   public render() {
     return (
       <RequestContext.Consumer>
@@ -65,42 +66,73 @@ class RequestTab extends React.Component<IProps> {
 
   private renderLoadingBody() {
     return (
-      <div>
-        <CircularProgress style={{margin: this.props.theme.spacing.unit * 2}}/>
+      <div style={{
+        marginTop: 70,
+      }}>
+        <CircularProgress/>
       </div>
     );
   }
 
   private renderLoadedBody(loaded: IRequestListLoaded) {
+    if (loaded.requests.length === 0) {
+      return (
+        <div style={{
+          marginTop: 70,
+        }}>
+          <Typography variant="body1" color="textSecondary">
+            リクエストがありません
+          </Typography>
+        </div>  
+      )
+    }
+
     return (
       <div style={{
         marginTop: 20,
-        padding: 8
+        padding: 20,
       }}>
-        {loaded.requests.map((request) => this.renderRequestItem(request))}
+        <Grid container={true}
+              spacing={24}
+              alignItems="center">
+          {loaded.requests.map((request) => this.renderRequestItem(request))}
+        </Grid>
       </div>
-    )
+    );
   }
 
   private renderRequestItem(request: Request) {
     return (
-      <Card key={request.id} style={{
-        marginBottom: 10,
-        marginLeft: "auto",
-        marginRight: "auto",
-        maxWidth: 600,
-        textAlign: "start",
-      }}>
-        <CardActionArea style={{padding: 20}}>
-          <Typography variant="body1" color="textSecondary">
-            {request.conference}
-          </Typography>
-          <Typography variant="subheading" color="textPrimary">
-            {request.title}
-          </Typography>
-        </CardActionArea>
-      </Card>
-    )
+      <Grid key={request.id} item={true} xs={12} md={6} lg={4}>
+        <Card style={{
+          marginLeft: "auto",
+          marginRight: "auto",
+          textAlign: "start",
+        }}>
+          <CardActionArea style={{padding: 20}}>
+            <Grid container={true} spacing={16} justify="space-between">
+              <Grid item={true} xs={6}>
+                <Typography variant="body1" color="textSecondary">
+                  {request.conference}
+                </Typography>
+              </Grid>
+              <Grid item={true} xs={6} style={{textAlign: "end"}}>
+                {(request.isWatched) ? (
+                  <CheckIcon nativeColor="green" />
+                ) : (
+                  <React.Fragment/>
+                )}
+              </Grid>
+              <Grid item={true} xs={12}>
+                <Typography variant="subheading" color="textPrimary">
+                  {request.title}
+                </Typography>
+              </Grid>
+            </Grid>
+          </CardActionArea>
+        </Card>
+      </Grid>
+    );
   }
 
   private renderErrorBody(error: IRequestListError) {
@@ -108,4 +140,4 @@ class RequestTab extends React.Component<IProps> {
   }
 }
 
-export default withTheme()(RequestTab);
+export default withTheme()(RequestList);

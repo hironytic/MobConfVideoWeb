@@ -28,7 +28,7 @@ import { combineLatest } from 'rxjs';
 import Snapshot from 'src/common/Snapshot';
 import Event from 'src/model/Event';
 import RequestContext from './RequestContext';
-import RequestTab from './RequestTab';
+import RequestList from './RequestList';
 
 interface IProps {
   key?: Key,
@@ -41,11 +41,11 @@ class RequestPage extends React.Component<IProps> {
       <React.Fragment>
         <RequestContext.Consumer>
           {(bloc) => {
-            const source = combineLatest(bloc.allEvents, bloc.currentEventIndex)
-            const tabIndexChange = (_: React.ChangeEvent<{}>, value: number) => bloc.currentEventIndexChanged.next(value);
+            const source = combineLatest(bloc.allEvents, bloc.currentEventId)
+            const tabIndexChange = (_: any, value: string | false) => bloc.currentEventIdChanged.next(value);
             return (
-              <Snapshot source={source} initialValue={[[], 0]}>
-                {([events, tabIndex]: [Event[], number]) => {
+              <Snapshot source={source} initialValue={[[], false]}>
+                {([events, currentTabId]: [Event[], number]) => {
                   if (events.length === 0) {
                     return (
                       <div>
@@ -54,10 +54,12 @@ class RequestPage extends React.Component<IProps> {
                     );
                   }
                   return (
-                    <Tabs value={tabIndex}
+                    <Tabs value={currentTabId}
                           onChange={tabIndexChange}
                           scrollable={true}>
-                      {events.map(this.renderEventTab)}
+                      {events.map((event) => (
+                        <Tab key={event.id} label={event.name} value={event.id} />
+                      ))}
                     </Tabs>
                   );
                 }}
@@ -65,14 +67,8 @@ class RequestPage extends React.Component<IProps> {
             );
           }}
         </RequestContext.Consumer>
-        <RequestTab />
+        <RequestList />
       </React.Fragment>
-    );
-  }
-
-  private renderEventTab(event: Event) {
-    return (
-      <Tab key={event.id} label={event.name} />
     );
   }
 }

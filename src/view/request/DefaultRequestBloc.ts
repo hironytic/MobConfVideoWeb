@@ -22,63 +22,67 @@
 // THE SOFTWARE.
 //
 
-import { ConnectableObservable, never, Observable, Observer, Subject, Subscription } from "rxjs";
-import { publishBehavior, startWith } from 'rxjs/operators';
+import { concat, ConnectableObservable, Observable, Observer, of, Subject, Subscription } from "rxjs";
+import { distinctUntilChanged, map, publishBehavior, skip, startWith, switchMap, take } from 'rxjs/operators';
 import Event from "src/model/Event";
-import Request from 'src/model/Request';
 import { IEventRepository } from 'src/repository/EventRepository';
+import { IRequestRepository } from 'src/repository/RequestRepository';
 import { IRequestBloc, IRequestList, RequestListState } from './RequestBloc';
 
 class DefaultRequestBloc implements IRequestBloc {
   public static create(
     eventRepository: IEventRepository,
+    requestRepository: IRequestRepository,
   ): DefaultRequestBloc {
     const subscription = new Subscription();
 
-    const currentEventIndexChanged = new Subject();    
+    const currentEventIdChanged = new Subject();    
 
     const allEvents = eventRepository.getAllEventsObservable().pipe(
       publishBehavior([] as Event[]),
     ) as ConnectableObservable<Event[]>;
     subscription.add(allEvents.connect());
 
-    const currentEventIndex = currentEventIndexChanged.pipe(
-      publishBehavior(0),
-    ) as ConnectableObservable<number>;
-    subscription.add(currentEventIndex.connect());
+    // The default selection is the request which is the first one
+    // in the first all-events-list
+    const currentEventId = concat(
+      allEvents.pipe(
+        skip(1),  // skip initial value (empty list)
+        take(1),  // first one after loaded
+        map((events) => (events.length > 0) ? events[0].id : false)
+      ),
+      currentEventIdChanged,
+    ).pipe(
+      distinctUntilChanged(),
+      publishBehavior(false),
+    ) as ConnectableObservable<string | false>;
+    subscription.add(currentEventId.connect());
 
-    const requestList = never().pipe(
-      startWith({
-          state: RequestListState.Loaded,
-          loaded: {
-            requests: [
-              new Request("r1", undefined, "タイトル1なのだがこれは", "iOSDC 2013", "http://", undefined, undefined, true),
-              new Request("r2", undefined, "タイトル2なのですね", "DroidKaigi 1998", "http://", undefined, undefined, false),
-              new Request("r3", undefined, "タイトル3だ", "DroidKaigi 1998", "http://", undefined, undefined, false),
-              new Request("r4", undefined, "タイトル4のああな", "DroidKaigi 1998", "http://", undefined, undefined, false),
-              new Request("r5", undefined, "タイトル5", "DroidKaigi 1998", "http://", undefined, undefined, false),
-              new Request("r6", undefined, "タイトル6", "DroidKaigi 1998", "http://", undefined, undefined, false),
-              new Request("r7", undefined, "タイトル7", "DroidKaigi 1998", "http://", undefined, undefined, false),
-              new Request("r8", undefined, "タイトル8", "DroidKaigi 1998", "http://", undefined, undefined, false),
-              new Request("r9", undefined, "タイトル9", "DroidKaigi 1998", "http://", undefined, undefined, false),
-              new Request("r10", undefined, "タイトル10もうあきた", "DroidKaigi 1998", "http://", undefined, undefined, false),
-              new Request("r11", undefined, "タイトル11", "DroidKaigi 1998", "http://", undefined, undefined, false),
-              new Request("r12", undefined, "タイトル12", "DroidKaigi 1998", "http://", undefined, undefined, false),
-              new Request("r13", undefined, "タイトル13", "DroidKaigi 1998", "http://", undefined, undefined, false),
-            ]    
-          }
-      }),      
-      publishBehavior({
-        state: RequestListState.Loading,
+    const requestList = currentEventId.pipe(
+      switchMap((eventId) => {
+        if (eventId === false) {
+          return of({ state: RequestListState.NotLoaded });
+        } else {
+          return requestRepository.getAllRequestsObservable(eventId).pipe(
+            map((requests) => ({
+              state: RequestListState.Loaded,
+              loaded: { requests },
+            })),
+            startWith({
+              state: RequestListState.Loading,
+            })
+          );
+        }
       }),
+      publishBehavior({ state: RequestListState.NotLoaded }),
     ) as ConnectableObservable<IRequestList>;
     subscription.add(requestList.connect());
 
     return new DefaultRequestBloc(
       subscription,
-      currentEventIndexChanged,
+      currentEventIdChanged,
       allEvents,
-      currentEventIndex,
+      currentEventId,
       requestList,
     );
   }
@@ -87,11 +91,11 @@ class DefaultRequestBloc implements IRequestBloc {
     private subscription: Subscription,
 
     // inputs
-    public currentEventIndexChanged: Observer<number>,
+    public currentEventIdChanged: Observer<string | false>,
 
     // outputs
     public allEvents: Observable<Event[]>,
-    public currentEventIndex: Observable<number>,
+    public currentEventId: Observable<string | false>,
     public requestList: Observable<IRequestList>,
   ) {}
 

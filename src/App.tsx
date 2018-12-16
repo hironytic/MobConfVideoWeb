@@ -41,7 +41,10 @@ class App extends React.Component {
       eventRepository: this.eventRepository,
       requestRepository: this.requestRepository,
     };
-    const requestBlocCreator = () => DefaultRequestBloc.create(repositories.eventRepository);
+    const requestBlocCreator = () => DefaultRequestBloc.create(
+      repositories.eventRepository,
+      repositories.requestRepository,
+    );
     return (
       <RepositoryContext.Provider value={repositories}>
         <BlocProvider context={RequestContext} creator={requestBlocCreator}>
