@@ -23,7 +23,7 @@
 //
 
 import React from 'react';
-import IRequestBloc from './IRequestBloc';
+import { IRequestBloc } from './RequestBloc';
 
 const RequestContext = React.createContext<IRequestBloc>(undefined!);
 export default RequestContext;

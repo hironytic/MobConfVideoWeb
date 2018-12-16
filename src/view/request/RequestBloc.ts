@@ -26,12 +26,32 @@ import { Observable, Observer } from "rxjs";
 import IBloc from 'src/common/IBloc';
 import Event from "src/model/Event";
 
-interface IRequestBloc extends IBloc {
+export enum RequestListState {
+  Loading,
+  Loaded,
+  Error,
+}
+
+export interface IRequestListLoaded {
+  requests: Request[];
+}
+
+export interface IRequestListError {
+  message: string;
+}
+
+export interface IRequestList {
+  state: RequestListState;
+  loaded?: IRequestListLoaded;
+  error?: IRequestListError;
+}
+
+export interface IRequestBloc extends IBloc {
   // inputs
   currentEventIndexChanged: Observer<number>;
 
   // outputs
   allEvents: Observable<Event[]>;
   currentEventIndex: Observable<number>;
+  requestList: Observable<IRequestList>;
 }
-export default IRequestBloc;

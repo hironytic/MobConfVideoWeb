@@ -22,11 +22,11 @@
 // THE SOFTWARE.
 //
 
-import { ConnectableObservable, Observable, Observer, Subject, Subscription } from "rxjs";
+import { ConnectableObservable, never, Observable, Observer, Subject, Subscription } from "rxjs";
 import { publishBehavior } from 'rxjs/operators';
 import Event from "src/model/Event";
 import IEventRepository from 'src/repository/IEventRepository';
-import IRequestBloc from './IRequestBloc';
+import { IRequestBloc, IRequestList } from './RequestBloc';
 
 class DefaultRequestBloc implements IRequestBloc {
   public static create(
@@ -46,11 +46,14 @@ class DefaultRequestBloc implements IRequestBloc {
     ) as ConnectableObservable<number>;
     subscription.add(currentEventIndex.connect());
 
+    const requestList = never();
+
     return new DefaultRequestBloc(
       subscription,
       currentEventIndexChanged,
       allEvents,
       currentEventIndex,
+      requestList,
     );
   }
 
@@ -63,6 +66,7 @@ class DefaultRequestBloc implements IRequestBloc {
     // outputs
     public allEvents: Observable<Event[]>,
     public currentEventIndex: Observable<number>,
+    public requestList: Observable<IRequestList>,
   ) {}
 
   public dispose() {

@@ -23,7 +23,7 @@
 //
 
 import React from 'react';
-import IRequestBloc from './IRequestBloc';
+import { IRequestBloc } from './RequestBloc';
 import RequestContext from './RequestContext';
 
 class RequestTab extends React.Component {
