@@ -22,15 +22,20 @@
 // THE SOFTWARE.
 //
 
-import { Tab, Tabs } from '@material-ui/core';
-import React from 'react';
+import { CircularProgress, Tab, Tabs, Theme, withTheme } from '@material-ui/core';
+import React, { Key } from 'react';
 import { combineLatest } from 'rxjs';
 import Snapshot from 'src/common/Snapshot';
 import Event from 'src/model/Event';
 import RequestContext from './RequestContext';
 import RequestTab from './RequestTab';
 
-class RequestPage extends React.Component {
+interface IProps {
+  key?: Key,
+  theme: Theme,
+}
+
+class RequestPage extends React.Component<IProps> {
   public render() {
     return (
       <div>
@@ -39,8 +44,13 @@ class RequestPage extends React.Component {
             const source = combineLatest(bloc.allEvents, bloc.currentEventIndex)
             const tabIndexChange = (_: React.ChangeEvent<{}>, value: number) => bloc.currentEventIndexChanged.next(value);
             return (
-              <Snapshot source={source} initialValue={[[], -1]}>
+              <Snapshot source={source} initialValue={[[], 0]}>
                 {([events, tabIndex]: [Event[], number]) => {
+                  if (events.length === 0) {
+                    return (
+                      <CircularProgress size={25} style={{margin: this.props.theme.spacing.unit * 2}}/>
+                    );
+                  }
                   return (
                     <Tabs value={tabIndex}
                           onChange={tabIndexChange}
@@ -65,4 +75,4 @@ class RequestPage extends React.Component {
   }
 }
 
-export default RequestPage;
+export default withTheme()(RequestPage);

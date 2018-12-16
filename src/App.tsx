@@ -25,19 +25,31 @@
 import * as React from 'react';
 import BlocProvider from 'src/common/BlocProvider';
 import './App.css';
+import DefaultEventRepository from './repository/DefaultEventRepository';
+import DefaultRequestRepository from './repository/DefaultRequestRepository';
+import RepositoryContext from './RepositoryContext';
 import Home from './view/home/Home';
 import DefaultRequestBloc from './view/request/DefaultRequestBloc';
 import RequestContext from './view/request/RequestContext';
 
 class App extends React.Component {
+  private eventRepository = new DefaultEventRepository();
+  private requestRepository = new DefaultRequestRepository();
+
   public render() {
-    const requestBlocCreator = () => DefaultRequestBloc.create();
+    const repositories = {
+      eventRepository: this.eventRepository,
+      requestRepository: this.requestRepository,
+    };
+    const requestBlocCreator = () => DefaultRequestBloc.create(repositories.eventRepository);
     return (
-      <BlocProvider context={RequestContext} creator={requestBlocCreator}>
-        <div className="App">
-          <Home/>
-        </div>
-      </BlocProvider>
+      <RepositoryContext.Provider value={repositories}>
+        <BlocProvider context={RequestContext} creator={requestBlocCreator}>
+          <div className="App">
+            <Home/>
+          </div>
+        </BlocProvider>
+      </RepositoryContext.Provider>
     );
   }
 }

@@ -23,14 +23,7 @@
 //
 
 import React from 'react';
-import { never, Subject } from 'rxjs';
 import IHomeBloc from './IHomeBloc';
 
-class NullBloc implements IHomeBloc {
-  public currentPageIndexChanged = new Subject();
-  public currentPageIndex = never();
-  public dispose() { return }
-}
-
-const HomeContext = React.createContext<IHomeBloc>(new NullBloc());
+const HomeContext = React.createContext<IHomeBloc>(undefined!);
 export default HomeContext;

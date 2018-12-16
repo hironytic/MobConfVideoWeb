@@ -22,20 +22,21 @@
 // THE SOFTWARE.
 //
 
-import { ConnectableObservable, Observable, Observer, of, Subject, Subscription } from "rxjs";
+import { ConnectableObservable, Observable, Observer, Subject, Subscription } from "rxjs";
 import { publishBehavior } from 'rxjs/operators';
 import Event from "src/model/Event";
+import IEventRepository from 'src/repository/IEventRepository';
 import IRequestBloc from './IRequestBloc';
 
 class DefaultRequestBloc implements IRequestBloc {
-  public static create(): DefaultRequestBloc {
+  public static create(
+    eventRepository: IEventRepository,
+  ): DefaultRequestBloc {
     const subscription = new Subscription();
 
     const currentEventIndexChanged = new Subject();    
-    const allEvents = of([
-      new Event("id0", "第0回", false),
-      new Event("id1", "第1回", false),
-    ]).pipe(
+
+    const allEvents = eventRepository.getAllEventsObservable().pipe(
       publishBehavior([] as Event[]),
     ) as ConnectableObservable<Event[]>;
     subscription.add(allEvents.connect());

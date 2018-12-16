@@ -1,5 +1,5 @@
 //
-// RequestContext.ts
+// IRepositories.ts
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,8 +22,12 @@
 // THE SOFTWARE.
 //
 
-import React from 'react';
-import IRequestBloc from './IRequestBloc';
+import IEventRepository from "./repository/IEventRepository";
+import IRequestRepository from './repository/IRequestRepository';
 
-const RequestContext = React.createContext<IRequestBloc>(undefined!);
-export default RequestContext;
+interface IRepositories {
+  eventRepository: IEventRepository;
+  requestRepository: IRequestRepository;
+}
+
+export default IRepositories;

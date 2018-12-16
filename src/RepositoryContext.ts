@@ -1,5 +1,5 @@
 //
-// RequestContext.ts
+// RepositoryContext.ts
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -23,7 +23,7 @@
 //
 
 import React from 'react';
-import IRequestBloc from './IRequestBloc';
+import IRepositories from './IRepositories';
 
-const RequestContext = React.createContext<IRequestBloc>(undefined!);
-export default RequestContext;
+const RepositoryContext = React.createContext<IRepositories>(undefined!)
+export default RepositoryContext;
