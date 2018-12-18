@@ -23,7 +23,7 @@
 //
 
 import { concat, ConnectableObservable, Observable, Observer, of, Subject, Subscription } from "rxjs";
-import { distinctUntilChanged, map, publishBehavior, skip, startWith, switchMap, take } from 'rxjs/operators';
+import { catchError, distinctUntilChanged, map, publishBehavior, skip, startWith, switchMap, take } from 'rxjs/operators';
 import Event from "src/model/Event";
 import { IEventRepository } from 'src/repository/EventRepository';
 import { IRequestRepository } from 'src/repository/RequestRepository';
@@ -39,6 +39,7 @@ class DefaultRequestBloc implements IRequestBloc {
     const currentEventIdChanged = new Subject();    
 
     const allEvents = eventRepository.getAllEventsObservable().pipe(
+      catchError(error => of([] as Event[])),
       publishBehavior([] as Event[]),
     ) as ConnectableObservable<Event[]>;
     subscription.add(allEvents.connect());
@@ -74,6 +75,10 @@ class DefaultRequestBloc implements IRequestBloc {
           );
         }
       }),
+      catchError((error) => of({
+        state: RequestListState.Error,
+        error: { message: error.toString() }
+      })),
       publishBehavior({ state: RequestListState.NotLoaded }),
     ) as ConnectableObservable<IRequestList>;
     subscription.add(requestList.connect());

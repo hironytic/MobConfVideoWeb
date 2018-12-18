@@ -136,7 +136,18 @@ class RequestList extends React.Component<IProps> {
   }
 
   private renderErrorBody(error: IRequestListError) {
-    return (<div />);
+    return (
+      <div style={{
+        marginTop: 70,
+      }}>
+        <Typography variant="body1" color="error">
+          エラーが発生しました
+        </Typography>
+        <Typography variant="body1" color="textSecondary">
+          {error.message}
+        </Typography>
+      </div>  
+  );
   }
 }
 
