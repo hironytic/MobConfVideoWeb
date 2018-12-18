@@ -25,8 +25,11 @@
 import * as React from 'react';
 import BlocProvider from 'src/common/BlocProvider';
 import './App.css';
+import IRepositories from './IRepositories';
+import DefaultConferenceRepository from './repository/DefaultConferenceRepository';
 import DefaultEventRepository from './repository/DefaultEventRepository';
 import DefaultRequestRepository from './repository/DefaultRequestRepository';
+import DefaultSessionRepository from './repository/DefaultSessionRepository';
 import RepositoryContext from './RepositoryContext';
 import Home from './view/home/Home';
 import DefaultRequestBloc from './view/request/DefaultRequestBloc';
@@ -35,11 +38,15 @@ import RequestContext from './view/request/RequestContext';
 class App extends React.Component {
   private eventRepository = new DefaultEventRepository();
   private requestRepository = new DefaultRequestRepository();
+  private conferenceRepository = new DefaultConferenceRepository();
+  private sessionRepository = new DefaultSessionRepository();
 
   public render() {
-    const repositories = {
+    const repositories: IRepositories = {
       eventRepository: this.eventRepository,
       requestRepository: this.requestRepository,
+      conferenceRepository: this.conferenceRepository,
+      sessionRepository: this.sessionRepository,
     };
     const requestBlocCreator = () => DefaultRequestBloc.create(
       repositories.eventRepository,

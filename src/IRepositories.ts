@@ -22,12 +22,16 @@
 // THE SOFTWARE.
 //
 
+import { IConferenceRepository } from './repository/ConferenceRepository';
 import { IEventRepository } from "./repository/EventRepository";
 import { IRequestRepository } from './repository/RequestRepository';
+import { ISessionRepository } from './repository/SessionRepository';
 
 interface IRepositories {
   eventRepository: IEventRepository;
   requestRepository: IRequestRepository;
+  conferenceRepository: IConferenceRepository;
+  sessionRepository: ISessionRepository;
 }
 
 export default IRepositories;
