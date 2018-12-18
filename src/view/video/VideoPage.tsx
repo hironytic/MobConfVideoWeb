@@ -1,5 +1,5 @@
 //
-// DefaultHomeBloc.ts
+// VideoPage.tsx
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,41 +22,19 @@
 // THE SOFTWARE.
 //
 
-import { ConnectableObservable, Observable, Observer, Subject, Subscription } from 'rxjs';
-import { publishBehavior } from 'rxjs/operators';
-import { IHomeBloc } from "./HomeBloc";
+import React from 'react';
+import SessionList from './SessionList';
+import SessionSearchFilter from './SessionSearchFilter';
 
-class DefaultHomeBloc implements IHomeBloc {
-  public static create(): DefaultHomeBloc {
-    const subscription = new Subscription();
-
-    const currentPageIndexChanged = new Subject();
-
-    const currentPageIndex = currentPageIndexChanged.pipe(
-      publishBehavior(1),
-    ) as ConnectableObservable<number>
-    subscription.add(currentPageIndex.connect());
-
-    return new DefaultHomeBloc(
-      subscription,
-      currentPageIndexChanged,
-      currentPageIndex,
+class VideoPage extends React.Component {
+  public render() {
+    return (
+      <div style={{ padding: 20 }}>
+        <SessionSearchFilter/>
+        <SessionList/>
+      </div>
     );
-  }
-
-  private constructor(
-    private subscription: Subscription,
-
-    // inputs
-    public currentPageIndexChanged: Observer<number>,
-
-    // outputs
-    public currentPageIndex: Observable<number>,
-  ) {}
-
-  public dispose() {
-    this.subscription.unsubscribe();
   }
 }
 
-export default DefaultHomeBloc;
+export default VideoPage;

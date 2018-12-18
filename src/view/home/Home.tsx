@@ -22,11 +22,11 @@
 // THE SOFTWARE.
 //
 
-import { Button } from '@material-ui/core';
 import * as React from 'react';
 import BlocProvider from 'src/common/BlocProvider';
 import Snapshot from 'src/common/Snapshot';
 import RequestPage from '../request/RequestPage';
+import VideoPage from '../video/VideoPage';
 import DefaultHomeBloc from './DefaultHomeBloc';
 import HomeAppBar from './HomeAppBar';
 import HomeContext from './HomeContext';
@@ -54,19 +54,12 @@ class Home extends React.Component {
     switch (pageIndex) {
       case 0:
         return (
-          <RequestPage />
+          <RequestPage/>
         );
 
       case 1:
         return (
-          <div>
-            <p className="App-intro">
-              To get started, edit <code>src/App.tsx</code> and save to reload.
-            </p>
-            <Button variant="contained" color="primary">
-              Hello World
-            </Button>
-          </div>
+          <VideoPage/>
         );
 
       default:
