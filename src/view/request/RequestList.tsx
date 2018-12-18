@@ -94,7 +94,7 @@ class RequestList extends React.Component<IProps> {
       }}>
         <Grid container={true}
               spacing={24}
-              alignItems="center">
+              alignItems="flex-start">
           {loaded.requests.map((request) => this.renderRequestItem(request))}
         </Grid>
       </div>
@@ -147,7 +147,7 @@ class RequestList extends React.Component<IProps> {
           {error.message}
         </Typography>
       </div>  
-  );
+    );
   }
 }
 

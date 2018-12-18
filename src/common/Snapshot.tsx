@@ -28,14 +28,14 @@ import { Observable, Subscription } from 'rxjs';
 interface IProps<T> {
   key?: Key,
   source: Observable<T>;
-  initialValue: T;
+  initialValue?: T;
 }
 
 interface IState<T> {
-  value: T;
+  value?: T;
 }
 
-type Builder<T> = (value: T) => ReactNode;
+type Builder<T> = (value?: T) => ReactNode;
 
 class Snapshot<T> extends React.Component<IProps<T>, IState<T>> {
   public state = {

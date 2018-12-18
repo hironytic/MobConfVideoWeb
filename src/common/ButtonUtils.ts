@@ -1,5 +1,5 @@
 //
-// DefaultHomeBloc.ts
+// ButtonUtils.ts
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,41 +22,9 @@
 // THE SOFTWARE.
 //
 
-import { ConnectableObservable, Observable, Observer, Subject, Subscription } from 'rxjs';
-import { publishBehavior } from 'rxjs/operators';
-import { IHomeBloc } from "./HomeBloc";
+import { MouseEvent } from 'react';
+import { Observer } from "rxjs";
 
-class DefaultHomeBloc implements IHomeBloc {
-  public static create(): DefaultHomeBloc {
-    const subscription = new Subscription();
-
-    const currentPageIndexChanged = new Subject();
-
-    const currentPageIndex = currentPageIndexChanged.pipe(
-      publishBehavior(0),
-    ) as ConnectableObservable<number>
-    subscription.add(currentPageIndex.connect());
-
-    return new DefaultHomeBloc(
-      subscription,
-      currentPageIndexChanged,
-      currentPageIndex,
-    );
-  }
-
-  private constructor(
-    private subscription: Subscription,
-
-    // inputs
-    public currentPageIndexChanged: Observer<number>,
-
-    // outputs
-    public currentPageIndex: Observable<number>,
-  ) {}
-
-  public dispose() {
-    this.subscription.unsubscribe();
-  }
+export function bindClickEvent(observer: Observer<void>): (event: MouseEvent<HTMLElement>) => void {
+  return () => observer.next();
 }
-
-export default DefaultHomeBloc;

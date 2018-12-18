@@ -1,5 +1,5 @@
 //
-// DefaultHomeBloc.ts
+// DropdownUtils.ts
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,41 +22,9 @@
 // THE SOFTWARE.
 //
 
-import { ConnectableObservable, Observable, Observer, Subject, Subscription } from 'rxjs';
-import { publishBehavior } from 'rxjs/operators';
-import { IHomeBloc } from "./HomeBloc";
+import { ChangeEvent, ReactNode } from 'react';
+import { Observer } from "rxjs";
 
-class DefaultHomeBloc implements IHomeBloc {
-  public static create(): DefaultHomeBloc {
-    const subscription = new Subscription();
-
-    const currentPageIndexChanged = new Subject();
-
-    const currentPageIndex = currentPageIndexChanged.pipe(
-      publishBehavior(0),
-    ) as ConnectableObservable<number>
-    subscription.add(currentPageIndex.connect());
-
-    return new DefaultHomeBloc(
-      subscription,
-      currentPageIndexChanged,
-      currentPageIndex,
-    );
-  }
-
-  private constructor(
-    private subscription: Subscription,
-
-    // inputs
-    public currentPageIndexChanged: Observer<number>,
-
-    // outputs
-    public currentPageIndex: Observable<number>,
-  ) {}
-
-  public dispose() {
-    this.subscription.unsubscribe();
-  }
+export function bindChangeEvent(observer: Observer<string>): (event: ChangeEvent<HTMLSelectElement>, child: ReactNode) => void {
+  return (event) => observer.next(event.target.value);
 }
-
-export default DefaultHomeBloc;

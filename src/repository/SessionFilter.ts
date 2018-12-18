@@ -22,11 +22,22 @@
 // THE SOFTWARE.
 //
 
-class SessionFilter {
-  public constructor(
-    public converenceId?: string,
-    public minutes?: number,
-  ) { }
+interface ISessionFilter {
+  conferenceId?: string;
+  minutes?: number;
+}
+
+class SessionFilter implements ISessionFilter {
+  public conferenceId?: string;
+  public minutes?: number;
+
+  public constructor({
+    conferenceId,
+    minutes,
+  }: ISessionFilter) {
+    this.conferenceId = conferenceId;
+    this.minutes = minutes;
+  }
 }
 
 export default SessionFilter;

@@ -1,5 +1,5 @@
 //
-// DefaultHomeBloc.ts
+// VideoBloc.ts
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,41 +22,47 @@
 // THE SOFTWARE.
 //
 
-import { ConnectableObservable, Observable, Observer, Subject, Subscription } from 'rxjs';
-import { publishBehavior } from 'rxjs/operators';
-import { IHomeBloc } from "./HomeBloc";
+import { Observable, Observer } from "rxjs";
+import { IBloc } from 'src/common/Bloc';
+import DropdownState from 'src/common/DropdownState';
+import Session from 'src/model/Session';
 
-class DefaultHomeBloc implements IHomeBloc {
-  public static create(): DefaultHomeBloc {
-    const subscription = new Subscription();
-
-    const currentPageIndexChanged = new Subject();
-
-    const currentPageIndex = currentPageIndexChanged.pipe(
-      publishBehavior(0),
-    ) as ConnectableObservable<number>
-    subscription.add(currentPageIndex.connect());
-
-    return new DefaultHomeBloc(
-      subscription,
-      currentPageIndexChanged,
-      currentPageIndex,
-    );
-  }
-
-  private constructor(
-    private subscription: Subscription,
-
-    // inputs
-    public currentPageIndexChanged: Observer<number>,
-
-    // outputs
-    public currentPageIndex: Observable<number>,
-  ) {}
-
-  public dispose() {
-    this.subscription.unsubscribe();
-  }
+export interface ISessionItem {
+  session: Session;
+  conferenceName: string;
 }
 
-export default DefaultHomeBloc;
+export enum SessionListState {
+  NotLoaded,
+  Loading,
+  Loaded,
+  Error,
+}
+
+export interface ISessionListLoaded {
+  sessions: ISessionItem[];
+}
+
+export interface ISessionListError {
+  message: string;
+}
+
+export interface ISessionList {
+  state: SessionListState;
+  loaded?: ISessionListLoaded;
+  error?: ISessionListError;
+}
+
+export interface IVideoBloc extends IBloc {
+  // inputs
+  expandFilterPanel: Observer<boolean>;
+  filterConferenceChanged: Observer<string>;
+  filterSessionTimeChanged: Observer<string>;
+  executeFilter: Observer<void>;
+
+  // outputs
+  isFilterPanelExpanded: Observable<boolean>;
+  filterConference: Observable<DropdownState>;
+  filterSessionTime: Observable<DropdownState>;
+  sessionList: Observable<ISessionList>
+}

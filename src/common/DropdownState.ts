@@ -1,5 +1,5 @@
 //
-// DefaultHomeBloc.ts
+// DropdownState.ts
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,41 +22,21 @@
 // THE SOFTWARE.
 //
 
-import { ConnectableObservable, Observable, Observer, Subject, Subscription } from 'rxjs';
-import { publishBehavior } from 'rxjs/operators';
-import { IHomeBloc } from "./HomeBloc";
+import DropdownStateItem from './DropdownStateItem';
 
-class DefaultHomeBloc implements IHomeBloc {
-  public static create(): DefaultHomeBloc {
-    const subscription = new Subscription();
+interface IDropdownState {
+  value: string;
+  items: DropdownStateItem[];
+}
 
-    const currentPageIndexChanged = new Subject();
+class DropdownState implements IDropdownState {
+  public value: string;
+  public items: DropdownStateItem[];
 
-    const currentPageIndex = currentPageIndexChanged.pipe(
-      publishBehavior(0),
-    ) as ConnectableObservable<number>
-    subscription.add(currentPageIndex.connect());
-
-    return new DefaultHomeBloc(
-      subscription,
-      currentPageIndexChanged,
-      currentPageIndex,
-    );
-  }
-
-  private constructor(
-    private subscription: Subscription,
-
-    // inputs
-    public currentPageIndexChanged: Observer<number>,
-
-    // outputs
-    public currentPageIndex: Observable<number>,
-  ) {}
-
-  public dispose() {
-    this.subscription.unsubscribe();
+  public constructor({value, items}: IDropdownState) {
+    this.value = value;
+    this.items = items;
   }
 }
 
-export default DefaultHomeBloc;
+export default DropdownState;

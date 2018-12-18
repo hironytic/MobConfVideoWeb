@@ -34,6 +34,8 @@ import RepositoryContext from './RepositoryContext';
 import Home from './view/home/Home';
 import DefaultRequestBloc from './view/request/DefaultRequestBloc';
 import RequestContext from './view/request/RequestContext';
+import DefaultVideoBloc from './view/video/DefaultVideoBloc';
+import VideoContext from './view/video/VideoContext';
 
 class App extends React.Component {
   private eventRepository = new DefaultEventRepository();
@@ -52,12 +54,18 @@ class App extends React.Component {
       repositories.eventRepository,
       repositories.requestRepository,
     );
+    const videoBlocCreator = () => DefaultVideoBloc.create(
+      repositories.conferenceRepository,
+      repositories.sessionRepository,
+    );
     return (
       <RepositoryContext.Provider value={repositories}>
         <BlocProvider context={RequestContext} creator={requestBlocCreator}>
-          <div className="App">
-            <Home/>
-          </div>
+          <BlocProvider context={VideoContext} creator={videoBlocCreator}>
+            <div className="App">
+              <Home/>
+            </div>
+          </BlocProvider>
         </BlocProvider>
       </RepositoryContext.Provider>
     );

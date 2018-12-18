@@ -22,26 +22,77 @@
 // THE SOFTWARE.
 //
 
-import { Avatar, Card, CardActionArea, Grid, Typography } from '@material-ui/core';
+import { Avatar, Card, CardActionArea, CircularProgress, Grid, Typography } from '@material-ui/core';
 import React from 'react';
+import Snapshot from 'src/common/Snapshot';
+import Speaker from 'src/model/Speaker';
+import { ISessionItem, ISessionList, ISessionListError, ISessionListLoaded, SessionListState } from './VideoBloc';
+import VideoContext from './VideoContext';
 
 class SessionList extends React.Component {
   public render() {
     return (
-      <Grid container={true}
-            spacing={24}
-            alignItems="center">
-        { this.renderSessionItem() }
-        { this.renderSessionItem() }
-        { this.renderSessionItem() }
-        { this.renderSessionItem() }
-      </Grid>
+      <VideoContext.Consumer>
+        {(bloc) => (
+          <Snapshot source={bloc.sessionList} initialValue={{state: SessionListState.NotLoaded}}>
+            {(sessionList: ISessionList) => this.renderBody(sessionList)}
+          </Snapshot>
+        )}
+      </VideoContext.Consumer>
     );
   }
 
-  private renderSessionItem() {
+  private renderBody(sessionList: ISessionList) {
+    switch (sessionList.state) {
+      case SessionListState.NotLoaded:
+        return (<React.Fragment/>);
+
+      case SessionListState.Loading:
+        return this.renderLoadingBody();
+      
+      case SessionListState.Loaded:
+        return this.renderLoadedBody(sessionList.loaded!);
+      
+      case SessionListState.Error:
+        return this.renderErrorBody(sessionList.error!);      
+    }
+  }
+
+  private renderLoadingBody() {
     return (
-      <Grid item={true} xs={12} lg={6}>
+      <div style={{
+        marginTop: 50,
+      }}>
+        <CircularProgress/>
+      </div>
+    );
+  }
+
+  private renderLoadedBody(loaded: ISessionListLoaded) {
+    if (loaded.sessions.length === 0) {
+      return (
+        <div style={{
+          marginTop: 50,
+        }}>
+          <Typography variant="body1" color="textSecondary">
+            動画セッションが見つかりません
+          </Typography>
+        </div>  
+      )
+    }
+
+    return (
+      <Grid container={true}
+            spacing={24}
+            alignItems="flex-start">
+        {loaded.sessions.map((sessionItem) => this.renderSessionItem(sessionItem))}
+      </Grid>
+    )
+  }
+
+  private renderSessionItem(sessionItem: ISessionItem) {
+    return (
+      <Grid key={sessionItem.session.id} item={true} xs={12} lg={6}>
         <Card style={{
           marginLeft: "auto",
           marginRight: "auto",
@@ -51,47 +102,26 @@ class SessionList extends React.Component {
             <Grid container={true} spacing={16} justify="space-between">
               <Grid item={true} xs={6}>
                 <Typography variant="body1" color="textSecondary">
-                  iOSDC Japan 2036
+                  {sessionItem.conferenceName}
                 </Typography>
               </Grid>
               <Grid item={true} xs={6} style={{textAlign: "end"}}>
                 <Typography variant="body1" color="textSecondary">
-                  30分
+                  {sessionItem.session.minutes}分
                 </Typography>
               </Grid>
               <Grid item={true} xs={12}>
                 <Typography variant="subheading" color="textPrimary">
-                  すべてのコードを自動生成すれば俺らもういらないんじゃね？
+                  {sessionItem.session.title}              
                 </Typography>
               </Grid>
               <Grid item={true} xs={12}>
                 <Typography variant="body1" color="textPrimary">
-                  じゅげむじゅげむ、ごこうのすりきれ、かいじゃりすいぎょの水行末。雲来末、風来末、食う寝るところに住むところ。やぶらこうじのぶらこうじ、ぱいぽ・ぱいぽ・パイポのシューりんがん、しゅーりんがんのぐーりんたい、ぐーりんたいのぽんぽこぴーのぽんぽこなーのちょうきゅうめいのちょうすけ
+                  {sessionItem.session.description}
                 </Typography>
               </Grid>
               <Grid item={true} xs={12}>
-                <Grid container={true} spacing={8} alignItems="center" justify="flex-start">
-                  <Grid item={true}>
-                    <Avatar src="https:\/\/fortee.jp\/files\/iosdc-japan-2018\/speaker\/20bbb736-e03d-4004-8165-ec39a690bd8f.jpg" />
-                  </Grid>
-                  <Grid item={true}>
-                    <Typography variant="body1" color="textPrimary">
-                      ひろん
-                    </Typography>
-                  </Grid>
-                </Grid>
-
-                <Grid container={true} spacing={8} alignItems="center" justify="flex-start">
-                  <Grid item={true}>
-                    <Avatar src="https:\/\/fortee.jp\/files\/iosdc-japan-2018\/speaker\/20bbb736-e03d-4004-8165-ec39a690bd8f.jpg" />
-                  </Grid>
-                  <Grid item={true}>
-                    <Typography variant="body1" color="textPrimary">
-                      ひろん
-                    </Typography>
-                  </Grid>
-                </Grid>
-
+                {sessionItem.session.speakers.map((speaker, index) => this.renderSpeaker(speaker, index))}
               </Grid>
             </Grid>
           </CardActionArea>
@@ -99,6 +129,37 @@ class SessionList extends React.Component {
       </Grid>
     );
   }
+
+  private renderSpeaker(speaker: Speaker, index: number) {
+    return (
+      <Grid key={index} container={true} spacing={8} alignItems="center" justify="flex-start">
+        <Grid item={true}>
+          <Avatar src={speaker.icon}/>
+        </Grid>
+        <Grid item={true}>
+          <Typography variant="body1" color="textPrimary">
+            {speaker.name}
+          </Typography>
+        </Grid>
+      </Grid>
+    );   
+  }
+
+  private renderErrorBody(error: ISessionListError) {
+    return (
+      <div style={{
+        marginTop: 70,
+      }}>
+        <Typography variant="body1" color="error">
+          エラーが発生しました
+        </Typography>
+        <Typography variant="body1" color="textSecondary">
+          {error.message}
+        </Typography>
+      </div>  
+    );
+  }
 }
+
 
 export default SessionList;

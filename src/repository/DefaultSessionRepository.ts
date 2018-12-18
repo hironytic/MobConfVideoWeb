@@ -35,8 +35,8 @@ class DefaultSessionRepository implements ISessionRepository {
       let query: firestore.Query = firebase
       .firestore()
       .collection("sessions");
-      if (filter.converenceId !== undefined) {
-        query = query.where("conferenceId", "==", filter.converenceId);
+      if (filter.conferenceId !== undefined) {
+        query = query.where("conferenceId", "==", filter.conferenceId);
       }
       if (filter.minutes !== undefined) {
         query = query.where("minutes", "==", filter.minutes);
