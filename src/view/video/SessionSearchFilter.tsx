@@ -31,7 +31,13 @@ class SessionSearchFilter extends React.Component {
   public render() {
     const isExpand = true;
     return (
-      <div style={{margin: 10}}>
+      <div style={{
+        marginTop: 10,
+        marginRight: "auto",
+        marginLeft: "auto",
+        marginBottom: 30,
+        maxWidth: 400,
+      }}>
         <Card>
           <CardContent>
             <Grid container={true}>
