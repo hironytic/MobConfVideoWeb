@@ -7,17 +7,20 @@ import firebaseConfig from './FirebaseConfig';
 import './index.css';
 import { unregister as unregisterServiceWorker } from './registerServiceWorker';
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+async function initialize() {
+  // Initialize Firebase
+  firebase.initializeApp(await firebaseConfig());
 
-// Initialize Cloud Firestore through Firebase
-const db = firebase.firestore();
-db.settings({
-  timestampsInSnapshots: true
-});
+  // Initialize Cloud Firestore through Firebase
+  const db = firebase.firestore();
+  db.settings({
+    timestampsInSnapshots: true
+  });
 
-ReactDOM.render(
-  <App />,
-  document.getElementById('root') as HTMLElement
-);
-unregisterServiceWorker();
+  ReactDOM.render(
+    <App />,
+    document.getElementById('root') as HTMLElement
+  );
+  unregisterServiceWorker();
+}
+initialize();
