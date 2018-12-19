@@ -92,7 +92,7 @@ class SessionList extends React.Component {
 
   private renderSessionItem(sessionItem: ISessionItem) {
     return (
-      <Grid key={sessionItem.session.id} item={true} xs={12} lg={6}>
+      <Grid key={sessionItem.session.id} item={true} xs={12}>
         <Card style={{
           marginLeft: "auto",
           marginRight: "auto",
