@@ -5,7 +5,7 @@ import * as ReactDOM from 'react-dom';
 import App from './App';
 import firebaseConfig from './FirebaseConfig';
 import './index.css';
-import registerServiceWorker from './registerServiceWorker';
+import { unregister as unregisterServiceWorker } from './registerServiceWorker';
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -20,4 +20,4 @@ ReactDOM.render(
   <App />,
   document.getElementById('root') as HTMLElement
 );
-registerServiceWorker();
+unregisterServiceWorker();
