@@ -116,9 +116,7 @@ class SessionList extends React.Component {
                 </Typography>
               </Grid>
               <Grid item={true} xs={12}>
-                <Typography variant="body1" color="textPrimary">
-                  {sessionItem.session.description}
-                </Typography>
+                {this.renderDescription(sessionItem.session.description)}
               </Grid>
               <Grid item={true} xs={12}>
                 {sessionItem.session.speakers.map((speaker, index) => this.renderSpeaker(speaker, index))}
@@ -128,6 +126,14 @@ class SessionList extends React.Component {
         </Card>
       </Grid>
     );
+  }
+
+  private renderDescription(description: string) {
+    return description.split(/\r\n|\r|\n/).map((line, index) => (
+      <Typography key={index} variant="body1" color="textPrimary">
+        {line}
+      </Typography>
+    ));
   }
 
   private renderSpeaker(speaker: Speaker, index: number) {
