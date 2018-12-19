@@ -34,7 +34,7 @@ class DefaultEventRepository implements IEventRepository {
       const canceller = firebase
         .firestore()
         .collection("events")
-        .orderBy("starts", "asc")
+        .orderBy("starts", "desc")
         .onSnapshot((snapshot) => {
           const events = snapshot.docs.map((doc) => Event.fromSnapshot(doc));
           subscriber.next(events);
