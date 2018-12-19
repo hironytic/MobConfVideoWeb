@@ -41,7 +41,9 @@ class DefaultSessionRepository implements ISessionRepository {
       if (filter.minutes !== undefined) {
         query = query.where("minutes", "==", filter.minutes);
       }
-      query = query.orderBy("starts", "asc");
+      query = query
+        .orderBy("starts", "asc")
+        .limit(200);
 
       const canceller = query
         .onSnapshot((snapshot) => {
