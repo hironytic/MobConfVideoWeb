@@ -22,8 +22,10 @@
 // THE SOFTWARE.
 //
 
-import { Card, CardActionArea, CircularProgress, Grid, Theme, Typography, withTheme } from '@material-ui/core';
+import { Button, Card, CircularProgress, Grid, Theme, Typography, withTheme } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
+import SlideIcon from '@material-ui/icons/Note';
+import VideoIcon from '@material-ui/icons/OndemandVideo';
 import React, { Key } from 'react';
 import Snapshot from 'src/common/Snapshot';
 import Request from 'src/model/Request';
@@ -109,7 +111,7 @@ class RequestList extends React.Component<IProps> {
           marginRight: "auto",
           textAlign: "start",
         }}>
-          <CardActionArea style={{padding: 20}}>
+          <div style={{padding: 20}}> {/* <CardActionArea style={{padding: 20}}> */}
             <Grid container={true} spacing={16} justify="space-between">
               <Grid item={true} xs={6}>
                 <Typography variant="body1" color="textSecondary">
@@ -124,12 +126,30 @@ class RequestList extends React.Component<IProps> {
                 )}
               </Grid>
               <Grid item={true} xs={12}>
-                <Typography variant="subheading" color="textPrimary">
+                <Typography variant="headline" color="textPrimary">
                   {request.title}
                 </Typography>
               </Grid>
+              <Grid item={true} xs={12}>
+                <Grid container={true} spacing={0} alignItems="center" justify="flex-end">
+                  <Grid item={true}>
+                    {request.slideUrl !== undefined ? (
+                      <Button href={request.slideUrl} target="_blank" color="primary">
+                        <SlideIcon/> スライド
+                      </Button>
+                    ) : (
+                      <React.Fragment/>
+                    )}
+                  </Grid>
+                  <Grid item={true}>
+                      <Button href={request.videoUrl} target="_blank" color="primary">
+                        <VideoIcon/> ビデオ
+                      </Button>
+                  </Grid>
+                </Grid>
+              </Grid>              
             </Grid>
-          </CardActionArea>
+          </div> {/* </CardActionArea> */}
         </Card>
       </Grid>
     );

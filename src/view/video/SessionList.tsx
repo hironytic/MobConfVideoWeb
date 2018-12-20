@@ -22,7 +22,9 @@
 // THE SOFTWARE.
 //
 
-import { Avatar, Card, CardActionArea, CircularProgress, Grid, Typography } from '@material-ui/core';
+import { Avatar, Button, Card, CircularProgress, Grid, Typography } from '@material-ui/core';
+import SlideIcon from '@material-ui/icons/Note';
+import VideoIcon from '@material-ui/icons/OndemandVideo';
 import React from 'react';
 import Snapshot from 'src/common/Snapshot';
 import Speaker from 'src/model/Speaker';
@@ -98,7 +100,7 @@ class SessionList extends React.Component {
           marginRight: "auto",
           textAlign: "start",
         }}>
-          <CardActionArea style={{padding: 20}}>
+          <div style={{padding: 20}}> {/* <CardActionArea style={{padding: 20}}> */}
             <Grid container={true} spacing={16} justify="space-between">
               <Grid item={true}>
                 <Typography variant="body1" color="textSecondary">
@@ -119,10 +121,32 @@ class SessionList extends React.Component {
                 {this.renderDescription(sessionItem.session.description)}
               </Grid>
               <Grid item={true} xs={12}>
-                {sessionItem.session.speakers.map((speaker, index) => this.renderSpeaker(speaker, index))}
+                <Grid container={true} spacing={0} alignItems="flex-end" justify="space-between">
+                  <Grid item={true}>
+                    {sessionItem.session.speakers.map((speaker, index) => this.renderSpeaker(speaker, index))}
+                  </Grid>
+                  <Grid item={true}>
+                    <Grid container={true} spacing={0} alignItems="center" justify="flex-end">
+                      <Grid item={true}>
+                        {sessionItem.session.slide !== undefined ? (
+                          <Button href={sessionItem.session.slide} target="_blank" color="primary">
+                            <SlideIcon/> スライド
+                          </Button>
+                        ) : (
+                          <React.Fragment/>
+                        )}
+                      </Grid>
+                      <Grid item={true}>
+                          <Button href={sessionItem.session.video} target="_blank" color="primary">
+                            <VideoIcon/> ビデオ
+                          </Button>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
-          </CardActionArea>
+          </div> {/* </CardActionArea> */}
         </Card>
       </Grid>
     );
