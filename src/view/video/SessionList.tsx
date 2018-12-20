@@ -100,18 +100,18 @@ class SessionList extends React.Component {
         }}>
           <CardActionArea style={{padding: 20}}>
             <Grid container={true} spacing={16} justify="space-between">
-              <Grid item={true} xs={6}>
+              <Grid item={true}>
                 <Typography variant="body1" color="textSecondary">
                   {sessionItem.conferenceName}
                 </Typography>
               </Grid>
-              <Grid item={true} xs={6} style={{textAlign: "end"}}>
+              <Grid item={true} style={{textAlign: "end"}}>
                 <Typography variant="body1" color="textSecondary">
                   {sessionItem.session.minutes}分
                 </Typography>
               </Grid>
               <Grid item={true} xs={12}>
-                <Typography variant="subheading" color="textPrimary">
+                <Typography variant="headline" color="textPrimary">
                   {sessionItem.session.title}              
                 </Typography>
               </Grid>
