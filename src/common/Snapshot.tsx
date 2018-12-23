@@ -45,25 +45,16 @@ class Snapshot<T> extends React.Component<IProps<T>, IState<T>> {
   private subscription?: Subscription;
 
   public componentDidMount() {
-    this.subscription = this.props.source.subscribe((value) => {
-      this.setState({value});
-    });
+    this.subscribe();
   }
 
   public componentWillReceiveProps() {
-    if (this.subscription !== undefined) {
-      this.subscription.unsubscribe();
-    }
-    this.subscription = this.props.source.subscribe((value) => {
-      this.setState({value});
-    });
+    this.unsubscribe();
+    this.subscribe();
   }
 
   public componentWillUnmount() {
-    if (this.subscription !== undefined) {
-      this.subscription.unsubscribe();
-      this.subscription = undefined;
-    }
+    this.unsubscribe();
   }
 
   public render() {
@@ -72,6 +63,19 @@ class Snapshot<T> extends React.Component<IProps<T>, IState<T>> {
 
   private getBuilder(): Builder<T> {
     return (Array.isArray(this.props.children) ? this.props.children[0] : this.props.children) as Builder<T>;
+  }
+
+  private subscribe() {
+    this.subscription = this.props.source.subscribe((value) => {
+      this.setState({value});
+    });
+  }
+
+  private unsubscribe() {
+    if (this.subscription !== undefined) {
+      this.subscription.unsubscribe();
+      this.subscription = undefined;
+    }
   }
 }
 
