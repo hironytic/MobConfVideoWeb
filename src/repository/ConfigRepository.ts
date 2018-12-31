@@ -1,5 +1,5 @@
 //
-// IRepositories.ts
+// ConfigRepository.ts
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,18 +22,9 @@
 // THE SOFTWARE.
 //
 
-import { IConferenceRepository } from './repository/ConferenceRepository';
-import { IConfigRepository } from './repository/ConfigRepository';
-import { IEventRepository } from "./repository/EventRepository";
-import { IRequestRepository } from './repository/RequestRepository';
-import { ISessionRepository } from './repository/SessionRepository';
+import { Observable } from 'rxjs';
+import Config from 'src/model/Config';
 
-interface IRepositories {
-  configRepository: IConfigRepository;
-  eventRepository: IEventRepository;
-  requestRepository: IRequestRepository;
-  conferenceRepository: IConferenceRepository;
-  sessionRepository: ISessionRepository;
+export interface IConfigRepository {
+  getConfigObservable(): Observable<Config>;
 }
-
-export default IRepositories;

@@ -25,19 +25,24 @@
 import * as React from 'react';
 import BlocProvider from 'src/common/BlocProvider';
 import './App.css';
+import Snapshot from './common/Snapshot';
 import IRepositories from './IRepositories';
+import Config from './model/Config';
 import DefaultConferenceRepository from './repository/DefaultConferenceRepository';
+import DefaultConfigRepository from './repository/DefaultConfigRepository';
 import DefaultEventRepository from './repository/DefaultEventRepository';
 import DefaultRequestRepository from './repository/DefaultRequestRepository';
 import DefaultSessionRepository from './repository/DefaultSessionRepository';
 import RepositoryContext from './RepositoryContext';
 import Home from './view/home/Home';
+import Maintenance from './view/home/Maintenance';
 import DefaultRequestBloc from './view/request/DefaultRequestBloc';
 import RequestContext from './view/request/RequestContext';
 import DefaultVideoBloc from './view/video/DefaultVideoBloc';
 import VideoContext from './view/video/VideoContext';
 
 class App extends React.Component {
+  private configRepository = new DefaultConfigRepository();
   private eventRepository = new DefaultEventRepository();
   private requestRepository = new DefaultRequestRepository();
   private conferenceRepository = new DefaultConferenceRepository();
@@ -45,29 +50,62 @@ class App extends React.Component {
 
   public render() {
     const repositories: IRepositories = {
+      configRepository: this.configRepository,
       eventRepository: this.eventRepository,
       requestRepository: this.requestRepository,
       conferenceRepository: this.conferenceRepository,
       sessionRepository: this.sessionRepository,
     };
-    const requestBlocCreator = () => DefaultRequestBloc.create(
-      repositories.eventRepository,
-      repositories.requestRepository,
-    );
-    const videoBlocCreator = () => DefaultVideoBloc.create(
-      repositories.conferenceRepository,
-      repositories.sessionRepository,
-    );
     return (
       <RepositoryContext.Provider value={repositories}>
-        <BlocProvider context={RequestContext} creator={requestBlocCreator}>
-          <BlocProvider context={VideoContext} creator={videoBlocCreator}>
-            <div className="App">
-              <Home/>
-            </div>
-          </BlocProvider>
-        </BlocProvider>
+        {this.renderAppBody()}
       </RepositoryContext.Provider>
+    );
+  }
+
+  private renderAppBody() {
+    return (
+      <div className="App">
+        <RepositoryContext.Consumer>
+          {repos => (
+            <Snapshot source={repos.configRepository.getConfigObservable()}>
+              {(config: Config) => {
+                if (config === undefined) {
+                  return (<React.Fragment/>);
+                } else if (config.inMaintenance) {
+                  return (<Maintenance/>);
+                } else {
+                  return this.renderHome();
+                }
+              }}
+            </Snapshot>
+          )}
+        </RepositoryContext.Consumer>
+      </div>
+    );
+  }
+
+  private renderHome() {
+    return (
+      <RepositoryContext.Consumer>
+        {repos => {
+          const requestBlocCreator = () => DefaultRequestBloc.create(
+            repos.eventRepository,
+            repos.requestRepository,
+          );
+          const videoBlocCreator = () => DefaultVideoBloc.create(
+            repos.conferenceRepository,
+            repos.sessionRepository,
+          );
+          return (
+            <BlocProvider context={RequestContext} creator={requestBlocCreator}>
+              <BlocProvider context={VideoContext} creator={videoBlocCreator}>
+                <Home/>
+              </BlocProvider>
+            </BlocProvider>
+          );
+        }}
+      </RepositoryContext.Consumer>
     );
   }
 }

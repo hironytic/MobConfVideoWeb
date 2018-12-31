@@ -1,5 +1,5 @@
 //
-// IRepositories.ts
+// DefaultConfigRepository.ts
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,18 +22,40 @@
 // THE SOFTWARE.
 //
 
-import { IConferenceRepository } from './repository/ConferenceRepository';
-import { IConfigRepository } from './repository/ConfigRepository';
-import { IEventRepository } from "./repository/EventRepository";
-import { IRequestRepository } from './repository/RequestRepository';
-import { ISessionRepository } from './repository/SessionRepository';
+import firebase from "firebase/app";
+import "firebase/firestore";
+import { Observable } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
+import Config from 'src/model/Config';
+import { IConfigRepository } from './ConfigRepository';
 
-interface IRepositories {
-  configRepository: IConfigRepository;
-  eventRepository: IEventRepository;
-  requestRepository: IRequestRepository;
-  conferenceRepository: IConferenceRepository;
-  sessionRepository: ISessionRepository;
+class DefaultConfigRepository implements IConfigRepository {
+  private theConfig: Observable<Config> | undefined = undefined;
+
+  public getConfigObservable(): Observable<Config> {
+    if (this.theConfig !== undefined) {
+      return this.theConfig;
+    }
+
+    const configObservable: Observable<Config> = new Observable((subscriber) => {
+      const canceller = firebase
+        .firestore()
+        .collection("config").doc("config")
+        .onSnapshot((snapshot) => {
+          const config = Config.fromSnapshot(snapshot);
+          subscriber.next(config);
+        }, (error) => {
+          subscriber.error(error);
+        });
+
+      return canceller;
+    });
+
+    this.theConfig = configObservable.pipe(
+      shareReplay(1),
+    );
+    return this.theConfig;
+  }
 }
 
-export default IRepositories;
+export default DefaultConfigRepository;

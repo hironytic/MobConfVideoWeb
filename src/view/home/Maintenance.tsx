@@ -1,5 +1,5 @@
 //
-// IRepositories.ts
+// Maintenance.tsx
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,18 +22,33 @@
 // THE SOFTWARE.
 //
 
-import { IConferenceRepository } from './repository/ConferenceRepository';
-import { IConfigRepository } from './repository/ConfigRepository';
-import { IEventRepository } from "./repository/EventRepository";
-import { IRequestRepository } from './repository/RequestRepository';
-import { ISessionRepository } from './repository/SessionRepository';
+import { AppBar, Toolbar, Typography } from '@material-ui/core';
+import * as React from 'react';
 
-interface IRepositories {
-  configRepository: IConfigRepository;
-  eventRepository: IEventRepository;
-  requestRepository: IRequestRepository;
-  conferenceRepository: IConferenceRepository;
-  sessionRepository: ISessionRepository;
+class Maintenance extends React.Component {
+  public render() {
+    return (
+      <React.Fragment>
+        <AppBar position="sticky">
+          <Toolbar>
+            <Typography variant="title" color="inherit">
+              👷🏻‍♂️👷🏻‍♀️ メンテナンス中
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <div style={{ padding: 20 }}>
+          <Typography variant="subheading">
+            🚧 ただいま メンテナンス中です 🚧
+          </Typography>
+        </div>
+        <div style={{ padding: 20 }}>
+          <Typography variant="body1">
+            ご不便をおかけして申し訳ありません。もうしばらくお待ちください。
+          </Typography>
+        </div>
+      </React.Fragment>
+    );
+  }
 }
 
-export default IRepositories;
+export default Maintenance;

@@ -1,5 +1,5 @@
 //
-// IRepositories.ts
+// Config.ts
 //
 // Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,18 +22,24 @@
 // THE SOFTWARE.
 //
 
-import { IConferenceRepository } from './repository/ConferenceRepository';
-import { IConfigRepository } from './repository/ConfigRepository';
-import { IEventRepository } from "./repository/EventRepository";
-import { IRequestRepository } from './repository/RequestRepository';
-import { ISessionRepository } from './repository/SessionRepository';
+import firebase from "firebase/app";
+import "firebase/firestore";
 
-interface IRepositories {
-  configRepository: IConfigRepository;
-  eventRepository: IEventRepository;
-  requestRepository: IRequestRepository;
-  conferenceRepository: IConferenceRepository;
-  sessionRepository: ISessionRepository;
+interface IConfigData {
+  inMaintenance: boolean
 }
 
-export default IRepositories;
+class Config {
+  public static fromSnapshot(snapshot: firebase.firestore.DocumentSnapshot): Config {
+    const data = snapshot.data() as IConfigData
+    return new Config(
+      data.inMaintenance,
+    );
+  }
+
+  public constructor(
+    public inMaintenance: boolean,
+  ) {}
+}
+
+export default Config;
