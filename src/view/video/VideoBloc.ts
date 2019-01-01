@@ -27,9 +27,15 @@ import { IBloc } from 'src/common/Bloc';
 import DropdownState from 'src/common/DropdownState';
 import Session from 'src/model/Session';
 
+export interface IIdAndName {
+  id: string,
+  name: string,
+}
+
 export interface ISessionItem {
   session: Session;
   conferenceName: string;
+  watchedEvents: IIdAndName[];
 }
 
 export enum SessionListState {

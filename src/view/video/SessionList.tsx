@@ -22,16 +22,31 @@
 // THE SOFTWARE.
 //
 
-import { Avatar, Button, Card, CircularProgress, Grid, Typography } from '@material-ui/core';
+import { Avatar, Button, Card, CircularProgress, Grid, StyledComponentProps, Theme, Typography, withStyles } from '@material-ui/core';
+import CheckIcon from '@material-ui/icons/Check';
 import SlideIcon from '@material-ui/icons/Note';
 import VideoIcon from '@material-ui/icons/OndemandVideo';
 import React from 'react';
 import Snapshot from 'src/common/Snapshot';
 import Speaker from 'src/model/Speaker';
-import { ISessionItem, ISessionList, ISessionListError, ISessionListLoaded, SessionListState } from './VideoBloc';
+import { IIdAndName, ISessionItem, ISessionList, ISessionListError, ISessionListLoaded, SessionListState } from './VideoBloc';
 import VideoContext from './VideoContext';
 
-class SessionList extends React.Component {
+const styles = (theme: Theme) => ({
+  watched: {
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderRadius: theme.shape.borderRadius,
+    padding: theme.shape.borderRadius,
+    borderColor: theme.palette.text.secondary,
+  },
+  watchedIcon: {
+    fontSize: theme.typography.body1.fontSize,
+    verticalAlign: "middle",
+  }
+});
+
+class SessionList extends React.Component<StyledComponentProps> {
   public render() {
     return (
       <VideoContext.Consumer>
@@ -102,16 +117,21 @@ class SessionList extends React.Component {
         }}>
           <div style={{padding: 20}}> {/* <CardActionArea style={{padding: 20}}> */}
             <Grid container={true} spacing={16} justify="space-between">
-              <Grid item={true}>
-                <Typography variant="body1" color="textSecondary">
-                  {sessionItem.conferenceName}
-                </Typography>
+              <Grid item={true} xs={12}>
+                <Grid container={true} spacing={16} justify="space-between">
+                  <Grid item={true}>
+                    <Typography variant="body1" color="textSecondary">
+                      {sessionItem.conferenceName}
+                    </Typography>
+                  </Grid>
+                  <Grid item={true} style={{textAlign: "end"}}>
+                    <Typography variant="body1" color="textSecondary">
+                      {sessionItem.session.minutes}分
+                    </Typography>
+                  </Grid>
+                </Grid>
               </Grid>
-              <Grid item={true} style={{textAlign: "end"}}>
-                <Typography variant="body1" color="textSecondary">
-                  {sessionItem.session.minutes}分
-                </Typography>
-              </Grid>
+              {this.renderWatchedEvents(sessionItem.watchedEvents)}
               <Grid item={true} xs={12}>
                 <Typography variant="headline" color="textPrimary">
                   {sessionItem.session.title}              
@@ -150,6 +170,29 @@ class SessionList extends React.Component {
         </Card>
       </Grid>
     );
+  }
+
+  private renderWatchedEvents(watchedEvents: IIdAndName[]) {
+    if (watchedEvents.length === 0) {
+      return (<React.Fragment/>);
+    } else {
+      return (
+        <Grid item={true} xs={12}>
+          <Grid container={true} spacing={16} justify="flex-start">
+            {watchedEvents.map(event => (
+              <Grid key={event.id} item={true}>
+                {/* <Button variant="outlined" disabled={true} style={{padding: 0}}>
+                  {event.name}
+                </Button> */}
+                <Typography variant="body1" color="textSecondary" className={this.props.classes!.watched}>
+                  <CheckIcon className={this.props.classes!.watchedIcon} />{event.name}
+                </Typography>
+              </Grid>
+            ))}
+          </Grid>
+        </Grid>
+      );
+    }
   }
 
   private renderDescription(description: string) {
@@ -191,5 +234,4 @@ class SessionList extends React.Component {
   }
 }
 
-
-export default SessionList;
+export default withStyles(styles)(SessionList);

@@ -27,16 +27,19 @@ import { catchError, distinctUntilChanged, map, publishBehavior, shareReplay, st
 import DropdownState from 'src/common/DropdownState';
 import DropdownStateItem from 'src/common/DropdownStateItem';
 import Conference from 'src/model/Conference';
+import Event from 'src/model/Event';
 import Session from 'src/model/Session';
 import { IConferenceRepository } from 'src/repository/ConferenceRepository';
+import { IEventRepository } from 'src/repository/EventRepository';
 import SessionFilter from 'src/repository/SessionFilter';
 import { ISessionRepository } from 'src/repository/SessionRepository';
-import { ISessionItem, ISessionList, IVideoBloc, SessionListState } from './VideoBloc';
+import { IIdAndName, ISessionItem, ISessionList, IVideoBloc, SessionListState } from './VideoBloc';
 
 class DefaultVideoBloc implements IVideoBloc {
   public static create(
     conferenceRepository: IConferenceRepository,
     sessionRepository: ISessionRepository,
+    eventRepository: IEventRepository,
   ): DefaultVideoBloc {
     const subscription = new Subscription();
 
@@ -56,6 +59,10 @@ class DefaultVideoBloc implements IVideoBloc {
     subscription.add(isFilterPanelExpanded.connect());
 
     const allConferences = conferenceRepository.getAllConferencesObservable().pipe(
+      shareReplay(1),
+    );
+
+    const allEvents = eventRepository.getAllEventsObservable().pipe(
       shareReplay(1),
     );
 
@@ -147,11 +154,15 @@ class DefaultVideoBloc implements IVideoBloc {
       [key: string]: string
     };
 
-    function convertSession(conferenceNameMap: IConferenceNameMap) {
-      return (session: Session) => {
+    function convertSession(conferenceNameMap: IConferenceNameMap, events: Event[]) {
+      return (session: Session) => {        
+        const watchedEvents = events
+          .filter(event => session.watchedOn[event.id] !== undefined)
+          .map(event => ({id: event.id, name: event.name} as IIdAndName));
         return {
           session,
           conferenceName: conferenceNameMap[session.conferenceId],
+          watchedEvents,
         } as ISessionItem;
       }
     }
@@ -162,9 +173,10 @@ class DefaultVideoBloc implements IVideoBloc {
         return confNameMap;
       }, {} as IConferenceNameMap)
     }
-    
-    interface ISessionsAndConferenceNameMap {
+
+    interface ISessionsAndEventsAndConferenceNameMap {
       sessions: Session[],
+      events: Event[],
       conferenceNameMap: IConferenceNameMap,
     }
 
@@ -172,15 +184,17 @@ class DefaultVideoBloc implements IVideoBloc {
       return combineLatest(
         sessionRepository.getSessionsObservable(filter),
         allConferences,
-        (sessions, conferences) => ({
+        allEvents,
+        (sessions, conferences, events) => ({
           sessions,
-          conferenceNameMap: makeConferenceNameMap(conferences)
-        } as ISessionsAndConferenceNameMap),
+          events,
+          conferenceNameMap: makeConferenceNameMap(conferences),
+        } as ISessionsAndEventsAndConferenceNameMap),
       ).pipe(
-        map(({sessions, conferenceNameMap}) => ({
+        map(({sessions, events, conferenceNameMap}) => ({
           state: SessionListState.Loaded,
           loaded: {
-            sessions: sessions.map<ISessionItem>(convertSession(conferenceNameMap))
+            sessions: sessions.map<ISessionItem>(convertSession(conferenceNameMap, events))
           }
         } as ISessionList)),
         startWith({

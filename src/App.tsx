@@ -96,6 +96,7 @@ class App extends React.Component {
           const videoBlocCreator = () => DefaultVideoBloc.create(
             repos.conferenceRepository,
             repos.sessionRepository,
+            repos.eventRepository,
           );
           return (
             <BlocProvider context={RequestContext} creator={requestBlocCreator}>

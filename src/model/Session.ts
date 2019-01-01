@@ -28,6 +28,8 @@ import Speaker from './Speaker';
 
 interface ISessionData {
   conferenceId: string;
+  watched: boolean;
+  watchedOn: IWatchedOn | undefined;
   title: string;
   description: string;
   starts: firebase.firestore.Timestamp;
@@ -35,6 +37,10 @@ interface ISessionData {
   slide?: string;
   video?: string;
   speakers: ISpeakerData[];
+}
+
+interface IWatchedOn {
+  [eventId: string]: number
 }
 
 interface ISpeakerData {
@@ -49,6 +55,8 @@ class Session {
     return new Session(
       snapshot.id,
       data.conferenceId,
+      data.watched,
+      data.watchedOn || {},
       data.title,
       data.description,
       data.starts.toDate(),
@@ -62,6 +70,8 @@ class Session {
   public constructor(
     public id: string,
     public conferenceId: string,
+    public watched: boolean,
+    public watchedOn: IWatchedOn,
     public title: string,
     public description: string,
     public starts: Date,
