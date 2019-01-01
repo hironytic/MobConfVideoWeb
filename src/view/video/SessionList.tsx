@@ -181,9 +181,6 @@ class SessionList extends React.Component<StyledComponentProps> {
           <Grid container={true} spacing={16} justify="flex-start">
             {watchedEvents.map(event => (
               <Grid key={event.id} item={true}>
-                {/* <Button variant="outlined" disabled={true} style={{padding: 0}}>
-                  {event.name}
-                </Button> */}
                 <Typography variant="body1" color="textSecondary" className={this.props.classes!.watched}>
                   <CheckIcon className={this.props.classes!.watchedIcon} />{event.name}
                 </Typography>
