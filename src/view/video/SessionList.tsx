@@ -145,7 +145,7 @@ class SessionList extends React.Component<StyledComponentProps> {
                   <Grid item={true}>
                     {sessionItem.session.speakers.map((speaker, index) => this.renderSpeaker(speaker, index))}
                   </Grid>
-                  <Grid item={true}>
+                  <Grid item={true} style={{flexGrow: 1}}>
                     <Grid container={true} spacing={0} alignItems="center" justify="flex-end">
                       <Grid item={true}>
                         {sessionItem.session.slide !== undefined ? (
