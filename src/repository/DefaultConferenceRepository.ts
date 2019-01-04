@@ -25,12 +25,13 @@
 import firebase from "firebase/app";
 import "firebase/firestore";
 import { Observable } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
 import Conference from 'src/model/Conference';
 import { IConferenceRepository } from './ConferenceRepository';
 
 class DefaultConferenceRepository implements IConferenceRepository {
   public getAllConferencesObservable(): Observable<Conference[]> {
-    return new Observable((subscriber) => {
+    return new Observable<Conference[]>((subscriber) => {
       const canceller = firebase
         .firestore()
         .collection("conferences")
@@ -43,7 +44,9 @@ class DefaultConferenceRepository implements IConferenceRepository {
         });
 
       return canceller;
-    });
+    }).pipe(
+      shareReplay(1),
+    );
   }
 }
 

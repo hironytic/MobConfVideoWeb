@@ -25,12 +25,13 @@
 import firebase from "firebase/app";
 import "firebase/firestore";
 import { Observable } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
 import Event from 'src/model/Event';
 import { IEventRepository } from './EventRepository';
 
 class DefaultEventRepository implements IEventRepository {
   public getAllEventsObservable(): Observable<Event[]> {
-    return new Observable((subscriber) => {
+    return new Observable<Event[]>((subscriber) => {
       const canceller = firebase
         .firestore()
         .collection("events")
@@ -43,7 +44,9 @@ class DefaultEventRepository implements IEventRepository {
         });
 
       return canceller;
-    });
+    }).pipe(
+      shareReplay(1),
+    );
   }
 }
 
