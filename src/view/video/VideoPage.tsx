@@ -23,8 +23,14 @@
 //
 
 import React from 'react';
+import BlocProvider from 'src/common/BlocProvider';
+import Snapshot from 'src/common/Snapshot';
+import { ISessionDetailBloc } from '../session_detail/SessionDetailBloc';
+import SessionDetailContext from '../session_detail/SessionDetailContext';
+import SessionDetailDialog from '../session_detail/SessionDetailDialog';
 import SessionList from './SessionList';
 import SessionSearchFilter from './SessionSearchFilter';
+import VideoContext from './VideoContext';
 
 class VideoPage extends React.Component {
   public render() {
@@ -32,6 +38,24 @@ class VideoPage extends React.Component {
       <div style={{ padding: 20 }}>
         <SessionSearchFilter/>
         <SessionList/>
+        <VideoContext.Consumer>
+          {bloc => (
+            <Snapshot source={bloc.sessionDetail} initialValue={undefined}>
+              {(detail: ISessionDetailBloc | undefined) => {
+                if (detail === undefined) {
+                  return (<React.Fragment/>);
+                } else {
+                  const creator = () => detail;
+                  return (
+                    <BlocProvider context={SessionDetailContext} creator={creator}>
+                      <SessionDetailDialog open={true} />
+                    </BlocProvider>
+                  )
+                }
+              }}
+            </Snapshot>
+          )}
+        </VideoContext.Consumer>
       </div>
     );
   }

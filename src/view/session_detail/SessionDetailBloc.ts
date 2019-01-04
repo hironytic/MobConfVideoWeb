@@ -1,7 +1,7 @@
 //
-// SessionRepository.ts
+// SessionDetailBloc.ts
 //
-// Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2019 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,11 +22,53 @@
 // THE SOFTWARE.
 //
 
-import { Observable } from 'rxjs';
+import { Observable, Observer } from 'rxjs';
+import { IBloc } from 'src/common/Bloc';
 import Session from 'src/model/Session';
-import SessionFilter from './SessionFilter';
 
-export interface ISessionRepository {
-  getSessionsObservable(filter: SessionFilter): Observable<Session[]>;
-  getSessionObservable(sessionId: string): Observable<Session>;
+export interface IIdAndName {
+  id: string,
+  name: string,
+}
+
+export interface ISessionItem {
+  session: Session;
+  conferenceName: string;
+  watchedEvents: IIdAndName[];
+}
+
+export enum SessionDetailState {
+  NotLoaded,
+  Loading,
+  Loaded,
+  Error,
+}
+
+export interface ISessionDetailNotLoaded {
+  state: SessionDetailState.NotLoaded;
+}
+
+export interface ISessionDetailLoading {
+  state: SessionDetailState.Loading;
+}
+
+export interface ISessionDetailLoaded {
+  state: SessionDetailState.Loaded;
+  session: ISessionItem;
+}
+
+export interface ISessionDetailError {
+  state: SessionDetailState.Error;
+  message: string;
+}
+
+export type ISessionDetail = ISessionDetailNotLoaded | ISessionDetailLoading | ISessionDetailLoaded | ISessionDetailError;
+
+export interface ISessionDetailBloc extends IBloc {
+  // inputs
+  dialogClosed: Observer<void>;
+  requestClicked: Observer<void>;
+
+  // outputs
+  sessionDetail: Observable<ISessionDetail>;
 }

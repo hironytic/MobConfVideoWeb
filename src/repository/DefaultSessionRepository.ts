@@ -31,7 +31,7 @@ import { ISessionRepository } from './SessionRepository';
 
 class DefaultSessionRepository implements ISessionRepository {
   public getSessionsObservable(filter: SessionFilter): Observable<Session[]> {
-    return new Observable((subscriber) => {
+    return new Observable(subscriber => {
       let query: firestore.Query = firebase
       .firestore()
       .collection("sessions");
@@ -46,15 +46,31 @@ class DefaultSessionRepository implements ISessionRepository {
         .limit(200);
 
       const canceller = query
-        .onSnapshot((snapshot) => {
+        .onSnapshot(snapshot => {
           const requests = snapshot.docs.map((doc) => Session.fromSnapshot(doc));
           subscriber.next(requests);
-        }, (error) => {
+        }, error => {
           subscriber.error(error);
         });
 
       return canceller;
     });    
+  }
+
+  public getSessionObservable(sessionId: string): Observable<Session> {
+    return new Observable(subscriber => {
+      const canceller = firebase
+        .firestore()
+        .collection("sessions")
+        .doc(sessionId)
+        .onSnapshot(snapshot => {
+          subscriber.next(Session.fromSnapshot(snapshot));
+        }, error => {
+          subscriber.error(error);
+        });
+      
+      return canceller;
+    });
   }
 }
 
