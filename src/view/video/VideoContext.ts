@@ -25,5 +25,5 @@
 import React from 'react';
 import { IVideoBloc } from './VideoBloc';
 
-const RequestContext = React.createContext<IVideoBloc>(undefined!);
-export default RequestContext;
+const VideoContext = React.createContext<IVideoBloc>(undefined!);
+export default VideoContext;
