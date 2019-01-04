@@ -193,9 +193,31 @@ class SessionList extends React.Component<StyledComponentProps> {
   }
 
   private renderDescription(description: string) {
-    return description.split(/\r\n|\r|\n/).map((line, index) => (
+    const maxLines = 3;
+    const maxChars = 140;
+
+    const lines = description.split(/\r\n|\r|\n/);
+    const displayLines: string[] = [];
+    let count = 0;
+    for (const line of lines) {
+      if (displayLines.length >= maxLines) {
+        displayLines.push("…");
+        break;
+      }
+
+      const length = line.length;
+      if (count + length < maxChars) {
+        count += length;
+        displayLines.push(line);
+      } else {
+        displayLines.push(line.substr(0, maxChars - count) + "…");
+        break;
+      }
+    }
+
+    return displayLines.map((line, index) => (
       <Typography key={index} variant="body1" color="textPrimary">
-        {line}
+        {line.length > 0 ? line : (<br/>)}
       </Typography>
     ));
   }
