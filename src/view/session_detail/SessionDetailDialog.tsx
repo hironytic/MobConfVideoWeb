@@ -36,7 +36,6 @@ import SessionDetailContext from './SessionDetailContext';
 
 interface IProps extends StyledComponentProps, InjectedProps {
   key?: Key,
-  open: boolean,
 }
 
 const styles = (theme: Theme) => ({
@@ -60,12 +59,16 @@ class SessionDetailDialog extends React.Component<IProps> {
         {(bloc) => {
           const onClose = () => bloc.dialogClosed.next();
           return (
-            <Dialog open={this.props.open} onClose={onClose} fullScreen={this.props.fullScreen}>
-              {this.renderAppBarIfFullScreen(onClose)}
-              <Snapshot source={bloc.sessionDetail} initialValue={{state: SessionDetailState.NotLoaded}}>
-                {(sessionDetail: ISessionDetail) => this.renderBody(sessionDetail)}
-              </Snapshot>
-            </Dialog>
+            <Snapshot source={bloc.dialogOpen} initialValue={false}>
+              {(open: boolean) => (
+                <Dialog open={open} onClose={onClose} fullScreen={this.props.fullScreen}>
+                  {this.renderAppBarIfFullScreen(onClose)}
+                  <Snapshot source={bloc.sessionDetail} initialValue={{state: SessionDetailState.NotLoaded}}>
+                    {(sessionDetail: ISessionDetail) => this.renderBody(sessionDetail)}
+                  </Snapshot>
+                </Dialog>
+              )}
+            </Snapshot>
           )
         }}
       </SessionDetailContext.Consumer>

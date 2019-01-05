@@ -22,92 +22,136 @@
 // THE SOFTWARE.
 //
 
-import { combineLatest, ConnectableObservable, Observable, Observer, of, Subject, Subscription } from 'rxjs';
-import { catchError, map, publishBehavior, startWith } from 'rxjs/operators';
-import Conference from 'src/model/Conference';
+import { ConnectableObservable, merge, Observable, Observer, Subject, Subscription } from 'rxjs';
+import { map, publishBehavior } from 'rxjs/operators';
 import { IConferenceRepository } from 'src/repository/ConferenceRepository';
 import { IEventRepository } from 'src/repository/EventRepository';
 import { ISessionRepository } from 'src/repository/SessionRepository';
-import { IIdAndName, ISessionDetail, ISessionDetailBloc, ISessionDetailError, ISessionDetailLoaded, ISessionDetailLoading, ISessionItem, SessionDetailState } from "./SessionDetailBloc";
+import { ISessionDetail, ISessionDetailBloc, ISessionDetailLoaded, ISessionItem, SessionDetailState } from "./SessionDetailBloc";
 
 class DefaultSessionDetailBloc implements ISessionDetailBloc {
-  public static createWithSessionID(
+  // public static createWithSessionID(
+  //   conferenceRepository: IConferenceRepository,
+  //   eventRepository: IEventRepository,
+  //   sessionRepository: ISessionRepository,
+  //   sessionID: string,
+  //   dialogClosed: Observer<void>,
+  // ) {
+  //   const subscription = new Subscription();
+
+  //   const requestClicked = new Subject<void>();
+
+  //   interface IConferenceNameMap {
+  //     [key: string]: string
+  //   };
+
+  //   function makeConferenceNameMap(conferences: Conference[]) {
+  //     return conferences.reduce((confNameMap, conference) => {
+  //       confNameMap[conference.id] = conference.name;
+  //       return confNameMap;
+  //     }, {} as IConferenceNameMap)
+  //   }
+
+  //   const conferenceNameMap = conferenceRepository.getAllConferencesObservable().pipe(
+  //     map(makeConferenceNameMap),
+  //   );
+  //   const allEvents = eventRepository.getAllEventsObservable();
+  //   const session = sessionRepository.getSessionObservable(sessionID);
+
+  //   const sessionDetail = combineLatest(session, conferenceNameMap, allEvents).pipe(
+  //     map(([sessionValue, conferenceNameMapValue, allEventsValue]) => {
+  //       const watchedEvents = allEventsValue
+  //         .filter(event => sessionValue.watchedOn[event.id] !== undefined)
+  //         .map(event => ({id: event.id, name: event.name} as IIdAndName));
+  //       return {
+  //         state: SessionDetailState.Loaded,
+  //         session: {
+  //           session: sessionValue,
+  //           conferenceName: conferenceNameMapValue[sessionValue.conferenceId],
+  //           watchedEvents,
+  //         } as ISessionItem,
+  //       } as ISessionDetailLoaded;
+  //     }),
+  //     startWith({state: SessionDetailState.Loading} as ISessionDetailLoading),
+  //     catchError((error) => of({
+  //       state: SessionDetailState.Error,
+  //       message: error.toString(),
+  //     } as ISessionDetailError)),
+  //     publishBehavior({
+  //       state: SessionDetailState.NotLoaded,
+  //     } as ISessionDetail),
+  //   ) as ConnectableObservable<ISessionDetail>;
+  //   subscription.add(sessionDetail.connect());
+
+  //   return new DefaultSessionDetailBloc(
+  //     subscription,
+  //     dialogClosed,
+  //     requestClicked,
+  //     sessionDetail,
+  //   );
+  // }
+
+  // public static createWithLoadedSession(
+  //   sessionItem: ISessionItem,
+  //   dialogClosed: Observer<void>,
+  // ) {
+  //   const requestClicked = new Subject<void>();
+
+  //   const sessionDetail = of(
+  //     {
+  //       state: SessionDetailState.Loaded,
+  //       session: sessionItem,
+  //     } as ISessionDetailLoaded
+  //   )
+  //   return new DefaultSessionDetailBloc(
+  //     undefined,
+  //     dialogClosed,
+  //     requestClicked,
+  //     sessionDetail,
+  //   );
+  // }
+
+  public static create(
     conferenceRepository: IConferenceRepository,
     eventRepository: IEventRepository,
     sessionRepository: ISessionRepository,
-    sessionID: string,
-    dialogClosed: Observer<void>,
   ) {
     const subscription = new Subscription();
 
+    const showWithSessionItem = new Subject<ISessionItem>();
+    const dialogClosed = new Subject<void>();
     const requestClicked = new Subject<void>();
 
-    interface IConferenceNameMap {
-      [key: string]: string
-    };
+    const dialogOpen = merge(
+      dialogClosed.pipe(
+        map(_ => false),
+      ),
+      showWithSessionItem.pipe(
+        map(_ => true),
+      ),
+    ).pipe(
+      publishBehavior(false),
+    ) as ConnectableObservable<boolean>;
+    subscription.add(dialogOpen.connect());
 
-    function makeConferenceNameMap(conferences: Conference[]) {
-      return conferences.reduce((confNameMap, conference) => {
-        confNameMap[conference.id] = conference.name;
-        return confNameMap;
-      }, {} as IConferenceNameMap)
-    }
-
-    const conferenceNameMap = conferenceRepository.getAllConferencesObservable().pipe(
-      map(makeConferenceNameMap),
-    );
-    const allEvents = eventRepository.getAllEventsObservable();
-    const session = sessionRepository.getSessionObservable(sessionID);
-
-    const sessionDetail = combineLatest(session, conferenceNameMap, allEvents).pipe(
-      map(([sessionValue, conferenceNameMapValue, allEventsValue]) => {
-        const watchedEvents = allEventsValue
-          .filter(event => sessionValue.watchedOn[event.id] !== undefined)
-          .map(event => ({id: event.id, name: event.name} as IIdAndName));
-        return {
-          state: SessionDetailState.Loaded,
-          session: {
-            session: sessionValue,
-            conferenceName: conferenceNameMapValue[sessionValue.conferenceId],
-            watchedEvents,
-          } as ISessionItem,
-        } as ISessionDetailLoaded;
-      }),
-      startWith({state: SessionDetailState.Loading} as ISessionDetailLoading),
-      catchError((error) => of({
-        state: SessionDetailState.Error,
-        message: error.toString(),
-      } as ISessionDetailError)),
+    const sessionDetail = showWithSessionItem.pipe(
+      map(sessionItem => ({
+        state: SessionDetailState.Loaded,
+        session: sessionItem,
+      } as ISessionDetailLoaded)),
+    ).pipe(
       publishBehavior({
         state: SessionDetailState.NotLoaded,
-      } as ISessionDetail),
+      } as ISessionDetail),      
     ) as ConnectableObservable<ISessionDetail>;
     subscription.add(sessionDetail.connect());
 
     return new DefaultSessionDetailBloc(
       subscription,
+      showWithSessionItem,
       dialogClosed,
       requestClicked,
-      sessionDetail,
-    );
-  }
-
-  public static createWithLoadedSession(
-    sessionItem: ISessionItem,
-    dialogClosed: Observer<void>,
-  ) {
-    const requestClicked = new Subject<void>();
-
-    const sessionDetail = of(
-      {
-        state: SessionDetailState.Loaded,
-        session: sessionItem,
-      } as ISessionDetailLoaded
-    )
-    return new DefaultSessionDetailBloc(
-      undefined,
-      dialogClosed,
-      requestClicked,
+      dialogOpen,
       sessionDetail,
     );
   }
@@ -116,10 +160,12 @@ class DefaultSessionDetailBloc implements ISessionDetailBloc {
     private subscription: Subscription | undefined,
 
     // inputs
+    public showWithSessionItem: Observer<ISessionItem>,
     public dialogClosed: Observer<void>,
     public requestClicked: Observer<void>,
 
     // outputs
+    public dialogOpen: Observable<boolean>,
     public sessionDetail: Observable<ISessionDetail>,
   ) {}
 

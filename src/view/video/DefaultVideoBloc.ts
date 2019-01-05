@@ -33,8 +33,6 @@ import { IConferenceRepository } from 'src/repository/ConferenceRepository';
 import { IEventRepository } from 'src/repository/EventRepository';
 import SessionFilter from 'src/repository/SessionFilter';
 import { ISessionRepository } from 'src/repository/SessionRepository';
-import DefaultSessionDetailBloc from '../session_detail/DefaultSessionDetailBloc';
-import { ISessionDetailBloc } from '../session_detail/SessionDetailBloc';
 import { IIdAndName, ISessionItem, ISessionList, IVideoBloc, SessionListState } from './VideoBloc';
 
 class DefaultVideoBloc implements IVideoBloc {
@@ -49,8 +47,6 @@ class DefaultVideoBloc implements IVideoBloc {
     const filterConferenceChanged = new Subject<string>();
     const filterSessionTimeChanged = new Subject<string>();
     const executeFilter = new Subject<void>();
-    const sessionTapped = new Subject<ISessionItem>();
-    const sessionDetailClosed = new Subject<void>();
 
     const isFilterPanelExpanded = merge(
       expandFilterPanel,
@@ -221,31 +217,16 @@ class DefaultVideoBloc implements IVideoBloc {
     ) as ConnectableObservable<ISessionList>;
     subscription.add(sessionListState.connect());
 
-    const sessionDetail = merge(sessionTapped, sessionDetailClosed.pipe(map(_ => undefined))).pipe(
-      map(v => {
-        if (v === undefined) {
-          return undefined;
-        } else {
-          return DefaultSessionDetailBloc.createWithLoadedSession(
-            v,
-            sessionDetailClosed
-          );
-        }
-      })
-    );
-
     return new DefaultVideoBloc(
       subscription,
       expandFilterPanel,
       filterConferenceChanged,
       filterSessionTimeChanged,
       executeFilter,
-      sessionTapped,
       isFilterPanelExpanded,
       filterConference,
       filterSessionTime,
       sessionListState,
-      sessionDetail,
     )
   }
 
@@ -257,14 +238,12 @@ class DefaultVideoBloc implements IVideoBloc {
     public filterConferenceChanged: Observer<string>,
     public filterSessionTimeChanged: Observer<string>,
     public executeFilter: Observer<void>,
-    public sessionTapped: Observer<ISessionItem>,
 
     // outputs
     public isFilterPanelExpanded: Observable<boolean>,
     public filterConference: Observable<DropdownState>,
     public filterSessionTime: Observable<DropdownState>,
     public sessionList: Observable<ISessionList>,
-    public sessionDetail: Observable<ISessionDetailBloc | undefined>,
   ) {}
 
   public dispose() {

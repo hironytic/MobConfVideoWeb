@@ -1,7 +1,7 @@
 //
-// VideoPage.tsx
+// DefaultSessionDetailBlocProvider.tsx
 //
-// Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2019 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,19 +22,35 @@
 // THE SOFTWARE.
 //
 
-import React from 'react';
-import SessionList from './SessionList';
-import SessionSearchFilter from './SessionSearchFilter';
+import React, { Key } from 'react';
+import BlocProvider from 'src/common/BlocProvider';
+import RepositoryContext from 'src/RepositoryContext';
+import DefaultSessionDetailBloc from './DefaultSessionDetailBloc';
+import SessionDetailContext from './SessionDetailContext';
 
-class VideoPage extends React.Component {
+interface IProps {
+  key?: Key;
+}
+
+class DefaultSessionDetailBlocProvider extends React.Component<IProps> {
   public render() {
     return (
-      <div style={{ padding: 20 }}>
-        <SessionSearchFilter/>
-        <SessionList/>
-      </div>
+      <RepositoryContext.Consumer>
+        {repos => {
+          const sessionDetailBlocCreator = () => DefaultSessionDetailBloc.create(
+            repos.conferenceRepository,
+            repos.eventRepository,
+            repos.sessionRepository,
+          );
+          return (
+            <BlocProvider context={SessionDetailContext} creator={sessionDetailBlocCreator} key={this.props.key}>
+              {this.props.children}
+            </BlocProvider>
+          );
+        }}
+      </RepositoryContext.Consumer>
     );
   }
 }
 
-export default VideoPage;
+export default DefaultSessionDetailBlocProvider;

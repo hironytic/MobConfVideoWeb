@@ -27,6 +27,7 @@ import CheckIcon from '@material-ui/icons/Check';
 import React from 'react';
 import Snapshot from 'src/common/Snapshot';
 import Speaker from 'src/model/Speaker';
+import SessionDetailContext from '../session_detail/SessionDetailContext';
 import { IIdAndName, ISessionItem, ISessionList, ISessionListError, ISessionListLoaded, SessionListState } from './VideoBloc';
 import VideoContext from './VideoContext';
 
@@ -113,10 +114,10 @@ class SessionList extends React.Component<StyledComponentProps> {
           marginRight: "auto",
           textAlign: "start",
         }}>
-          <VideoContext.Consumer>
+          <SessionDetailContext.Consumer>
             {(bloc) => {
               const sessionTapped = () => {
-                bloc.sessionTapped.next(sessionItem);
+                bloc.showWithSessionItem.next(sessionItem);
               };
               return (
                 <CardActionArea style={{padding: 20}} onClick={sessionTapped}>
@@ -151,7 +152,7 @@ class SessionList extends React.Component<StyledComponentProps> {
                 </CardActionArea>
               );
             }}
-          </VideoContext.Consumer>
+          </SessionDetailContext.Consumer>
         </Card>
       </Grid>
     );

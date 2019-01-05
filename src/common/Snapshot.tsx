@@ -58,7 +58,11 @@ class Snapshot<T> extends React.Component<IProps<T>, IState<T>> {
   }
 
   public render() {
-    return this.getBuilder()(this.state.value);
+    try {
+      return this.getBuilder()(this.state.value);
+    } catch (error) {
+      throw error;
+    }
   }
 
   private getBuilder(): Builder<T> {

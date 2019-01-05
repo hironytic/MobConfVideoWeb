@@ -36,6 +36,7 @@ import RepositoryContext from './RepositoryContext';
 import Home from './view/home/Home';
 import Maintenance from './view/home/Maintenance';
 import DefaultRequestBlocProvider from './view/request/DefaultRequestBlocProvider';
+import DefaultSessionDetailBlocProvider from './view/session_detail/DefaultSessionDetailBlocProvider';
 import DefaultVideoBlocProvider from './view/video/DefaultVideoBlocProvider';
 
 class App extends React.Component {
@@ -86,7 +87,9 @@ class App extends React.Component {
     return (
       <DefaultRequestBlocProvider>
         <DefaultVideoBlocProvider>
-          <Home/>
+          <DefaultSessionDetailBlocProvider>
+            <Home/>
+          </DefaultSessionDetailBlocProvider>
         </DefaultVideoBlocProvider>
       </DefaultRequestBlocProvider>
     );

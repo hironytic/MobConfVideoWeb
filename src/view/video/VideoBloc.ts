@@ -26,7 +26,6 @@ import { Observable, Observer } from "rxjs";
 import { IBloc } from 'src/common/Bloc';
 import DropdownState from 'src/common/DropdownState';
 import Session from 'src/model/Session';
-import { ISessionDetailBloc } from '../session_detail/SessionDetailBloc';
 
 export interface IIdAndName {
   id: string,
@@ -66,12 +65,10 @@ export interface IVideoBloc extends IBloc {
   filterConferenceChanged: Observer<string>;
   filterSessionTimeChanged: Observer<string>;
   executeFilter: Observer<void>;
-  sessionTapped: Observer<ISessionItem>;
 
   // outputs
   isFilterPanelExpanded: Observable<boolean>;
   filterConference: Observable<DropdownState>;
   filterSessionTime: Observable<DropdownState>;
   sessionList: Observable<ISessionList>;
-  sessionDetail: Observable<ISessionDetailBloc | undefined>;
 }
