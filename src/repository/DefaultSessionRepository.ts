@@ -64,7 +64,11 @@ class DefaultSessionRepository implements ISessionRepository {
         .collection("sessions")
         .doc(sessionId)
         .onSnapshot(snapshot => {
-          subscriber.next(Session.fromSnapshot(snapshot));
+          if (snapshot.exists) {
+            subscriber.next(Session.fromSnapshot(snapshot));
+          } else {
+            subscriber.error("データが見つからないか、削除されました。")
+          }
         }, error => {
           subscriber.error(error);
         });
