@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-import { AppBar, Avatar, Button, CircularProgress, Dialog, Grid, IconButton, StyledComponentProps, Theme, Toolbar, Typography, withStyles } from '@material-ui/core';
+import { AppBar, Avatar, Button, CircularProgress, Dialog, DialogContent, Grid, IconButton, StyledComponentProps, Theme, Toolbar, Typography, withStyles } from '@material-ui/core';
 import withMobileDialog, { InjectedProps } from '@material-ui/core/withMobileDialog';
 import CloseIcon from '@material-ui/icons/ArrowBack';
 import CheckIcon from '@material-ui/icons/Check';
@@ -61,7 +61,11 @@ class SessionDetailDialog extends React.Component<IProps> {
           return (
             <Snapshot source={bloc.dialogOpen} initialValue={false}>
               {(open: boolean) => (
-                <Dialog open={open} onClose={onClose} fullScreen={this.props.fullScreen}>
+                <Dialog open={open}
+                        onClose={onClose}
+                        fullScreen={this.props.fullScreen}
+                        fullWidth={true}
+                        maxWidth="xl">
                   <Snapshot source={bloc.sessionDetail} initialValue={{state: SessionDetailState.NotLoaded}}>
                     {(sessionDetail: ISessionDetail) => this.renderDialogContent(onClose, sessionDetail)}
                   </Snapshot>
@@ -85,22 +89,16 @@ class SessionDetailDialog extends React.Component<IProps> {
               </IconButton>
             </Toolbar>
           </AppBar>
-          <div style={
-            {
-              paddingTop: 86,
-              paddingLeft: 30,
-              paddingRight: 30,
-              paddingBottom: 30
-            }}>
+          <DialogContent style={{paddingTop: 76}}>
             {this.renderBody(sessionDetail) }
-          </div>
+          </DialogContent>
         </React.Fragment>
       );
     } else {
       return (
-        <div style={{padding: 30}}>
+        <DialogContent>
           {this.renderBody(sessionDetail) }
-        </div>
+        </DialogContent>
       );
     }
   }
@@ -123,14 +121,8 @@ class SessionDetailDialog extends React.Component<IProps> {
 
   private renderLoadingBody() {
     return (
-      <div style={{
-        marginTop: 50,
-      }}>
-        <Grid container={true} spacing={16} justify="center">
-          <Grid item={true}>
-            <CircularProgress/>
-          </Grid>
-        </Grid>
+      <div style={{textAlign: "center"}}>
+        <CircularProgress/>
       </div>
     );
   }
@@ -250,17 +242,16 @@ class SessionDetailDialog extends React.Component<IProps> {
 
   private renderErrorBody(error: ISessionDetailError) {
     return (
-      <React.Fragment>
+      <div style={{textAlign: "center"}}>
         <Typography variant="body1" color="error">
           エラーが発生しました
         </Typography>
         <Typography variant="body1" color="textSecondary">
           {error.message}
         </Typography>
-      </React.Fragment>
-    )
+      </div>
+    );
   }
-
 }
 
 export default withMobileDialog<IProps>({breakpoint: 'xs'})(withStyles(styles)(SessionDetailDialog));

@@ -73,7 +73,7 @@ class DefaultSessionDetailBloc implements ISessionDetailBloc {
       shareReplay(1),
     )
 
-    const loadSession = showSession.pipe(
+    const sessionDetail = showSession.pipe(
       switchMap(sessionId => {
         return sessionRepository.getSessionObservable(sessionId).pipe(
           withLatestFrom(
@@ -100,18 +100,6 @@ class DefaultSessionDetailBloc implements ISessionDetailBloc {
           } as ISessionDetail)),
         );
       }),
-    );
-
-    const clearSession = dialogClosed.pipe(
-      map(_ => ({
-        state: SessionDetailState.NotLoaded,
-      } as ISessionDetail)),
-    );
-
-    const sessionDetail = merge(
-      loadSession,
-      clearSession,
-    ).pipe(
       publishBehavior({
         state: SessionDetailState.NotLoaded,
       } as ISessionDetail)
