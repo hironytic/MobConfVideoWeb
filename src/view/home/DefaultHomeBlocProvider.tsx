@@ -1,7 +1,7 @@
 //
-// Home.tsx
+// DefaultHomeBlocProvider.tsx
 //
-// Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2019 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,48 +22,24 @@
 // THE SOFTWARE.
 //
 
-import * as React from 'react';
-import Snapshot from 'src/common/Snapshot';
-import RequestPage from '../request/RequestPage';
-import VideoPage from '../video/VideoPage';
-import DefaultHomeBlocProvider from './DefaultHomeBlocProvider';
-import HomeAppBar from './HomeAppBar';
+import React, { Key } from 'react';
+import BlocProvider from 'src/common/BlocProvider';
+import DefaultHomeBloc from './DefaultHomeBloc';
 import HomeContext from './HomeContext';
 
-class Home extends React.Component {
+interface IProps {
+  key?: Key;
+}
+
+class DefaultHomeBlocProvider extends React.Component<IProps> {
   public render() {
+    const homeBlocCreator = () => DefaultHomeBloc.create();
     return (
-      <DefaultHomeBlocProvider>
-        <React.Fragment>
-          <HomeAppBar/>
-          <HomeContext.Consumer>
-            {(bloc) => (
-              <Snapshot source={bloc.currentPageIndex} initialValue={0}>
-                {(pageIndex: number) => this.renderPage(pageIndex)}
-              </Snapshot>
-            )}
-          </HomeContext.Consumer>
-        </React.Fragment>
-      </DefaultHomeBlocProvider>
+      <BlocProvider context={HomeContext} creator={homeBlocCreator} key={this.props.key}>
+        {this.props.children}
+      </BlocProvider>
     );
-  }
-
-  private renderPage(pageIndex: number) {
-    switch (pageIndex) {
-      case 0:
-        return (
-          <RequestPage/>
-        );
-
-      case 1:
-        return (
-          <VideoPage/>
-        );
-
-      default:
-          return (<React.Fragment/>);
-    }
   }
 }
 
-export default Home;
+export default DefaultHomeBlocProvider;

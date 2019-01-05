@@ -23,7 +23,6 @@
 //
 
 import * as React from 'react';
-import BlocProvider from 'src/common/BlocProvider';
 import './App.css';
 import Snapshot from './common/Snapshot';
 import IRepositories from './IRepositories';
@@ -36,10 +35,8 @@ import DefaultSessionRepository from './repository/DefaultSessionRepository';
 import RepositoryContext from './RepositoryContext';
 import Home from './view/home/Home';
 import Maintenance from './view/home/Maintenance';
-import DefaultRequestBloc from './view/request/DefaultRequestBloc';
-import RequestContext from './view/request/RequestContext';
-import DefaultVideoBloc from './view/video/DefaultVideoBloc';
-import VideoContext from './view/video/VideoContext';
+import DefaultRequestBlocProvider from './view/request/DefaultRequestBlocProvider';
+import DefaultVideoBlocProvider from './view/video/DefaultVideoBlocProvider';
 
 class App extends React.Component {
   private configRepository = new DefaultConfigRepository();
@@ -87,26 +84,11 @@ class App extends React.Component {
 
   private renderHome() {
     return (
-      <RepositoryContext.Consumer>
-        {repos => {
-          const requestBlocCreator = () => DefaultRequestBloc.create(
-            repos.eventRepository,
-            repos.requestRepository,
-          );
-          const videoBlocCreator = () => DefaultVideoBloc.create(
-            repos.conferenceRepository,
-            repos.sessionRepository,
-            repos.eventRepository,
-          );
-          return (
-            <BlocProvider context={RequestContext} creator={requestBlocCreator}>
-              <BlocProvider context={VideoContext} creator={videoBlocCreator}>
-                <Home/>
-              </BlocProvider>
-            </BlocProvider>
-          );
-        }}
-      </RepositoryContext.Consumer>
+      <DefaultRequestBlocProvider>
+        <DefaultVideoBlocProvider>
+          <Home/>
+        </DefaultVideoBlocProvider>
+      </DefaultRequestBlocProvider>
     );
   }
 }
