@@ -67,10 +67,10 @@ class SessionList extends React.Component<StyledComponentProps> {
         return this.renderLoadingBody();
       
       case SessionListState.Loaded:
-        return this.renderLoadedBody(sessionList.loaded!);
+        return this.renderLoadedBody(sessionList);
       
       case SessionListState.Error:
-        return this.renderErrorBody(sessionList.error!);      
+        return this.renderErrorBody(sessionList);
     }
   }
 

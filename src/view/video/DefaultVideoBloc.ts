@@ -193,9 +193,7 @@ class DefaultVideoBloc implements IVideoBloc {
       ).pipe(
         map(({sessions, events, conferenceNameMap}) => ({
           state: SessionListState.Loaded,
-          loaded: {
-            sessions: sessions.map<ISessionItem>(convertSession(conferenceNameMap, events))
-          }
+          sessions: sessions.map<ISessionItem>(convertSession(conferenceNameMap, events))
         } as ISessionList)),
         startWith({
           state: SessionListState.Loading,          
@@ -207,9 +205,7 @@ class DefaultVideoBloc implements IVideoBloc {
       switchMap(loadSessions),
       catchError((error) => of({
         state: SessionListState.Error,
-        error: {
-          message: error.toString(),
-        }
+        message: error.toString(),
       } as ISessionList)),
       publishBehavior({
         state: SessionListState.NotLoaded,

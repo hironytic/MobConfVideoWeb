@@ -45,19 +45,25 @@ export enum SessionListState {
   Error,
 }
 
+export interface ISessionListNotLoaded {
+  state: SessionListState.NotLoaded;
+}
+
+export interface ISessionListLoading {
+  state: SessionListState.Loading;
+}
+
 export interface ISessionListLoaded {
+  state: SessionListState.Loaded;
   sessions: ISessionItem[];
 }
 
 export interface ISessionListError {
+  state: SessionListState.Error;
   message: string;
 }
 
-export interface ISessionList {
-  state: SessionListState;
-  loaded?: ISessionListLoaded;
-  error?: ISessionListError;
-}
+export type ISessionList = ISessionListNotLoaded | ISessionListLoading | ISessionListLoaded | ISessionListError;
 
 export interface IVideoBloc extends IBloc {
   // inputs
