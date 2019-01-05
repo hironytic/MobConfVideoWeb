@@ -66,7 +66,7 @@ export type ISessionDetail = ISessionDetailNotLoaded | ISessionDetailLoading | I
 
 export interface ISessionDetailBloc extends IBloc {
   // inputs
-  showWithSessionItem: Observer<ISessionItem>;
+  showSession: Observer<string>;
   dialogClosed: Observer<void>;
   requestClicked: Observer<void>;
 

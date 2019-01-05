@@ -62,9 +62,8 @@ class SessionDetailDialog extends React.Component<IProps> {
             <Snapshot source={bloc.dialogOpen} initialValue={false}>
               {(open: boolean) => (
                 <Dialog open={open} onClose={onClose} fullScreen={this.props.fullScreen}>
-                  {this.renderAppBarIfFullScreen(onClose)}
                   <Snapshot source={bloc.sessionDetail} initialValue={{state: SessionDetailState.NotLoaded}}>
-                    {(sessionDetail: ISessionDetail) => this.renderBody(sessionDetail)}
+                    {(sessionDetail: ISessionDetail) => this.renderDialogContent(onClose, sessionDetail)}
                   </Snapshot>
                 </Dialog>
               )}
@@ -75,19 +74,34 @@ class SessionDetailDialog extends React.Component<IProps> {
     );
   }
 
-  private renderAppBarIfFullScreen(onClose: () => void) {
+  private renderDialogContent(onClose: () => void, sessionDetail: ISessionDetail) {
     if (this.props.fullScreen) {
       return (
-        <AppBar>
-          <Toolbar>
-            <IconButton color="inherit" onClick={onClose} aria-label="Close">
-              <CloseIcon/>
-            </IconButton>
-          </Toolbar>
-        </AppBar>
+        <React.Fragment>
+          <AppBar>
+            <Toolbar>
+              <IconButton color="inherit" onClick={onClose} aria-label="Close">
+                <CloseIcon/>
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+          <div style={
+            {
+              paddingTop: 86,
+              paddingLeft: 30,
+              paddingRight: 30,
+              paddingBottom: 30
+            }}>
+            {this.renderBody(sessionDetail) }
+          </div>
+        </React.Fragment>
       );
     } else {
-      return (<React.Fragment/>);
+      return (
+        <div style={{padding: 30}}>
+          {this.renderBody(sessionDetail) }
+        </div>
+      );
     }
   }
 
@@ -108,93 +122,85 @@ class SessionDetailDialog extends React.Component<IProps> {
   }
 
   private renderLoadingBody() {
-    return (<CircularProgress/>);
+    return (
+      <div style={{
+        marginTop: 50,
+      }}>
+        <Grid container={true} spacing={16} justify="center">
+          <Grid item={true}>
+            <CircularProgress/>
+          </Grid>
+        </Grid>
+      </div>
+    );
   }
 
   private renderLoadedBody(loaded: ISessionDetailLoaded) {
-    let style;
-    if (this.props.fullScreen) {
-      style = {
-        paddingTop: 86,
-        paddingLeft: 30,
-        paddingRight: 30,
-        paddingBottom: 30,
-      }
-    } else {
-      style = {
-        paddingTop: 30,
-        paddingLeft: 30,
-        paddingRight: 30,
-        paddingBottom: 30,
-      }
-    }
     return (
-      <div style={style}>
-        <Grid container={true} spacing={16} justify="space-between">
-          <Grid item={true} xs={12}>
-            <Grid container={true} spacing={16} justify="space-between">
-              <Grid item={true}>
-                <Typography variant="body1" color="textSecondary">
-                  {loaded.session.conferenceName}
-                </Typography>
-              </Grid>
-              <Grid item={true} style={{textAlign: "end"}}>
-                <Typography variant="body1" color="textSecondary">
-                  {loaded.session.session.minutes}分
-                </Typography>
-              </Grid>
+      <Grid container={true} spacing={16} justify="space-between">
+        <Grid item={true} xs={12}>
+          <Grid container={true} spacing={16} justify="space-between">
+            <Grid item={true}>
+              <Typography variant="body1" color="textSecondary">
+                {loaded.session.conferenceName}
+              </Typography>
+            </Grid>
+            <Grid item={true} style={{textAlign: "end"}}>
+              <Typography variant="body1" color="textSecondary">
+                {loaded.session.session.minutes}分
+              </Typography>
             </Grid>
           </Grid>
-          {this.renderWatchedEvents(loaded.session.watchedEvents)}
-          <Grid item={true} xs={12}>
-            <Typography variant="headline" color="textPrimary">
-              {loaded.session.session.title}              
-            </Typography>
-          </Grid>
-          <Grid item={true} xs={12}>
-            {this.renderDescription(loaded.session.session.description)}
-          </Grid>
-          <Grid item={true} xs={12}>
-            <Grid container={true} spacing={0} alignItems="flex-end" justify="space-between">
-              <Grid item={true}>
-                {loaded.session.session.speakers.map((speaker, index) => this.renderSpeaker(speaker, index))}
-              </Grid>
-              <Grid item={true} style={{flexGrow: 1}}>
-                <Grid container={true} spacing={0} alignItems="center" justify="flex-end">
-                  <Grid item={true}>
-                    {loaded.session.session.slide !== undefined ? (
-                      <Button href={loaded.session.session.slide} target="_blank" color="primary">
-                        <SlideIcon/> スライド
-                      </Button>
-                    ) : (
-                      <React.Fragment/>
-                    )}
-                  </Grid>
-                  <Grid item={true}>
-                      <Button href={loaded.session.session.video} target="_blank" color="primary">
-                        <VideoIcon/> ビデオ
-                      </Button>
-                  </Grid>
+        </Grid>
+        {this.renderWatchedEvents(loaded.session.watchedEvents)}
+        <Grid item={true} xs={12}>
+          <Typography variant="headline" color="textPrimary">
+            {loaded.session.session.title}              
+          </Typography>
+        </Grid>
+        <Grid item={true} xs={12}>
+          {this.renderDescription(loaded.session.session.description)}
+        </Grid>
+        <Grid item={true} xs={12}>
+          <Grid container={true} spacing={0} alignItems="flex-end" justify="space-between">
+            <Grid item={true}>
+              {loaded.session.session.speakers.map((speaker, index) => this.renderSpeaker(speaker, index))}
+            </Grid>
+            <Grid item={true} style={{flexGrow: 1}}>
+              <Grid container={true} spacing={0} alignItems="center" justify="flex-end">
+                <Grid item={true}>
+                  {loaded.session.session.slide !== undefined ? (
+                    <Button href={loaded.session.session.slide} target="_blank" color="primary">
+                      <SlideIcon/> スライド
+                    </Button>
+                  ) : (
+                    <React.Fragment/>
+                  )}
+                </Grid>
+                <Grid item={true}>
+                    <Button href={loaded.session.session.video} target="_blank" color="primary">
+                      <VideoIcon/> ビデオ
+                    </Button>
                 </Grid>
               </Grid>
             </Grid>
           </Grid>
-          <Grid item={true} xs={12}>
-            <Grid container={true} spacing={0} justify="center">
-              <Grid item={true}>
-                <SessionDetailContext.Consumer>
-                  {(bloc) => {
-                    const onClick = () => bloc.requestClicked.next();
-                    return (
-                      <Button variant="contained" color="primary" onClick={onClick}>この動画をリクエスト</Button>
-                    );
-                  }}
-                </SessionDetailContext.Consumer>
-              </Grid>
+        </Grid>
+        <Grid item={true} xs={12}>
+          <Grid container={true} spacing={0} justify="center">
+            <Grid item={true}>
+              <SessionDetailContext.Consumer>
+                {(bloc) => {
+                  const onClick = () => bloc.requestClicked.next();
+                  return (
+                    <Button variant="contained" color="primary" onClick={onClick}>この動画をリクエスト</Button>
+                  );
+                }}
+              </SessionDetailContext.Consumer>
             </Grid>
           </Grid>
         </Grid>
-      </div>
+      </Grid>
     );
   }
 
