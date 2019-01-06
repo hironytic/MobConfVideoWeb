@@ -24,6 +24,7 @@
 
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
 import React, { Key } from 'react';
+import { resetBackButtonActionAndPopHistory, setBackButtonActionAndPushHistory } from 'src/common/BackButtonAction';
 import Snapshot from 'src/common/Snapshot';
 import { INewRequestBloc } from './NewRequestBloc';
 import NewRequestContext from './NewRequestContext';
@@ -37,7 +38,18 @@ class NewRequestFromSessionDialog extends React.Component<IProps> {
     return (
       <NewRequestContext.Consumer>
         {bloc => {          
-          const onClose = () => bloc.onNewRequestFromSessionDialogClose.next(false);
+          let actionId: number | undefined;
+          const onEnter = () => {
+            actionId = setBackButtonActionAndPushHistory(() => bloc.onNewRequestFromSessionDialogClose.next(false));
+          };
+          const close = (result: boolean) => {
+            if (actionId !== undefined) {
+              resetBackButtonActionAndPopHistory(actionId, () => bloc.onNewRequestFromSessionDialogClose.next(result));
+            } else {
+              bloc.onNewRequestFromSessionDialogClose.next(result);
+            }
+          };
+          const onClose = () => close(false);
           const onEntered = () => bloc.onNewRequestFromSessionDialogEntered.next();
           const onExited = () => bloc.onNewRequestFromSessionDialogExited.next();
           return (
@@ -49,10 +61,11 @@ class NewRequestFromSessionDialog extends React.Component<IProps> {
                       key={key}
                       open={open}
                       onClose={onClose}
+                      onEnter={onEnter}
                       onEntered={onEntered}
                       onExited={onExited}
                     >
-                      {this.renderDialogContent(bloc)}
+                      {this.renderDialogContent(bloc, close)}
                     </Dialog>
                   )}
                 </Snapshot>
@@ -64,9 +77,9 @@ class NewRequestFromSessionDialog extends React.Component<IProps> {
     )
   }
 
-  private renderDialogContent(bloc: INewRequestBloc) {
-    const onDone = () => { bloc.onNewRequestFromSessionDialogClose.next(true); };
-    const onCancel = () => { bloc.onNewRequestFromSessionDialogClose.next(false); };
+  private renderDialogContent(bloc: INewRequestBloc, close: (result: boolean) => void) {
+    const onDone = () => { close(true); };
+    const onCancel = () => { close(false); };
     return (
       <React.Fragment>
         <DialogTitle>リクエスト</DialogTitle>

@@ -29,6 +29,7 @@ import CheckIcon from '@material-ui/icons/Check';
 import SlideIcon from '@material-ui/icons/Note';
 import VideoIcon from '@material-ui/icons/OndemandVideo';
 import React, { Key } from 'react';
+import { popHistory, setBackButtonActionAndPushHistory } from 'src/common/BackButtonAction';
 import Snapshot from 'src/common/Snapshot';
 import Speaker from 'src/model/Speaker';
 import NewRequestContext from '../new_request/NewRequestContext';
@@ -58,12 +59,23 @@ class SessionDetailDialog extends React.Component<IProps> {
     return (
       <SessionDetailContext.Consumer>
         {(bloc) => {
-          const onClose = () => bloc.dialogClosed.next();
+          let actionId: number | undefined;
+          const onEnter = () => {
+            actionId = setBackButtonActionAndPushHistory(() => bloc.dialogClosed.next());
+          };
+          const onClose = () => {
+            if (actionId !== undefined) {
+              popHistory();
+            } else {
+              bloc.dialogClosed.next();
+            }
+          };
           return (
             <Snapshot source={bloc.dialogOpen} initialValue={false}>
               {(open: boolean) => (
                 <Dialog open={open}
                         onClose={onClose}
+                        onEnter={onEnter}
                         fullScreen={this.props.fullScreen}
                         fullWidth={true}
                         maxWidth="xl">
