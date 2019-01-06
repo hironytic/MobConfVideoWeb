@@ -38,6 +38,7 @@ class RequestKeyDialog extends React.Component<IProps> {
       <NewRequestContext.Consumer>
         {bloc => {          
           const onClose = () => bloc.onRequestKeyDialogClose.next(false);
+          const onExited = () => bloc.onRequestKeyDialogExited.next();
           return (
             <Snapshot source={bloc.requestKeyDialogKey} initialValue={""}>
               {(key: string | number) => (
@@ -47,6 +48,7 @@ class RequestKeyDialog extends React.Component<IProps> {
                       key={key}
                       open={open}
                       onClose={onClose}
+                      onExited={onExited}
                     >
                       {this.renderDialogContent(bloc)}
                     </Dialog>
