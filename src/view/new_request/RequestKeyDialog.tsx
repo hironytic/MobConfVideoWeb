@@ -37,7 +37,7 @@ class RequestKeyDialog extends React.Component<IProps> {
     return (
       <NewRequestContext.Consumer>
         {bloc => {          
-          const onClose = () => bloc.closeRequestKeyDialog.next(false);
+          const onClose = () => bloc.onRequestKeyDialogClose.next(false);
           return (
             <Snapshot source={bloc.requestKeyDialogKey} initialValue={""}>
               {(key: string | number) => (
@@ -61,8 +61,8 @@ class RequestKeyDialog extends React.Component<IProps> {
   }
 
   private renderDialogContent(bloc: INewRequestBloc) {
-    const onDone = () => { bloc.closeRequestKeyDialog.next(true); };
-    const onCancel = () => { bloc.closeRequestKeyDialog.next(false); };
+    const onDone = () => { bloc.onRequestKeyDialogClose.next(true); };
+    const onCancel = () => { bloc.onRequestKeyDialogClose.next(false); };
     return (
       <React.Fragment>
         <DialogTitle>リクエストキーの入力</DialogTitle>
@@ -74,7 +74,7 @@ class RequestKeyDialog extends React.Component<IProps> {
           <Snapshot source={bloc.requestKeyDialogValue} initialValue="">
             {(value: string) => {
               const onChange: React.ChangeEventHandler<HTMLInputElement> = event => {
-                bloc.requestKeyDialogValueChanged.next(event.target.value);
+                bloc.onRequestKeyDialogValueChanged.next(event.target.value);
               };
               return (
                 <TextField

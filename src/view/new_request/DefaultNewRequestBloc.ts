@@ -103,11 +103,11 @@ class DefaultNewRequestBloc implements INewRequestBloc {
   private constructor(
     // inputs
     public addRequestFromSession: Observer<IAddRequestFromSessionParams>,
-    public requestKeyDialogValueChanged: Observer<string>,
-    public closeRequestKeyDialog: Observer<boolean>,
-    public requestKeyDialogExited: Observer<void>,
-    public closeSnackbar: Observer<void>,
-    public snackbarExited: Observer<void>,
+    public onRequestKeyDialogValueChanged: Observer<string>,
+    public onRequestKeyDialogClose: Observer<boolean>,
+    public onRequestKeyDialogExited: Observer<void>,
+    public onSnackbarClose: Observer<void>,
+    public onSnackbarExited: Observer<void>,
 
     // outputs
     public requestKeyDialogKey: Observable<string | number>,

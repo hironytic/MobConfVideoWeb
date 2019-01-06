@@ -40,9 +40,9 @@ class NewRequestSnackbar extends React.Component<IProps> {
             if (reason === 'clickaway') {
               return;
             }
-            bloc.closeSnackbar.next();
+            bloc.onSnackbarClose.next();
           }
-          const onExited = () => { bloc.snackbarExited.next(); }
+          const onExited = () => { bloc.onSnackbarExited.next(); }
           return (
             <Snapshot source={bloc.snackbarKey} initialValue={""}>
               {(key: string | number) => (
