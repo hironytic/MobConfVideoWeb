@@ -24,7 +24,7 @@
 
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
 import React, { Key } from 'react';
-import { resetBackButtonActionAndPopHistory, setBackButtonActionAndPushHistory } from 'src/common/BackButtonAction';
+import { executeBackNavigation, prepareBackNavigation } from 'src/common/BackNavigation';
 import Snapshot from 'src/common/Snapshot';
 import { INewRequestBloc } from './NewRequestBloc';
 import NewRequestContext from './NewRequestContext';
@@ -38,16 +38,14 @@ class NewRequestFromSessionDialog extends React.Component<IProps> {
     return (
       <NewRequestContext.Consumer>
         {bloc => {          
-          let actionId: number | undefined;
+          let dialogResult: boolean;
           const onEnter = () => {
-            actionId = setBackButtonActionAndPushHistory(() => bloc.onNewRequestFromSessionDialogClose.next(false));
+            dialogResult = false;
+            prepareBackNavigation(() => bloc.onNewRequestFromSessionDialogClose.next(dialogResult));
           };
           const close = (result: boolean) => {
-            if (actionId !== undefined) {
-              resetBackButtonActionAndPopHistory(actionId, () => bloc.onNewRequestFromSessionDialogClose.next(result));
-            } else {
-              bloc.onNewRequestFromSessionDialogClose.next(result);
-            }
+            dialogResult = result;
+            executeBackNavigation();
           };
           const onClose = () => close(false);
           const onEntered = () => bloc.onNewRequestFromSessionDialogEntered.next();

@@ -1,5 +1,5 @@
 //
-// BackButtonAction.ts
+// BackNavigation.ts
 //
 // Copyright (c) 2019 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,41 +22,42 @@
 // THE SOFTWARE.
 //
 
-let id = 0;
+let currentHistoryId = 0;
 const actions: {[id: number]: () => void} = {};
 
-export function setBackButtonActionAndPushHistory(action: () => void): number {
-  const currentActionId = window.history.state.actionId;
-  id++;
-  actions[currentActionId] = action;
+export function prepareBackNavigation(action: () => void) {
+  currentHistoryId = window.history.state.historyId;
+  actions[currentHistoryId] = action;
+  currentHistoryId++;
   window.history.pushState({
-    actionId: id,
+    historyId: currentHistoryId,
   }, "");
-  return currentActionId;
 }
 
-export function popHistory() {
+export function executeBackNavigation() {
   window.history.back();
 }
 
-export function resetBackButtonActionAndPopHistory(actionId: number, action: () => void) {
-  actions[actionId] = action;
-  window.history.back();
+export function setupBackNavigation() {
+  currentHistoryId = 0;
+  window.history.replaceState({
+    historyId: currentHistoryId,
+  }, "");
+  window.onpopstate = onPopState;
 }
 
-export function setupBackButtonAction() {
-  window.onpopstate = (event) => {
-    if (event.state !== undefined && event.state.actionId !== undefined) {
-      const action = actions[event.state.actionId];
-      delete actions[event.state.actionId];
-      if (action !== undefined) {
-        action();
+function onPopState(event: PopStateEvent) {
+  if (event.state !== undefined && event.state.historyId !== undefined) {
+    const newHistoryId = event.state.historyId;
+    if (newHistoryId < currentHistoryId) {
+      for (let historyId = currentHistoryId - 1; historyId >= newHistoryId; historyId--) {
+        const action = actions[historyId];
+        delete actions[historyId];
+        if (action !== undefined) {
+          action();
+        }
       }
     }
-  };
-
-  id++;
-  window.history.replaceState({
-    actionId: id,
-  }, "");
+    currentHistoryId = newHistoryId;
+  }
 }

@@ -3,7 +3,7 @@ import "firebase/firestore";
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import App from './App';
-import { setupBackButtonAction } from './common/BackButtonAction';
+import { setupBackNavigation } from './common/BackNavigation';
 import './index.css';
 import { unregister as unregisterServiceWorker } from './registerServiceWorker';
 
@@ -26,7 +26,7 @@ async function initialize() {
     timestampsInSnapshots: true
   });
 
-  setupBackButtonAction();
+  setupBackNavigation();
 
   ReactDOM.render(
     <App />,
