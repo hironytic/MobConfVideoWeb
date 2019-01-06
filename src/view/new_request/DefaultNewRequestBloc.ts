@@ -45,7 +45,7 @@ class DefaultNewRequestBloc implements INewRequestBloc {
     const snackbarMessage = new BehaviorSubject<string>("");
     const snackbarLogic = new ModalLogic((message: string) => {
       snackbarMessage.next(message);
-    });
+    }, () => { return });
 
     async function onAddRequestFromSession(params: IAddRequestFromSessionParams) {
       if (await newRequestFromSessionDialogLogic.show() !== true) {
@@ -94,11 +94,14 @@ class DefaultNewRequestBloc implements INewRequestBloc {
     return new DefaultNewRequestBloc(
       asObserver(onAddRequestFromSession),
       newRequestFromSessionDialogLogic.onClose,
+      newRequestFromSessionDialogLogic.onEntered,
       newRequestFromSessionDialogLogic.onExited,
       requestKeyDialogValue,
       requestKeyDialogLogic.onClose,
+      requestKeyDialogLogic.onEntered,
       requestKeyDialogLogic.onExited,
       snackbarLogic.onClose,
+      snackbarLogic.onEntered,
       snackbarLogic.onExited,
       newRequestFromSessionDialogLogic.key,
       newRequestFromSessionDialogLogic.open,
@@ -115,11 +118,14 @@ class DefaultNewRequestBloc implements INewRequestBloc {
     // inputs
     public addRequestFromSession: Observer<IAddRequestFromSessionParams>,
     public onNewRequestFromSessionDialogClose: Observer<boolean>,
+    public onNewRequestFromSessionDialogEntered: Observer<void>,
     public onNewRequestFromSessionDialogExited: Observer<void>,
     public onRequestKeyDialogValueChanged: Observer<string>,
     public onRequestKeyDialogClose: Observer<boolean>,
+    public onRequestKeyDialogEntered: Observer<void>,
     public onRequestKeyDialogExited: Observer<void>,
     public onSnackbarClose: Observer<void>,
+    public onSnackbarEntered: Observer<void>,
     public onSnackbarExited: Observer<void>,
 
     // outputs

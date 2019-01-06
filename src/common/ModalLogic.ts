@@ -33,6 +33,7 @@ interface IQueueItem<R, P> {
 class ModalLogic<R = void, P = void> {
   // input
   public onClose: Observer<R>;
+  public onEntered: Observer<void>;
   public onExited: Observer<void>;
 
   // output
@@ -41,46 +42,73 @@ class ModalLogic<R = void, P = void> {
 
   public show: (param: P) => Promise<R>;
 
-  constructor(prepare: (param: P) => void = _ => { return }) {
+  constructor(prepare: (param: P) => void = _ => { return }, closePrevious?: () => R) {
     const queue: Array<IQueueItem<R, P>> = [];
 
     const key = new BehaviorSubject<string | number>(0);
-    const open = new BehaviorSubject<boolean>(false); 
+    const open = new BehaviorSubject<boolean>(false);
+    let modalResolve: ((result: R) => void) | undefined;
+    let modalResult: R | undefined;
+
+    enum Status {
+      closed,
+      closing,
+      opening,
+      opened,
+    }
+    let status: Status = Status.closed;
 
     function show(param: P): Promise<R> {
       return new Promise<R>(
         (resolve) => {
           queue.push({param, resolve});
-          openIfNeeded();
+          if (closePrevious !== undefined && status === Status.opened) {
+            onClose(closePrevious());
+          } else {
+            openIfNeeded();
+          }
         }
       );
     }
   
     function onClose(result: R) {
+      status = Status.closing;
+      modalResult = result;
       open.next(false);
-      const item = queue.shift();
-      if (item !== undefined) {
-        item.resolve(result);
-      }
     }
   
+    function onEntered() {
+      status = Status.opened;
+      if (closePrevious !== undefined && queue.length > 0) {
+        onClose(closePrevious());
+      }
+    }
+
     function onExited() {
+      modalResolve!(modalResult!);
+      modalResolve = undefined;
+      modalResult = undefined;
+      status = Status.closed;
       openIfNeeded();
     }
   
     function openIfNeeded() {
-      if (open.value) {
+      if (status !== Status.closed) {
         return;
       }
   
       if (queue.length > 0) {
         key.next(new Date().getTime());
-        prepare(queue[0].param);
+        const item = queue.shift()!;
+        prepare(item.param);
+        modalResolve = item.resolve;
         open.next(true);
+        status = Status.opening;
       }
     }
   
     this.onClose = asObserver(onClose);
+    this.onEntered = asObserver(onEntered);
     this.onExited = asObserver(onExited);
 
     this.key = key;

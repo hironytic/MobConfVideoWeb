@@ -38,6 +38,7 @@ class NewRequestFromSessionDialog extends React.Component<IProps> {
       <NewRequestContext.Consumer>
         {bloc => {          
           const onClose = () => bloc.onNewRequestFromSessionDialogClose.next(false);
+          const onEntered = () => bloc.onNewRequestFromSessionDialogEntered.next();
           const onExited = () => bloc.onNewRequestFromSessionDialogExited.next();
           return (
             <Snapshot source={bloc.newRequestFromSessionDialogKey} initialValue={""}>
@@ -48,6 +49,7 @@ class NewRequestFromSessionDialog extends React.Component<IProps> {
                       key={key}
                       open={open}
                       onClose={onClose}
+                      onEntered={onEntered}
                       onExited={onExited}
                     >
                       {this.renderDialogContent(bloc)}

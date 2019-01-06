@@ -33,11 +33,14 @@ export interface INewRequestBloc extends IBloc {
   // inputs
   addRequestFromSession: Observer<IAddRequestFromSessionParams>;
   onNewRequestFromSessionDialogClose: Observer<boolean>;  // true => OK, false => Cancel
+  onNewRequestFromSessionDialogEntered: Observer<void>;
   onNewRequestFromSessionDialogExited: Observer<void>;
   onRequestKeyDialogValueChanged: Observer<string>;
   onRequestKeyDialogClose: Observer<boolean>;  // true => OK, false => Cancel
+  onRequestKeyDialogEntered: Observer<void>;
   onRequestKeyDialogExited: Observer<void>;
   onSnackbarClose: Observer<void>;
+  onSnackbarEntered: Observer<void>;
   onSnackbarExited: Observer<void>;
 
   // outputs

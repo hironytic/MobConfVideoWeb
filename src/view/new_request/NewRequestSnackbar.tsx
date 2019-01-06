@@ -42,6 +42,7 @@ class NewRequestSnackbar extends React.Component<IProps> {
             }
             bloc.onSnackbarClose.next();
           }
+          const onEntered = () => { bloc.onSnackbarEntered.next(); }
           const onExited = () => { bloc.onSnackbarExited.next(); }
           return (
             <Snapshot source={bloc.snackbarKey} initialValue={""}>
@@ -56,6 +57,7 @@ class NewRequestSnackbar extends React.Component<IProps> {
                           autoHideDuration={2750}
                           open={open}
                           onClose={onClose}
+                          onEntered={onEntered}
                           onExited={onExited}
                           message={message}
                         />
