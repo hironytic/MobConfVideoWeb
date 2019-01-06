@@ -25,6 +25,23 @@
 import { Observable } from 'rxjs';
 import Request from "src/model/Request";
 
+export interface IAddRequestFromSessionData {
+  requestKey: string;
+  sessionId: string;
+  memo?: string;
+}
+
+export interface IAddRequestWithoutSessionData {
+  requestKey: string;
+  title: string;
+  conference: string;
+  video: string;
+  slide?: string;
+  memo?: string;
+}
+
 export interface IRequestRepository {
   getAllRequestsObservable(eventId: string): Observable<Request[]>;
+  addRequestFromSession(data: IAddRequestFromSessionData): Promise<void>;
+  addRequestWithoutSession(data: IAddRequestWithoutSessionData): Promise<void>;
 }

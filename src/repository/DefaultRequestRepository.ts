@@ -24,9 +24,10 @@
 
 import firebase from "firebase/app";
 import "firebase/firestore";
+import "firebase/functions";
 import { Observable } from 'rxjs';
 import Request from "src/model/Request";
-import { IRequestRepository } from './RequestRepository';
+import { IAddRequestFromSessionData, IAddRequestWithoutSessionData, IRequestRepository } from './RequestRepository';
 
 class DefaultRequestRepository implements IRequestRepository {
   public getAllRequestsObservable(eventId: string): Observable<Request[]> {
@@ -46,6 +47,16 @@ class DefaultRequestRepository implements IRequestRepository {
 
       return canceller;
     });
+  }
+
+  public async addRequestFromSession(data: IAddRequestFromSessionData): Promise<void> {
+    const func = firebase.functions().httpsCallable("addRequestFromSession");
+    await func(data);
+  }
+  
+  public async addRequestWithoutSession(data: IAddRequestWithoutSessionData): Promise<void> {
+    const func = firebase.functions().httpsCallable("addRequestWithoutSession");
+    await func(data);
   }
 }
 
