@@ -24,6 +24,7 @@
 
 import { BehaviorSubject, Observable, Observer } from 'rxjs';
 import asObserver from 'src/common/AsObserver';
+import ModalLogic from 'src/common/ModalLogic';
 import { sleep } from 'src/common/Sleep';
 import { IRequestRepository } from 'src/repository/RequestRepository';
 import { IAddRequestFromSessionParams, INewRequestBloc } from "./NewRequestBloc";
@@ -33,15 +34,15 @@ class DefaultNewRequestBloc implements INewRequestBloc {
     requestRepository: IRequestRepository,
   ): DefaultNewRequestBloc {
     let storedRequestKey: string | undefined;
-    const requestKeyDialogQueue: Array<(done: boolean) => void> = [];
-    const snackbarQueue: string[] = [];
-
-    const requestKeyDialogKey = new BehaviorSubject<string | number>(0);
-    const requestKeyDialogOpen = new BehaviorSubject<boolean>(false);
     const requestKeyDialogValue = new BehaviorSubject<string>("");
-    const snackbarKey = new BehaviorSubject<string | number>(0);
-    const snackbarOpen = new BehaviorSubject<boolean>(false);
+    const requestKeyDialogLogic = new ModalLogic<boolean>(() => {
+      requestKeyDialogValue.next("");
+    });
+
     const snackbarMessage = new BehaviorSubject<string>("");
+    const snackbarLogic = new ModalLogic((message: string) => {
+      snackbarMessage.next(message);
+    });
 
     async function onAddRequestFromSession(params: IAddRequestFromSessionParams) {
       let tryAgain = false;
@@ -55,7 +56,7 @@ class DefaultNewRequestBloc implements INewRequestBloc {
           tryCount = 1;
         }
         if (storedRequestKey === undefined) {
-          const done = await showRequestKeyDialog();
+          const done = await requestKeyDialogLogic.show();
           if (!done) {
             return;
           }
@@ -70,90 +71,31 @@ class DefaultNewRequestBloc implements INewRequestBloc {
               requestKey: storedRequestKey,
               sessionId: params.sessionId,
             });
-            showSnackbar("リクエストを送信しました。");
+            snackbarLogic.show("リクエストを送信しました。");
           } catch (error) {
             if (error.details === "invalid_request_key") {
               storedRequestKey = undefined;
               tryAgain = true;
             } else {
-              showSnackbar("エラー: リクエストを送信できませんでした。");
+              snackbarLogic.show("エラー: リクエストを送信できませんでした。");
             }
           }
         }
       } while(tryAgain);
     }
 
-    function showRequestKeyDialog(): Promise<boolean> {
-      return new Promise<boolean>(
-        (resolve) => {
-          requestKeyDialogQueue.push(resolve);
-          openRequestKeyDialogIfNeeded();
-        }
-      );
-    }
-    
-    function onCloseRequestKeyDialog(done: boolean) {
-      requestKeyDialogOpen.next(false);
-      const resolve = requestKeyDialogQueue.shift();
-      if (resolve !== undefined) {
-        resolve(done);
-      }
-    }
-
-    function onRequestKeyDialogExited() {
-      openRequestKeyDialogIfNeeded();
-    }
-
-    function openRequestKeyDialogIfNeeded() {
-      if (requestKeyDialogOpen.value) {
-        return;
-      }
-
-      if (requestKeyDialogQueue.length > 0) {
-        requestKeyDialogKey.next(new Date().getTime());
-        requestKeyDialogValue.next("");
-        requestKeyDialogOpen.next(true);
-      }
-    }
-
-    function showSnackbar(message: string) {
-      snackbarQueue.push(message);
-      openSnackbarIfNeeded();
-    }
-
-    function onCloseSnackbar() {
-      snackbarOpen.next(false);
-      snackbarQueue.shift();
-    }
-
-    function onSnackbarExited() {
-      openSnackbarIfNeeded();
-    }
-
-    function openSnackbarIfNeeded() {
-      if (snackbarOpen.value) {
-        return;
-      }
-
-      if (snackbarQueue.length > 0) {
-        snackbarKey.next(new Date().getTime());
-        snackbarMessage.next(snackbarQueue[0]);
-        snackbarOpen.next(true);
-      }
-    }
-
     return new DefaultNewRequestBloc(
       asObserver(onAddRequestFromSession),
       requestKeyDialogValue,
-      asObserver(onCloseRequestKeyDialog),
-      asObserver(onRequestKeyDialogExited),
-      asObserver(onCloseSnackbar),
-      asObserver(onSnackbarExited),
-      requestKeyDialogKey,
-      requestKeyDialogOpen,
+      requestKeyDialogLogic.onClose,
+      requestKeyDialogLogic.onExited,
+      snackbarLogic.onClose,
+      snackbarLogic.onExited,
+      requestKeyDialogLogic.key,
+      requestKeyDialogLogic.open,
       requestKeyDialogValue,
-      snackbarKey,
-      snackbarOpen,
+      snackbarLogic.key,
+      snackbarLogic.open,
       snackbarMessage,
     );
   }
