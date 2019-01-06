@@ -24,6 +24,7 @@
 
 import * as React from 'react';
 import Snapshot from 'src/common/Snapshot';
+import NewRequest from '../new_request/NewRequest';
 import RequestPage from '../request/RequestPage';
 import SessionDetailDialog from '../session_detail/SessionDetailDialog';
 import VideoPage from '../video/VideoPage';
@@ -45,6 +46,7 @@ class Home extends React.Component {
             )}
           </HomeContext.Consumer>
           <SessionDetailDialog />
+          <NewRequest />
         </React.Fragment>
       </DefaultHomeBlocProvider>
     );

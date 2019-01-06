@@ -35,6 +35,7 @@ import DefaultSessionRepository from './repository/DefaultSessionRepository';
 import RepositoryContext from './RepositoryContext';
 import Home from './view/home/Home';
 import Maintenance from './view/home/Maintenance';
+import DefaultNewRequestBlocProvider from './view/new_request/DefaultNewRequestBlocProvider';
 import DefaultRequestBlocProvider from './view/request/DefaultRequestBlocProvider';
 import DefaultSessionDetailBlocProvider from './view/session_detail/DefaultSessionDetailBlocProvider';
 import DefaultVideoBlocProvider from './view/video/DefaultVideoBlocProvider';
@@ -85,13 +86,15 @@ class App extends React.Component {
 
   private renderHome() {
     return (
-      <DefaultRequestBlocProvider>
-        <DefaultVideoBlocProvider>
-          <DefaultSessionDetailBlocProvider>
-            <Home/>
-          </DefaultSessionDetailBlocProvider>
-        </DefaultVideoBlocProvider>
-      </DefaultRequestBlocProvider>
+      <DefaultNewRequestBlocProvider>
+        <DefaultSessionDetailBlocProvider>
+          <DefaultRequestBlocProvider>
+            <DefaultVideoBlocProvider>
+              <Home/>
+            </DefaultVideoBlocProvider>
+          </DefaultRequestBlocProvider>
+        </DefaultSessionDetailBlocProvider>
+      </DefaultNewRequestBlocProvider>
     );
   }
 }

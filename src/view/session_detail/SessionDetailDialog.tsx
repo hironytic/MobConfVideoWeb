@@ -31,6 +31,7 @@ import VideoIcon from '@material-ui/icons/OndemandVideo';
 import React, { Key } from 'react';
 import Snapshot from 'src/common/Snapshot';
 import Speaker from 'src/model/Speaker';
+import NewRequestContext from '../new_request/NewRequestContext';
 import { IIdAndName, ISessionDetail, ISessionDetailError, ISessionDetailLoaded, SessionDetailState } from './SessionDetailBloc';
 import SessionDetailContext from './SessionDetailContext';
 
@@ -181,14 +182,14 @@ class SessionDetailDialog extends React.Component<IProps> {
         <Grid item={true} xs={12}>
           <Grid container={true} spacing={0} justify="center">
             <Grid item={true}>
-              <SessionDetailContext.Consumer>
+              <NewRequestContext.Consumer>
                 {(bloc) => {
-                  const onClick = () => bloc.requestClicked.next();
+                  const onClick = () => bloc.addRequestFromSession.next({sessionId: loaded.session.session.id});
                   return (
                     <Button variant="contained" color="primary" onClick={onClick}>この動画をリクエスト</Button>
                   );
                 }}
-              </SessionDetailContext.Consumer>
+              </NewRequestContext.Consumer>
             </Grid>
           </Grid>
         </Grid>
