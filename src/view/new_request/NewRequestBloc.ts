@@ -32,8 +32,8 @@ export interface IAddRequestFromSessionParams {
 export interface INewRequestBloc extends IBloc {
   // inputs
   addRequestFromSession: Observer<IAddRequestFromSessionParams>;
-  onConfirmDialogClose: Observer<boolean>;  // true => OK, false => Cancel
-  onConfirmDialogExited: Observer<void>;
+  onNewRequestFromSessionDialogClose: Observer<boolean>;  // true => OK, false => Cancel
+  onNewRequestFromSessionDialogExited: Observer<void>;
   onRequestKeyDialogValueChanged: Observer<string>;
   onRequestKeyDialogClose: Observer<boolean>;  // true => OK, false => Cancel
   onRequestKeyDialogExited: Observer<void>;
@@ -41,8 +41,8 @@ export interface INewRequestBloc extends IBloc {
   onSnackbarExited: Observer<void>;
 
   // outputs
-  confirmDialogKey: Observable<string | number>;
-  confirmDialogOpen: Observable<boolean>;
+  newRequestFromSessionDialogKey: Observable<string | number>;
+  newRequestFromSessionDialogOpen: Observable<boolean>;
   requestKeyDialogKey: Observable<string | number>;
   requestKeyDialogOpen: Observable<boolean>;
   requestKeyDialogValue: Observable<string>;

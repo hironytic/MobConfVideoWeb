@@ -1,5 +1,5 @@
 //
-// ConfirmDialog.tsx
+// NewRequestFromSessionDialog.tsx
 //
 // Copyright (c) 2019 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -32,16 +32,16 @@ interface IProps {
   key?: Key,
 }
 
-class ConfirmDialog extends React.Component<IProps> {
+class NewRequestFromSessionDialog extends React.Component<IProps> {
   public render() {
     return (
       <NewRequestContext.Consumer>
         {bloc => {          
-          const onClose = () => bloc.onConfirmDialogClose.next(false);
+          const onClose = () => bloc.onNewRequestFromSessionDialogClose.next(false);
           return (
-            <Snapshot source={bloc.confirmDialogKey} initialValue={""}>
+            <Snapshot source={bloc.newRequestFromSessionDialogKey} initialValue={""}>
               {(key: string | number) => (
-                <Snapshot source={bloc.confirmDialogOpen} initialValue={false}>
+                <Snapshot source={bloc.newRequestFromSessionDialogOpen} initialValue={false}>
                   {(open: boolean) => (
                     <Dialog
                       key={key}
@@ -61,8 +61,8 @@ class ConfirmDialog extends React.Component<IProps> {
   }
 
   private renderDialogContent(bloc: INewRequestBloc) {
-    const onDone = () => { bloc.onConfirmDialogClose.next(true); };
-    const onCancel = () => { bloc.onConfirmDialogClose.next(false); };
+    const onDone = () => { bloc.onNewRequestFromSessionDialogClose.next(true); };
+    const onCancel = () => { bloc.onNewRequestFromSessionDialogClose.next(false); };
     return (
       <React.Fragment>
         <DialogTitle>リクエスト</DialogTitle>
@@ -80,4 +80,4 @@ class ConfirmDialog extends React.Component<IProps> {
   }
 }
 
-export default ConfirmDialog;
+export default NewRequestFromSessionDialog;

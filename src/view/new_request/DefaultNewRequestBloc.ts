@@ -35,7 +35,7 @@ class DefaultNewRequestBloc implements INewRequestBloc {
   ): DefaultNewRequestBloc {
     let storedRequestKey: string | undefined;
 
-    const confirmDialogLogic = new ModalLogic<boolean>();
+    const newRequestFromSessionDialogLogic = new ModalLogic<boolean>();
 
     const requestKeyDialogValue = new BehaviorSubject<string>("");
     const requestKeyDialogLogic = new ModalLogic<boolean>(() => {
@@ -48,7 +48,7 @@ class DefaultNewRequestBloc implements INewRequestBloc {
     });
 
     async function onAddRequestFromSession(params: IAddRequestFromSessionParams) {
-      if (await confirmDialogLogic.show() !== true) {
+      if (await newRequestFromSessionDialogLogic.show() !== true) {
         return;
       }
 
@@ -93,15 +93,15 @@ class DefaultNewRequestBloc implements INewRequestBloc {
 
     return new DefaultNewRequestBloc(
       asObserver(onAddRequestFromSession),
-      confirmDialogLogic.onClose,
-      confirmDialogLogic.onExited,
+      newRequestFromSessionDialogLogic.onClose,
+      newRequestFromSessionDialogLogic.onExited,
       requestKeyDialogValue,
       requestKeyDialogLogic.onClose,
       requestKeyDialogLogic.onExited,
       snackbarLogic.onClose,
       snackbarLogic.onExited,
-      confirmDialogLogic.key,
-      confirmDialogLogic.open,
+      newRequestFromSessionDialogLogic.key,
+      newRequestFromSessionDialogLogic.open,
       requestKeyDialogLogic.key,
       requestKeyDialogLogic.open,
       requestKeyDialogValue,
@@ -114,8 +114,8 @@ class DefaultNewRequestBloc implements INewRequestBloc {
   private constructor(
     // inputs
     public addRequestFromSession: Observer<IAddRequestFromSessionParams>,
-    public onConfirmDialogClose: Observer<boolean>,
-    public onConfirmDialogExited: Observer<void>,
+    public onNewRequestFromSessionDialogClose: Observer<boolean>,
+    public onNewRequestFromSessionDialogExited: Observer<void>,
     public onRequestKeyDialogValueChanged: Observer<string>,
     public onRequestKeyDialogClose: Observer<boolean>,
     public onRequestKeyDialogExited: Observer<void>,
@@ -123,8 +123,8 @@ class DefaultNewRequestBloc implements INewRequestBloc {
     public onSnackbarExited: Observer<void>,
 
     // outputs
-    public confirmDialogKey: Observable<string | number>,
-    public confirmDialogOpen: Observable<boolean>,
+    public newRequestFromSessionDialogKey: Observable<string | number>,
+    public newRequestFromSessionDialogOpen: Observable<boolean>,
     public requestKeyDialogKey: Observable<string | number>,
     public requestKeyDialogOpen: Observable<boolean>,
     public requestKeyDialogValue: Observable<string>,
