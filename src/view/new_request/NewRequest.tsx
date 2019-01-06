@@ -23,6 +23,7 @@
 //
 
 import * as React from 'react';
+import ConfirmDialog from './ConfirmDialog';
 import NewRequestSnackbar from './NewRequestSnackbar';
 import RequestKeyDialog from './RequestKeyDialog';
 
@@ -32,7 +33,8 @@ class NewRequest extends React.Component {
       <React.Fragment>
         <RequestKeyDialog/>
         <NewRequestSnackbar/>
-      </React.Fragment>        
+        <ConfirmDialog/>
+      </React.Fragment>
     );
   }
 }
