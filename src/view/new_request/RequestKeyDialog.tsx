@@ -84,7 +84,7 @@ class RequestKeyDialog extends React.Component<IProps> {
         <DialogContent>
           <DialogContentText>
             リクエストキーを入力してください。
-            リクエストキーはイベントごとに異なり、事前に、または、当日会場で参加者に公開されます。
+            リクエストキーは動画鑑賞会の開催ごとに異なり、事前に、または当日の会場で、参加者に公開されます。
           </DialogContentText>
           <Snapshot source={bloc.requestKeyDialogValue} initialValue="">
             {(value: string) => {
@@ -93,8 +93,8 @@ class RequestKeyDialog extends React.Component<IProps> {
               };
               return (
                 <TextField
+                  type="text"
                   autoFocus={true}
-                  type="password"
                   label="リクエストキー"
                   margin="normal"
                   fullWidth={true}
