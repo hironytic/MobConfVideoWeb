@@ -41,19 +41,19 @@ class RequestKeyDialog extends React.Component<IProps> {
           let dialogResult: boolean;
           const onEnter = () => {
             dialogResult = false;
-            prepareBackNavigation(() => bloc.onRequestKeyDialogClose.next(dialogResult));
+            prepareBackNavigation(() => bloc.requestKeyDialogBloc.onClose.next(dialogResult));
           };
           const close = (result: boolean) => {
             dialogResult = result;
             executeBackNavigation();
           };
           const onClose = () => close(false);
-          const onEntered = () => bloc.onRequestKeyDialogEntered.next();
-          const onExited = () => bloc.onRequestKeyDialogExited.next();
+          const onEntered = () => bloc.requestKeyDialogBloc.onEntered.next();
+          const onExited = () => bloc.requestKeyDialogBloc.onExited.next();
           return (
-            <Snapshot source={bloc.requestKeyDialogKey} initialValue={""}>
+            <Snapshot source={bloc.requestKeyDialogBloc.key} initialValue={""}>
               {(key: string | number) => (
-                <Snapshot source={bloc.requestKeyDialogOpen} initialValue={false}>
+                <Snapshot source={bloc.requestKeyDialogBloc.open} initialValue={false}>
                   {(open: boolean) => (
                     <Dialog
                       key={key}
@@ -86,10 +86,10 @@ class RequestKeyDialog extends React.Component<IProps> {
             リクエストキーを入力してください。
             リクエストキーは動画鑑賞会の開催ごとに異なり、事前に、または当日の会場で、参加者に公開されます。
           </DialogContentText>
-          <Snapshot source={bloc.requestKeyDialogValue} initialValue="">
+          <Snapshot source={bloc.requestKeyDialogBloc.value} initialValue="">
             {(value: string) => {
               const onChange: React.ChangeEventHandler<HTMLInputElement> = event => {
-                bloc.onRequestKeyDialogValueChanged.next(event.target.value);
+                bloc.requestKeyDialogBloc.onValueChanged.next(event.target.value);
               };
               return (
                 <TextField
@@ -99,6 +99,7 @@ class RequestKeyDialog extends React.Component<IProps> {
                   margin="normal"
                   fullWidth={true}
                   onChange={onChange}
+                  value={value}
                 />
               );
             }}

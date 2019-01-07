@@ -41,16 +41,16 @@ class NewRequestSnackbar extends React.Component<IProps> {
             if (reason === 'clickaway') {
               return;
             }
-            bloc.onSnackbarClose.next();
+            bloc.snackbarBloc.onClose.next();
           }
-          const onEntered = () => { bloc.onSnackbarEntered.next(); }
-          const onExited = () => { bloc.onSnackbarExited.next(); }
+          const onEntered = () => { bloc.snackbarBloc.onEntered.next(); }
+          const onExited = () => { bloc.snackbarBloc.onExited.next(); }
           return (
-            <Snapshot source={bloc.snackbarKey} initialValue={""}>
+            <Snapshot source={bloc.snackbarBloc.key} initialValue={""}>
               {(key: string | number) => (
-                <Snapshot source={bloc.snackbarOpen} initialValue={false}>
+                <Snapshot source={bloc.snackbarBloc.open} initialValue={false}>
                   {(open: boolean) => (
-                    <Snapshot source={bloc.snackbarSetting} initialValue={{message: "", autoHideDuration: undefined}}>
+                    <Snapshot source={bloc.snackbarBloc.setting} initialValue={{message: "", autoHideDuration: undefined}}>
                       {(setting: ISnackbarSetting) => (
                         <Snackbar
                           key={key}

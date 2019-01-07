@@ -22,12 +22,12 @@
 // THE SOFTWARE.
 //
 
-import { BehaviorSubject, Observable, Observer } from 'rxjs';
+import { BehaviorSubject, Observer } from 'rxjs';
 import asObserver from 'src/common/AsObserver';
 import ModalLogic from 'src/common/ModalLogic';
 import { sleep } from 'src/common/Sleep';
 import { IRequestRepository } from 'src/repository/RequestRepository';
-import { IAddRequestFromSessionParams, INewRequestBloc, ISnackbarSetting } from "./NewRequestBloc";
+import { IAddRequestFromSessionParams, INewRequestBloc, INewRequestFromSessionDialogBloc, IRequestKeyDialogBloc, ISnackbarBloc, ISnackbarSetting } from "./NewRequestBloc";
 
 const SNACKBAR_SHORT = 1500;
 const SNACKBAR_LONG = 2750;
@@ -102,51 +102,40 @@ class DefaultNewRequestBloc implements INewRequestBloc {
     }
 
     return new DefaultNewRequestBloc(
+      // inputs
       asObserver(onAddRequestFromSession),
-      newRequestFromSessionDialogLogic.onClose,
-      newRequestFromSessionDialogLogic.onEntered,
-      newRequestFromSessionDialogLogic.onExited,
-      requestKeyDialogValue,
-      requestKeyDialogLogic.onClose,
-      requestKeyDialogLogic.onEntered,
-      requestKeyDialogLogic.onExited,
-      snackbarLogic.onClose,
-      snackbarLogic.onEntered,
-      snackbarLogic.onExited,
-      newRequestFromSessionDialogLogic.key,
-      newRequestFromSessionDialogLogic.open,
-      requestKeyDialogLogic.key,
-      requestKeyDialogLogic.open,
-      requestKeyDialogValue,
-      snackbarLogic.key,
-      snackbarLogic.open,
-      snackbarSetting,
+
+      // outputs
+
+      // sub-bloc
+      {
+        ...newRequestFromSessionDialogLogic.inputs,
+        ...newRequestFromSessionDialogLogic.outputs,
+      },
+      {
+        ...requestKeyDialogLogic.inputs,
+        ...requestKeyDialogLogic.outputs,
+        onValueChanged: requestKeyDialogValue,
+        value: requestKeyDialogValue,
+      },
+      {
+        ...snackbarLogic.inputs,
+        ...snackbarLogic.outputs,
+        setting: snackbarSetting,
+      }
     );
   }
 
   private constructor(
     // inputs
     public addRequestFromSession: Observer<IAddRequestFromSessionParams>,
-    public onNewRequestFromSessionDialogClose: Observer<boolean>,
-    public onNewRequestFromSessionDialogEntered: Observer<void>,
-    public onNewRequestFromSessionDialogExited: Observer<void>,
-    public onRequestKeyDialogValueChanged: Observer<string>,
-    public onRequestKeyDialogClose: Observer<boolean>,
-    public onRequestKeyDialogEntered: Observer<void>,
-    public onRequestKeyDialogExited: Observer<void>,
-    public onSnackbarClose: Observer<void>,
-    public onSnackbarEntered: Observer<void>,
-    public onSnackbarExited: Observer<void>,
 
     // outputs
-    public newRequestFromSessionDialogKey: Observable<string | number>,
-    public newRequestFromSessionDialogOpen: Observable<boolean>,
-    public requestKeyDialogKey: Observable<string | number>,
-    public requestKeyDialogOpen: Observable<boolean>,
-    public requestKeyDialogValue: Observable<string>,
-    public snackbarKey: Observable<string | number>,
-    public snackbarOpen: Observable<boolean>,
-    public snackbarSetting: Observable<ISnackbarSetting>,
+
+    // sub-bloc
+    public newRequestFromSessionDialogBloc: INewRequestFromSessionDialogBloc,
+    public requestKeyDialogBloc: IRequestKeyDialogBloc,
+    public snackbarBloc: ISnackbarBloc,    
   ) { }
 
   public dispose() {

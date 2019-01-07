@@ -24,9 +24,21 @@
 
 import { Observable, Observer } from "rxjs";
 import { IBloc } from 'src/common/Bloc';
+import { IModalLogicInput, IModalLogicOutput } from 'src/common/ModalLogic';
 
 export interface IAddRequestFromSessionParams {
   sessionId: string;
+}
+
+export interface INewRequestFromSessionDialogBloc extends IModalLogicInput<boolean>, IModalLogicOutput {
+}
+
+export interface IRequestKeyDialogBloc extends IModalLogicInput<boolean>, IModalLogicOutput {
+  // inputs
+  onValueChanged: Observer<string>;
+
+  // outputs
+  value: Observable<string>;
 }
 
 export interface ISnackbarSetting {
@@ -34,27 +46,19 @@ export interface ISnackbarSetting {
   autoHideDuration: number | undefined;
 }
 
+export interface ISnackbarBloc extends IModalLogicInput<void>, IModalLogicOutput {
+  // outputs
+  setting: Observable<ISnackbarSetting>;
+}
+
 export interface INewRequestBloc extends IBloc {
   // inputs
   addRequestFromSession: Observer<IAddRequestFromSessionParams>;
-  onNewRequestFromSessionDialogClose: Observer<boolean>;  // true => OK, false => Cancel
-  onNewRequestFromSessionDialogEntered: Observer<void>;
-  onNewRequestFromSessionDialogExited: Observer<void>;
-  onRequestKeyDialogValueChanged: Observer<string>;
-  onRequestKeyDialogClose: Observer<boolean>;  // true => OK, false => Cancel
-  onRequestKeyDialogEntered: Observer<void>;
-  onRequestKeyDialogExited: Observer<void>;
-  onSnackbarClose: Observer<void>;
-  onSnackbarEntered: Observer<void>;
-  onSnackbarExited: Observer<void>;
 
   // outputs
-  newRequestFromSessionDialogKey: Observable<string | number>;
-  newRequestFromSessionDialogOpen: Observable<boolean>;
-  requestKeyDialogKey: Observable<string | number>;
-  requestKeyDialogOpen: Observable<boolean>;
-  requestKeyDialogValue: Observable<string>;
-  snackbarKey: Observable<string | number>;
-  snackbarOpen: Observable<boolean>;
-  snackbarSetting: Observable<ISnackbarSetting>;
+
+  // sub-bloc
+  newRequestFromSessionDialogBloc: INewRequestFromSessionDialogBloc;
+  requestKeyDialogBloc: IRequestKeyDialogBloc;
+  snackbarBloc: ISnackbarBloc;
 }

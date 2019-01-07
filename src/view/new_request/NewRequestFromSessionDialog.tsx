@@ -41,19 +41,19 @@ class NewRequestFromSessionDialog extends React.Component<IProps> {
           let dialogResult: boolean;
           const onEnter = () => {
             dialogResult = false;
-            prepareBackNavigation(() => bloc.onNewRequestFromSessionDialogClose.next(dialogResult));
+            prepareBackNavigation(() => bloc.newRequestFromSessionDialogBloc.onClose.next(dialogResult));
           };
           const close = (result: boolean) => {
             dialogResult = result;
             executeBackNavigation();
           };
           const onClose = () => close(false);
-          const onEntered = () => bloc.onNewRequestFromSessionDialogEntered.next();
-          const onExited = () => bloc.onNewRequestFromSessionDialogExited.next();
+          const onEntered = () => bloc.newRequestFromSessionDialogBloc.onEntered.next();
+          const onExited = () => bloc.newRequestFromSessionDialogBloc.onExited.next();
           return (
-            <Snapshot source={bloc.newRequestFromSessionDialogKey} initialValue={""}>
+            <Snapshot source={bloc.newRequestFromSessionDialogBloc.key} initialValue={""}>
               {(key: string | number) => (
-                <Snapshot source={bloc.newRequestFromSessionDialogOpen} initialValue={false}>
+                <Snapshot source={bloc.newRequestFromSessionDialogBloc.open} initialValue={false}>
                   {(open: boolean) => (
                     <Dialog
                       key={key}

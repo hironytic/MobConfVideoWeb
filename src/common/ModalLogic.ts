@@ -30,15 +30,20 @@ interface IQueueItem<R, P> {
   resolve: (result: R) => void;
 }
 
-class ModalLogic<R = void, P = void> {
-  // input
-  public onClose: Observer<R>;
-  public onEntered: Observer<void>;
-  public onExited: Observer<void>;
+export interface IModalLogicInput<R> {
+  onClose: Observer<R>;
+  onEntered: Observer<void>;
+  onExited: Observer<void>;
+}
 
-  // output
-  public key: Observable<string | number>;
-  public open: Observable<boolean>;
+export interface IModalLogicOutput {
+  key: Observable<string | number>;
+  open: Observable<boolean>;
+}
+
+class ModalLogic<R = void, P = void> {
+  public inputs: IModalLogicInput<R>;
+  public outputs: IModalLogicOutput;
 
   public show: (param: P) => Promise<R>;
 
@@ -107,12 +112,16 @@ class ModalLogic<R = void, P = void> {
       }
     }
   
-    this.onClose = asObserver(onClose);
-    this.onEntered = asObserver(onEntered);
-    this.onExited = asObserver(onExited);
+    this.inputs = {
+      onClose: asObserver(onClose),
+      onEntered: asObserver(onEntered),
+      onExited: asObserver(onExited),
+    };
 
-    this.key = key;
-    this.open = open;
+    this.outputs = {
+      key,
+      open,
+    };
 
     this.show = show;
   }
