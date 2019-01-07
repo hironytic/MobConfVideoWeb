@@ -22,15 +22,17 @@
 // THE SOFTWARE.
 //
 
-let currentHistoryId = 0;
+const backNavigationId = new Date().getTime();
+let currentHistoryNo = 0;
 const actions: {[id: number]: () => void} = {};
 
 export function prepareBackNavigation(action: () => void) {
-  currentHistoryId = window.history.state.historyId;
-  actions[currentHistoryId] = action;
-  currentHistoryId++;
+  currentHistoryNo = window.history.state.historyNo;
+  actions[currentHistoryNo] = action;
+  currentHistoryNo++;
   window.history.pushState({
-    historyId: currentHistoryId,
+    backNavigationId,
+    historyNo: currentHistoryNo,
   }, "");
 }
 
@@ -39,25 +41,28 @@ export function executeBackNavigation() {
 }
 
 export function setupBackNavigation() {
-  currentHistoryId = 0;
+  currentHistoryNo = 0;
   window.history.replaceState({
-    historyId: currentHistoryId,
+    backNavigationId,
+    historyNo: currentHistoryNo,
   }, "");
   window.onpopstate = onPopState;
 }
 
 function onPopState(event: PopStateEvent) {
-  if (event.state !== undefined && event.state.historyId !== undefined) {
-    const newHistoryId = event.state.historyId;
-    if (newHistoryId < currentHistoryId) {
-      for (let historyId = currentHistoryId - 1; historyId >= newHistoryId; historyId--) {
-        const action = actions[historyId];
-        delete actions[historyId];
+  if (event.state !== undefined
+      && event.state.backNavigationId === backNavigationId
+      && event.state.historyNo !== undefined) {
+    const newHistoryNo = event.state.historyNo;
+    if (newHistoryNo < currentHistoryNo) {
+      for (let historyNo = currentHistoryNo - 1; historyNo >= newHistoryNo; historyNo--) {
+        const action = actions[historyNo];
+        delete actions[historyNo];
         if (action !== undefined) {
           action();
         }
       }
     }
-    currentHistoryId = newHistoryId;
+    currentHistoryNo = newHistoryNo;
   }
 }
