@@ -27,7 +27,11 @@ import asObserver from 'src/common/AsObserver';
 import ModalLogic from 'src/common/ModalLogic';
 import { sleep } from 'src/common/Sleep';
 import { IRequestRepository } from 'src/repository/RequestRepository';
-import { IAddRequestFromSessionParams, INewRequestBloc } from "./NewRequestBloc";
+import { IAddRequestFromSessionParams, INewRequestBloc, ISnackbarSetting } from "./NewRequestBloc";
+
+const SNACKBAR_SHORT = 1500;
+const SNACKBAR_LONG = 2750;
+const SNACKBAR_INFINITY = undefined;
 
 class DefaultNewRequestBloc implements INewRequestBloc {
   public static create(
@@ -42,9 +46,9 @@ class DefaultNewRequestBloc implements INewRequestBloc {
       requestKeyDialogValue.next("");
     });
 
-    const snackbarMessage = new BehaviorSubject<string>("");
-    const snackbarLogic = new ModalLogic((message: string) => {
-      snackbarMessage.next(message);
+    const snackbarSetting = new BehaviorSubject<ISnackbarSetting>({message: "", autoHideDuration: undefined});
+    const snackbarLogic = new ModalLogic((setting: ISnackbarSetting) => {
+      snackbarSetting.next(setting);
     }, () => { return });
 
     async function onAddRequestFromSession(params: IAddRequestFromSessionParams) {
@@ -56,12 +60,6 @@ class DefaultNewRequestBloc implements INewRequestBloc {
       let tryCount = 0;
       do {
         tryAgain = false;
-        tryCount++;
-        if (tryCount > 3) {
-          // forbid user to try another request code repeatedly
-          await sleep(5000);
-          tryCount = 1;
-        }
         if (storedRequestKey === undefined) {
           const done = await requestKeyDialogLogic.show();
           if (!done) {
@@ -69,6 +67,9 @@ class DefaultNewRequestBloc implements INewRequestBloc {
           }
           storedRequestKey = requestKeyDialogValue.value;
         }
+
+        snackbarLogic.show({message: "通信中", autoHideDuration: SNACKBAR_INFINITY});
+
         if (storedRequestKey === "") {
           storedRequestKey = undefined;
           tryAgain = true;
@@ -78,15 +79,24 @@ class DefaultNewRequestBloc implements INewRequestBloc {
               requestKey: storedRequestKey,
               sessionId: params.sessionId,
             });
-            snackbarLogic.show("リクエストを送信しました。");
+            snackbarLogic.show({message: "リクエストを送信しました。", autoHideDuration: SNACKBAR_LONG});
           } catch (error) {
             if (error.details === "invalid_request_key") {
               storedRequestKey = undefined;
               tryAgain = true;
             } else {
-              snackbarLogic.show("エラー: リクエストを送信できませんでした。");
+              snackbarLogic.show({message: "エラー: リクエストを送信できませんでした。", autoHideDuration: SNACKBAR_LONG});
             }
           }
+        }
+        tryCount++;
+        if (tryCount >= 3) {
+          // forbid user to try another request code repeatedly
+          await sleep(5000);
+          tryCount = 0;
+        }
+        if (tryAgain) {
+          snackbarLogic.show({message: "リクエストキーを再入力してください。", autoHideDuration: SNACKBAR_SHORT});
         }
       } while(tryAgain);
     }
@@ -110,7 +120,7 @@ class DefaultNewRequestBloc implements INewRequestBloc {
       requestKeyDialogValue,
       snackbarLogic.key,
       snackbarLogic.open,
-      snackbarMessage,
+      snackbarSetting,
     );
   }
 
@@ -136,7 +146,7 @@ class DefaultNewRequestBloc implements INewRequestBloc {
     public requestKeyDialogValue: Observable<string>,
     public snackbarKey: Observable<string | number>,
     public snackbarOpen: Observable<boolean>,
-    public snackbarMessage: Observable<string>,
+    public snackbarSetting: Observable<ISnackbarSetting>,
   ) { }
 
   public dispose() {

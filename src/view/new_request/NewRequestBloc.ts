@@ -29,6 +29,11 @@ export interface IAddRequestFromSessionParams {
   sessionId: string;
 }
 
+export interface ISnackbarSetting {
+  message: string;
+  autoHideDuration: number | undefined;
+}
+
 export interface INewRequestBloc extends IBloc {
   // inputs
   addRequestFromSession: Observer<IAddRequestFromSessionParams>;
@@ -51,5 +56,5 @@ export interface INewRequestBloc extends IBloc {
   requestKeyDialogValue: Observable<string>;
   snackbarKey: Observable<string | number>;
   snackbarOpen: Observable<boolean>;
-  snackbarMessage: Observable<string>;
+  snackbarSetting: Observable<ISnackbarSetting>;
 }

@@ -25,6 +25,7 @@
 import { Snackbar } from '@material-ui/core';
 import React, { Key } from 'react';
 import Snapshot from 'src/common/Snapshot';
+import { ISnackbarSetting } from './NewRequestBloc';
 import NewRequestContext from './NewRequestContext';
 
 interface IProps {
@@ -49,17 +50,17 @@ class NewRequestSnackbar extends React.Component<IProps> {
               {(key: string | number) => (
                 <Snapshot source={bloc.snackbarOpen} initialValue={false}>
                   {(open: boolean) => (
-                    <Snapshot source={bloc.snackbarMessage} initialValue="">
-                      {(message: string) => (
+                    <Snapshot source={bloc.snackbarSetting} initialValue={{message: "", autoHideDuration: undefined}}>
+                      {(setting: ISnackbarSetting) => (
                         <Snackbar
                           key={key}
                           anchorOrigin={{vertical: "bottom", horizontal: "left"}}
-                          autoHideDuration={2750}
+                          autoHideDuration={setting.autoHideDuration}
                           open={open}
                           onClose={onClose}
                           onEntered={onEntered}
                           onExited={onExited}
-                          message={message}
+                          message={setting.message}
                         />
                       )}
                     </Snapshot>
