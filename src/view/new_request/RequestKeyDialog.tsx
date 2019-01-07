@@ -24,6 +24,7 @@
 
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@material-ui/core';
 import React, { Key } from 'react';
+import { executeBackNavigation, prepareBackNavigation } from 'src/common/BackNavigation';
 import Snapshot from 'src/common/Snapshot';
 import { INewRequestBloc } from './NewRequestBloc';
 import NewRequestContext from './NewRequestContext';
@@ -37,7 +38,16 @@ class RequestKeyDialog extends React.Component<IProps> {
     return (
       <NewRequestContext.Consumer>
         {bloc => {          
-          const onClose = () => bloc.onRequestKeyDialogClose.next(false);
+          let dialogResult: boolean;
+          const onEnter = () => {
+            dialogResult = false;
+            prepareBackNavigation(() => bloc.onRequestKeyDialogClose.next(dialogResult));
+          };
+          const close = (result: boolean) => {
+            dialogResult = result;
+            executeBackNavigation();
+          };
+          const onClose = () => close(false);
           const onEntered = () => bloc.onRequestKeyDialogEntered.next();
           const onExited = () => bloc.onRequestKeyDialogExited.next();
           return (
@@ -49,10 +59,11 @@ class RequestKeyDialog extends React.Component<IProps> {
                       key={key}
                       open={open}
                       onClose={onClose}
+                      onEnter={onEnter}
                       onEntered={onEntered}
                       onExited={onExited}
                     >
-                      {this.renderDialogContent(bloc)}
+                      {this.renderDialogContent(bloc, close)}
                     </Dialog>
                   )}
                 </Snapshot>
@@ -64,9 +75,9 @@ class RequestKeyDialog extends React.Component<IProps> {
     )
   }
 
-  private renderDialogContent(bloc: INewRequestBloc) {
-    const onDone = () => { bloc.onRequestKeyDialogClose.next(true); };
-    const onCancel = () => { bloc.onRequestKeyDialogClose.next(false); };
+  private renderDialogContent(bloc: INewRequestBloc, close: (result: boolean) => void) {
+    const onDone = () => { close(true); };
+    const onCancel = () => { close(false); };
     return (
       <React.Fragment>
         <DialogTitle>リクエストキーの入力</DialogTitle>
