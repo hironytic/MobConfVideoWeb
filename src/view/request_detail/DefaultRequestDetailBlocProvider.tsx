@@ -1,7 +1,7 @@
 //
-// IRequestBloc.ts
+// DefaultRequestDetailBlocProvider.tsx
 //
-// Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2019 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,44 +22,33 @@
 // THE SOFTWARE.
 //
 
-import { Observable, Observer } from "rxjs";
-import { IBloc } from 'src/common/Bloc';
-import Event from "src/model/Event";
-import Request from "src/model/Request";
+import React, { Key } from 'react';
+import BlocProvider from 'src/common/BlocProvider';
+import RepositoryContext from 'src/RepositoryContext';
+import DefaultRequestDetailBloc from './DefaultRequestDetailBloc';
+import RequestDetailContext from './RequestDetailContext';
 
-export enum RequestListState {
-  NotLoaded,
-  Loading,
-  Loaded,
-  Error,
+interface IProps {
+  key?: Key;
 }
 
-export interface IRequestListNotLoaded {
-  state: RequestListState.NotLoaded;
+class DefaultRequestDetailBlocProvider extends React.Component<IProps> {
+  public render() {
+    return (
+      <RepositoryContext.Consumer>
+        {repos => {
+          const requestDetailBlocCreator = () => DefaultRequestDetailBloc.create(
+            repos.requestRepository,
+          );
+          return (
+            <BlocProvider context={RequestDetailContext} creator={requestDetailBlocCreator} key={this.props.key}>
+              {this.props.children}
+            </BlocProvider>
+          );
+        }}
+      </RepositoryContext.Consumer>
+    );
+  }
 }
 
-export interface IRequestListLoading {
-  state: RequestListState.Loading;
-}
-
-export interface IRequestListLoaded {
-  state: RequestListState.Loaded;
-  requests: Request[];
-}
-
-export interface IRequestListError {
-  state: RequestListState.Error;
-  message: string;
-}
-
-export type IRequestList = IRequestListNotLoaded | IRequestListLoading | IRequestListLoaded | IRequestListError;
-
-export interface IRequestBloc extends IBloc {
-  // inputs
-  currentEventIdChanged: Observer<string | false>;
-
-  // outputs
-  allEvents: Observable<Event[]>;
-  currentEventId: Observable<string | false>;
-  requestList: Observable<IRequestList>;
-}
+export default DefaultRequestDetailBlocProvider;

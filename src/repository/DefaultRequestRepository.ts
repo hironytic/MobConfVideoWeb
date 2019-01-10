@@ -49,6 +49,28 @@ class DefaultRequestRepository implements IRequestRepository {
     });
   }
 
+  public getRequestObservable(eventId: string, requestId: string): Observable<Request> {
+    return new Observable((subscriber) => {
+      const canceller = firebase
+        .firestore()
+        .collection("events")
+        .doc(eventId)
+        .collection("requests")
+        .doc(requestId)
+        .onSnapshot(snapshot => {
+          if (snapshot.exists) {
+            subscriber.next(Request.fromSnapshot(snapshot));
+          } else {
+            subscriber.error("データが見つからないか、削除されました。")
+          }
+        }, error => {
+          subscriber.error(error);
+        });
+      
+      return canceller;
+    });
+  }
+
   public async addRequestFromSession(data: IAddRequestFromSessionData): Promise<void> {
     const func = firebase.functions().httpsCallable("addRequestFromSession");
     await func(data);

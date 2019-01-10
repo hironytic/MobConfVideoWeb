@@ -117,7 +117,7 @@ class DefaultSessionDetailBloc implements ISessionDetailBloc {
   }
 
   private constructor(
-    private subscription: Subscription | undefined,
+    private subscription: Subscription,
 
     // inputs
     public showSession: Observer<string>,
@@ -130,9 +130,7 @@ class DefaultSessionDetailBloc implements ISessionDetailBloc {
   ) {}
 
   public dispose() {
-    if (this.subscription !== undefined) {
-      this.subscription.unsubscribe();
-    }
+    this.subscription.unsubscribe();
   }
 }
 

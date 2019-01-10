@@ -67,18 +67,18 @@ class DefaultRequestBloc implements IRequestBloc {
           return requestRepository.getAllRequestsObservable(eventId).pipe(
             map((requests) => ({
               state: RequestListState.Loaded,
-              loaded: { requests },
-            })),
+              requests,
+            } as IRequestList)),
             startWith({
               state: RequestListState.Loading,
-            })
+            } as IRequestList)
           );
         }
       }),
       catchError((error) => of({
         state: RequestListState.Error,
-        error: { message: error.toString() }
-      })),
+        message: error.toString(),
+      } as IRequestList)),
       publishBehavior({ state: RequestListState.NotLoaded }),
     ) as ConnectableObservable<IRequestList>;
     subscription.add(requestList.connect());

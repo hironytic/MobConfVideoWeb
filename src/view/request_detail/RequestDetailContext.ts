@@ -1,7 +1,7 @@
 //
-// IRequestBloc.ts
+// RequestDetailContext.ts
 //
-// Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2019 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,44 +22,8 @@
 // THE SOFTWARE.
 //
 
-import { Observable, Observer } from "rxjs";
-import { IBloc } from 'src/common/Bloc';
-import Event from "src/model/Event";
-import Request from "src/model/Request";
+import React from 'react';
+import { IRequestDetailBloc } from './RequestDetailBloc';
 
-export enum RequestListState {
-  NotLoaded,
-  Loading,
-  Loaded,
-  Error,
-}
-
-export interface IRequestListNotLoaded {
-  state: RequestListState.NotLoaded;
-}
-
-export interface IRequestListLoading {
-  state: RequestListState.Loading;
-}
-
-export interface IRequestListLoaded {
-  state: RequestListState.Loaded;
-  requests: Request[];
-}
-
-export interface IRequestListError {
-  state: RequestListState.Error;
-  message: string;
-}
-
-export type IRequestList = IRequestListNotLoaded | IRequestListLoading | IRequestListLoaded | IRequestListError;
-
-export interface IRequestBloc extends IBloc {
-  // inputs
-  currentEventIdChanged: Observer<string | false>;
-
-  // outputs
-  allEvents: Observable<Event[]>;
-  currentEventId: Observable<string | false>;
-  requestList: Observable<IRequestList>;
-}
+const RequestDetailContext = React.createContext<IRequestDetailBloc>(undefined!);
+export default RequestDetailContext;

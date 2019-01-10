@@ -22,13 +22,13 @@
 // THE SOFTWARE.
 //
 
-import { Button, Card, CircularProgress, Grid, Theme, Typography, withTheme } from '@material-ui/core';
+import { Card, CardActionArea, CircularProgress, Grid, Theme, Typography, withTheme } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
-import SlideIcon from '@material-ui/icons/Note';
-import VideoIcon from '@material-ui/icons/OndemandVideo';
 import React, { Key } from 'react';
 import Snapshot from 'src/common/Snapshot';
 import Request from 'src/model/Request';
+import RequestDetailContext from '../request_detail/RequestDetailContext';
+import SessionDetailContext from '../session_detail/SessionDetailContext';
 import { IRequestList, IRequestListError, IRequestListLoaded, RequestListState } from './RequestBloc';
 import RequestContext from './RequestContext';
 
@@ -42,15 +42,25 @@ class RequestList extends React.Component<IProps> {
     return (
       <RequestContext.Consumer>
         {(bloc) => (
-          <Snapshot source={bloc.requestList} initialValue={{state: RequestListState.NotLoaded}}>
-            {(requestList: IRequestList) => this.renderBody(requestList)}
+          <Snapshot source={bloc.currentEventId} initialValue={false}>
+            {(currentEventId: string | false) => {
+              if (currentEventId === false) {
+                return (<React.Fragment/>);
+              } else {
+                return (
+                  <Snapshot source={bloc.requestList} initialValue={{state: RequestListState.NotLoaded}}>
+                    {(requestList: IRequestList) => this.renderBody(currentEventId, requestList)}
+                  </Snapshot>
+                );
+              }
+            }}
           </Snapshot>
         )}
       </RequestContext.Consumer>
     );
   }
 
-  private renderBody(requestList: IRequestList) {
+  private renderBody(currentEventId: string, requestList: IRequestList) {
     switch (requestList.state) {
       case RequestListState.NotLoaded:
         return (<React.Fragment/>);
@@ -59,10 +69,10 @@ class RequestList extends React.Component<IProps> {
         return this.renderLoadingBody();
       
       case RequestListState.Loaded:
-        return this.renderLoadedBody(requestList.loaded!);
+        return this.renderLoadedBody(currentEventId, requestList);
       
       case RequestListState.Error:
-        return this.renderErrorBody(requestList.error!);      
+        return this.renderErrorBody(requestList);
     }
   }
 
@@ -76,7 +86,7 @@ class RequestList extends React.Component<IProps> {
     );
   }
 
-  private renderLoadedBody(loaded: IRequestListLoaded) {
+  private renderLoadedBody(currentEventId: string, loaded: IRequestListLoaded) {
     if (loaded.requests.length === 0) {
       return (
         <div style={{
@@ -97,13 +107,13 @@ class RequestList extends React.Component<IProps> {
         <Grid container={true}
               spacing={24}
               alignItems="flex-start">
-          {loaded.requests.map((request) => this.renderRequestItem(request))}
+          {loaded.requests.map((request) => this.renderRequestItem(currentEventId, request))}
         </Grid>
       </div>
     );
   }
 
-  private renderRequestItem(request: Request) {
+  private renderRequestItem(currentEventId: string, request: Request) {
     return (
       <Grid key={request.id} item={true} xs={12} md={6} lg={4}>
         <Card style={{
@@ -111,45 +121,44 @@ class RequestList extends React.Component<IProps> {
           marginRight: "auto",
           textAlign: "start",
         }}>
-          <div style={{padding: 20}}> {/* <CardActionArea style={{padding: 20}}> */}
-            <Grid container={true} spacing={16} justify="space-between">
-              <Grid item={true} xs={6}>
-                <Typography variant="body1" color="textSecondary">
-                  {request.conference}
-                </Typography>
-              </Grid>
-              <Grid item={true} xs={6} style={{textAlign: "end"}}>
-                {(request.isWatched) ? (
-                  <CheckIcon nativeColor="green" />
-                ) : (
-                  <React.Fragment/>
-                )}
-              </Grid>
-              <Grid item={true} xs={12}>
-                <Typography variant="headline" color="textPrimary">
-                  {request.title}
-                </Typography>
-              </Grid>
-              <Grid item={true} xs={12}>
-                <Grid container={true} spacing={0} alignItems="center" justify="flex-end">
-                  <Grid item={true}>
-                    {request.slideUrl !== undefined ? (
-                      <Button href={request.slideUrl} target="_blank" color="primary">
-                        <SlideIcon/> スライド
-                      </Button>
-                    ) : (
-                      <React.Fragment/>
-                    )}
-                  </Grid>
-                  <Grid item={true}>
-                      <Button href={request.videoUrl} target="_blank" color="primary">
-                        <VideoIcon/> ビデオ
-                      </Button>
-                  </Grid>
-                </Grid>
-              </Grid>              
-            </Grid>
-          </div> {/* </CardActionArea> */}
+          <SessionDetailContext.Consumer>
+            {sessionDetailBloc => (
+              <RequestDetailContext.Consumer>
+                {requestDetailBloc => {
+                  const onClick = () => {
+                    if (request.sessionId !== undefined) {
+                      sessionDetailBloc.showSession.next(request.sessionId);
+                    } else {
+                      requestDetailBloc.showRequest.next({eventId: currentEventId, requestId: request.id});
+                    }
+                  };
+                  return (
+                    <CardActionArea style={{padding: 20}} onClick={onClick}>
+                      <Grid container={true} spacing={16} justify="space-between">
+                        <Grid item={true} xs={6}>
+                          <Typography variant="body1" color="textSecondary">
+                            {request.conference}
+                          </Typography>
+                        </Grid>
+                        <Grid item={true} xs={6} style={{textAlign: "end"}}>
+                          {(request.isWatched) ? (
+                            <CheckIcon nativeColor="green" />
+                          ) : (
+                            <React.Fragment/>
+                          )}
+                        </Grid>
+                        <Grid item={true} xs={12}>
+                          <Typography variant="headline" color="textPrimary">
+                            {request.title}
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </CardActionArea>
+                  );
+                }}
+              </RequestDetailContext.Consumer>
+            )}
+          </SessionDetailContext.Consumer>
         </Card>
       </Grid>
     );

@@ -42,6 +42,7 @@ export interface IAddRequestWithoutSessionData {
 
 export interface IRequestRepository {
   getAllRequestsObservable(eventId: string): Observable<Request[]>;
+  getRequestObservable(eventId: string, requestId: string): Observable<Request>;
   addRequestFromSession(data: IAddRequestFromSessionData): Promise<void>;
   addRequestWithoutSession(data: IAddRequestWithoutSessionData): Promise<void>;
 }

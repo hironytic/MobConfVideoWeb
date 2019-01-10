@@ -57,7 +57,7 @@ const styles = (theme: Theme) => ({
 class SessionDetailDialog extends React.Component<IProps> {
   public render() {
     return (
-      <SessionDetailContext.Consumer>
+      <SessionDetailContext.Consumer key={this.props.key}>
         {(bloc) => {
           const onEnter = () => {
             prepareBackNavigation(() => bloc.dialogClosed.next());
@@ -68,12 +68,14 @@ class SessionDetailDialog extends React.Component<IProps> {
           return (
             <Snapshot source={bloc.dialogOpen} initialValue={false}>
               {(open: boolean) => (
-                <Dialog open={open}
-                        onClose={onClose}
-                        onEnter={onEnter}
-                        fullScreen={this.props.fullScreen}
-                        fullWidth={true}
-                        maxWidth="xl">
+                <Dialog                  
+                  open={open}
+                  onClose={onClose}
+                  onEnter={onEnter}
+                  fullScreen={this.props.fullScreen}
+                  fullWidth={true}
+                  maxWidth="xl"
+                >
                   <Snapshot source={bloc.sessionDetail} initialValue={{state: SessionDetailState.NotLoaded}}>
                     {(sessionDetail: ISessionDetail) => this.renderDialogContent(onClose, sessionDetail)}
                   </Snapshot>

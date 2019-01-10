@@ -27,6 +27,8 @@ import React, { Key } from 'react';
 import { combineLatest } from 'rxjs';
 import Snapshot from 'src/common/Snapshot';
 import Event from 'src/model/Event';
+import DefaultRequestDetailBlocProvider from '../request_detail/DefaultRequestDetailBlocProvider';
+import RequestDetailDialog from '../request_detail/RequestDetailDialog';
 import RequestContext from './RequestContext';
 import RequestList from './RequestList';
 
@@ -38,7 +40,7 @@ interface IProps {
 class RequestPage extends React.Component<IProps> {
   public render() {
     return (
-      <React.Fragment>
+      <DefaultRequestDetailBlocProvider>
         <RequestContext.Consumer>
           {(bloc) => {
             const source = combineLatest(bloc.allEvents, bloc.currentEventId)
@@ -67,8 +69,9 @@ class RequestPage extends React.Component<IProps> {
             );
           }}
         </RequestContext.Consumer>
-        <RequestList />
-      </React.Fragment>
+        <RequestList/>
+        <RequestDetailDialog/>
+      </DefaultRequestDetailBlocProvider>
     );
   }
 }

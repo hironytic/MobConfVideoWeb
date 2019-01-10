@@ -1,7 +1,7 @@
 //
-// IRequestBloc.ts
+// RequestDetailBloc.ts
 //
-// Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2019 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,44 +22,48 @@
 // THE SOFTWARE.
 //
 
-import { Observable, Observer } from "rxjs";
+import { Observable, Observer } from 'rxjs';
 import { IBloc } from 'src/common/Bloc';
-import Event from "src/model/Event";
-import Request from "src/model/Request";
+import Request from 'src/model/Request';
 
-export enum RequestListState {
+export enum RequestDetailState {
   NotLoaded,
   Loading,
   Loaded,
   Error,
 }
 
-export interface IRequestListNotLoaded {
-  state: RequestListState.NotLoaded;
+export interface IRequestDetailNotLoaded {
+  state: RequestDetailState.NotLoaded;
 }
 
-export interface IRequestListLoading {
-  state: RequestListState.Loading;
+export interface IRequestDetailLoading {
+  state: RequestDetailState.Loading;
 }
 
-export interface IRequestListLoaded {
-  state: RequestListState.Loaded;
-  requests: Request[];
+export interface IRequestDetailLoaded {
+  state: RequestDetailState.Loaded;
+  request: Request;
 }
 
-export interface IRequestListError {
-  state: RequestListState.Error;
+export interface IRequestDetailError {
+  state: RequestDetailState.Error;
   message: string;
 }
 
-export type IRequestList = IRequestListNotLoaded | IRequestListLoading | IRequestListLoaded | IRequestListError;
+export type IRequestDetail = IRequestDetailNotLoaded | IRequestDetailLoading | IRequestDetailLoaded | IRequestDetailError;
 
-export interface IRequestBloc extends IBloc {
+export interface IRequestRef {
+  eventId: string;
+  requestId: string;
+}
+
+export interface IRequestDetailBloc extends IBloc {
   // inputs
-  currentEventIdChanged: Observer<string | false>;
+  showRequest: Observer<IRequestRef>;
+  dialogClosed: Observer<void>;
 
   // outputs
-  allEvents: Observable<Event[]>;
-  currentEventId: Observable<string | false>;
-  requestList: Observable<IRequestList>;
+  dialogOpen: Observable<boolean>;
+  requestDetail: Observable<IRequestDetail>;
 }
