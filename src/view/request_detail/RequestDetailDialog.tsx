@@ -125,9 +125,20 @@ class RequestDetailDialog extends React.Component<IProps> {
     return (
       <Grid container={true} spacing={16} justify="space-between">
         <Grid item={true} xs={12}>
-          <Typography variant="body1" color="textSecondary">
-            {request.conference}
-          </Typography>
+          <Grid container={true} spacing={16} justify="space-between">
+            <Grid item={true}>
+              <Typography variant="body1" color="textSecondary">
+                {request.conference}
+              </Typography>
+            </Grid>
+            <Grid item={true} style={{textAlign: "end"}}>
+              {(request.minutes) ? (
+                <Typography variant="body1" color="textSecondary">
+                  {request.minutes}分
+                </Typography>
+              ) : (<React.Fragment/>)}
+            </Grid>
+          </Grid>
         </Grid>
         <Grid item={true} xs={12}>
           <Typography variant="headline" color="textPrimary">

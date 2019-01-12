@@ -141,16 +141,25 @@ class RequestList extends React.Component<IProps> {
                           </Typography>
                         </Grid>
                         <Grid item={true} xs={6} style={{textAlign: "end"}}>
-                          {(request.isWatched) ? (
-                            <CheckIcon nativeColor="green" />
-                          ) : (
-                            <React.Fragment/>
-                          )}
+                          {(request.minutes) ? (
+                            <Typography variant="body1" color="textSecondary">
+                              {request.minutes}分
+                            </Typography>
+                          ) : (<React.Fragment/>)}
                         </Grid>
                         <Grid item={true} xs={12}>
                           <Typography variant="headline" color="textPrimary">
                             {request.title}
                           </Typography>
+                        </Grid>
+                        <Grid item={true} xs={12} style={{textAlign: "end"}}>
+                          <Grid item={true}>
+                            {(request.isWatched) ? (
+                              <CheckIcon nativeColor="green" />
+                            ) : (
+                              <React.Fragment/>
+                            )}
+                          </Grid>
                         </Grid>
                       </Grid>
                     </CardActionArea>

@@ -29,6 +29,7 @@ interface IRequestData {
   sessionId?: string;
   title: string;
   conference: string;
+  minutes?: number;
   video: string;
   slide?: string;
   memo?: string;
@@ -43,6 +44,7 @@ class Request {
       data.sessionId,
       data.title,
       data.conference,
+      data.minutes,
       data.video,
       data.slide,
       data.memo,
@@ -55,6 +57,7 @@ class Request {
     public sessionId: string | undefined,
     public title: string,
     public conference: string,
+    public minutes: number | undefined,
     public videoUrl: string,
     public slideUrl: string | undefined,
     public memo: string | undefined,
