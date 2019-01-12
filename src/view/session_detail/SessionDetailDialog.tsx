@@ -188,20 +188,22 @@ class SessionDetailDialog extends React.Component<IProps> {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item={true} xs={12}>
-          <Grid container={true} spacing={0} justify="center">
-            <Grid item={true}>
-              <NewRequestContext.Consumer>
-                {(bloc) => {
-                  const onClick = () => bloc.addRequestFromSession.next({sessionId: loaded.session.session.id});
-                  return (
-                    <Button variant="contained" color="primary" onClick={onClick}>この動画をリクエスト</Button>
-                  );
-                }}
-              </NewRequestContext.Consumer>
+        {(loaded.session.canRequest) ? (
+          <Grid item={true} xs={12}>
+            <Grid container={true} spacing={0} justify="center">
+              <Grid item={true}>
+                <NewRequestContext.Consumer>
+                  {(bloc) => {
+                    const onClick = () => bloc.addRequestFromSession.next({sessionId: loaded.session.session.id});
+                    return (
+                      <Button variant="contained" color="primary" onClick={onClick}>この動画をリクエスト</Button>
+                    );
+                  }}
+                </NewRequestContext.Consumer>
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
+        ) : (<React.Fragment/>)}
       </Grid>
     );
   }

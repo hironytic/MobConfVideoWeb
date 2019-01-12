@@ -28,7 +28,7 @@ import Conference from 'src/model/Conference';
 import { IConferenceRepository } from 'src/repository/ConferenceRepository';
 import { IEventRepository } from 'src/repository/EventRepository';
 import { ISessionRepository } from 'src/repository/SessionRepository';
-import { IIdAndName, ISessionDetail, ISessionDetailBloc, ISessionItem, SessionDetailState } from "./SessionDetailBloc";
+import { IIdAndName, ISessionDetail, ISessionDetailBloc, ISessionItem, IShowSessionParam, SessionDetailState } from "./SessionDetailBloc";
 
 class DefaultSessionDetailBloc implements ISessionDetailBloc {
   public static create(
@@ -38,7 +38,7 @@ class DefaultSessionDetailBloc implements ISessionDetailBloc {
   ) {
     const subscription = new Subscription();
 
-    const showSession = new Subject<string>();
+    const showSession = new Subject<IShowSessionParam>();
     const dialogClosed = new Subject<void>();
     const requestClicked = new Subject<void>();
 
@@ -74,8 +74,8 @@ class DefaultSessionDetailBloc implements ISessionDetailBloc {
     )
 
     const sessionDetail = showSession.pipe(
-      switchMap(sessionId => {
-        return sessionRepository.getSessionObservable(sessionId).pipe(
+      switchMap(showParam => {
+        return sessionRepository.getSessionObservable(showParam.sessionId).pipe(
           withLatestFrom(
             conferenceNameMap,
             allEvents,
@@ -90,6 +90,7 @@ class DefaultSessionDetailBloc implements ISessionDetailBloc {
                 session: sessionValue,
                 conferenceName: conferenceNameMapValue[sessionValue.conferenceId],
                 watchedEvents,
+                canRequest: showParam.canRequest,
               } as ISessionItem,
             } as ISessionDetail;
           }),
@@ -120,7 +121,7 @@ class DefaultSessionDetailBloc implements ISessionDetailBloc {
     private subscription: Subscription,
 
     // inputs
-    public showSession: Observer<string>,
+    public showSession: Observer<IShowSessionParam>,
     public dialogClosed: Observer<void>,
     public requestClicked: Observer<void>,
 

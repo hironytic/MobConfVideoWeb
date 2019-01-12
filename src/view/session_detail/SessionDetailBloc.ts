@@ -35,6 +35,7 @@ export interface ISessionItem {
   session: Session;
   conferenceName: string;
   watchedEvents: IIdAndName[];
+  canRequest: boolean;
 }
 
 export enum SessionDetailState {
@@ -64,9 +65,14 @@ export interface ISessionDetailError {
 
 export type ISessionDetail = ISessionDetailNotLoaded | ISessionDetailLoading | ISessionDetailLoaded | ISessionDetailError;
 
+export interface IShowSessionParam {
+  sessionId: string,
+  canRequest: boolean,
+}
+
 export interface ISessionDetailBloc extends IBloc {
   // inputs
-  showSession: Observer<string>;
+  showSession: Observer<IShowSessionParam>;
   dialogClosed: Observer<void>;
   requestClicked: Observer<void>;
 

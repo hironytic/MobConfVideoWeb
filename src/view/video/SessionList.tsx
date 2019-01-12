@@ -117,7 +117,7 @@ class SessionList extends React.Component<StyledComponentProps> {
           <SessionDetailContext.Consumer>
             {(bloc) => {
               const sessionTapped = () => {
-                bloc.showSession.next(sessionItem.session.id);
+                bloc.showSession.next({sessionId: sessionItem.session.id, canRequest: true});
               };
               return (
                 <CardActionArea style={{padding: 20}} onClick={sessionTapped}>

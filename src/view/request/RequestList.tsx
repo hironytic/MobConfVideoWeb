@@ -127,7 +127,7 @@ class RequestList extends React.Component<IProps> {
                 {requestDetailBloc => {
                   const onClick = () => {
                     if (request.sessionId !== undefined) {
-                      sessionDetailBloc.showSession.next(request.sessionId);
+                      sessionDetailBloc.showSession.next({sessionId: request.sessionId, canRequest: false});
                     } else {
                       requestDetailBloc.showRequest.next({eventId: currentEventId, requestId: request.id});
                     }
