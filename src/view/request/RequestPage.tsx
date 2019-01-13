@@ -58,7 +58,7 @@ class RequestPage extends React.Component<IProps> {
                   return (
                     <Tabs value={currentTabId}
                           onChange={tabIndexChange}
-                          scrollable={true}>
+                          variant="scrollable">
                       {events.map((event) => (
                         <Tab key={event.id} label={event.name} value={event.id} />
                       ))}
