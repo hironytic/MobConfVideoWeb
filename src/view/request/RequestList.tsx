@@ -23,6 +23,7 @@
 //
 
 import { Card, CardActionArea, CircularProgress, Grid, Theme, Typography, withTheme } from '@material-ui/core';
+import grey from '@material-ui/core/colors/grey';
 import CheckIcon from '@material-ui/icons/Check';
 import React, { Key } from 'react';
 import Snapshot from 'src/common/Snapshot';
@@ -114,13 +115,17 @@ class RequestList extends React.Component<IProps> {
   }
 
   private renderRequestItem(currentEventId: string, request: Request) {
+    const cardStyle: React.CSSProperties = {
+      marginLeft: "auto",
+      marginRight: "auto",
+      textAlign: "start",
+    };
+    if (request.isWatched) {
+      cardStyle.backgroundColor = grey["100"];
+    }
     return (
       <Grid key={request.id} item={true} xs={12} md={6} lg={4}>
-        <Card style={{
-          marginLeft: "auto",
-          marginRight: "auto",
-          textAlign: "start",
-        }}>
+        <Card style={cardStyle}>
           <SessionDetailContext.Consumer>
             {sessionDetailBloc => (
               <RequestDetailContext.Consumer>
