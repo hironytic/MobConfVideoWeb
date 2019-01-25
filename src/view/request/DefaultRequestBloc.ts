@@ -23,7 +23,7 @@
 //
 
 import { concat, ConnectableObservable, Observable, Observer, of, Subject, Subscription } from "rxjs";
-import { catchError, distinctUntilChanged, map, publishBehavior, skip, startWith, switchMap, take } from 'rxjs/operators';
+import { catchError, distinctUntilChanged, filter, map, publishBehavior, startWith, switchMap, take } from 'rxjs/operators';
 import Event from "src/model/Event";
 import { IEventRepository } from 'src/repository/EventRepository';
 import { IRequestRepository } from 'src/repository/RequestRepository';
@@ -48,9 +48,9 @@ class DefaultRequestBloc implements IRequestBloc {
     // in the first all-events-list
     const currentEventId = concat(
       allEvents.pipe(
-        skip(1),  // skip initial value (empty list)
+        filter(events => events.length > 0),  // skip (initial) empty list
         take(1),  // first one after loaded
-        map((events) => (events.length > 0) ? events[0].id : false)
+        map(events => events[0].id),
       ),
       currentEventIdChanged,
     ).pipe(
