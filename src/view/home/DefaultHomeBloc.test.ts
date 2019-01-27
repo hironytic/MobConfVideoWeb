@@ -23,7 +23,7 @@
 //
 
 import { Subscription } from 'rxjs';
-import { take } from 'rxjs/operators';
+import EventuallyObserver from 'src/test/EventuallyObserver';
 import DefaultHomeBloc from "./DefaultHomeBloc";
 import { IHomeBloc } from './HomeBloc';
 
@@ -40,20 +40,21 @@ afterEach(() => {
 })
 
 it("shows first page on beginning", async () => {
-  const page = await bloc.currentPageIndex.pipe(
-    take(1)
-  ).toPromise();
-  expect(page).toBe(0);
+  const observer = new EventuallyObserver<number>();
+  const expectation = observer.expectValue(currentPageIndex => {
+    expect(currentPageIndex).toBe(0);
+  });
+  subscription.add(bloc.currentPageIndex.subscribe(observer));
+  await expectation;
 });
 
-it("finally changes current page", done => {
-  subscription.add(bloc.currentPageIndex.subscribe(page => {
-    try {
-      expect(page).toBe(1);
-      done();
-    } catch (error) {
-      return;
-    }
-  }));
+it("changes current page by user's selection", async () => {
+  const observer = new EventuallyObserver<number>();
+  const expectation = observer.expectValue(currentPageIndex => {
+    expect(currentPageIndex).toBe(1);
+  });
+  subscription.add(bloc.currentPageIndex.subscribe(observer));
+
   bloc.currentPageIndexChanged.next(1);
+  await expectation;
 });
