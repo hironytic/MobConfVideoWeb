@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-import { never, Subject, Subscription } from 'rxjs';
+import { never, Subject, Subscription, throwError } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 import Event from 'src/model/Event';
 import Request from 'src/model/Request';
@@ -30,7 +30,7 @@ import EventuallyObserver from 'src/test/EventuallyObserver';
 import MockEventRepository from 'src/test/mock/MockEventRepository';
 import MockRequestRepository from 'src/test/mock/MockRequestRepository';
 import DefaultRequestBloc from "./DefaultRequestBloc";
-import { IRequestBloc, IRequestList, IRequestListLoaded, RequestListState } from './RequestBloc';
+import { IRequestBloc, IRequestList, IRequestListError, IRequestListLoaded, RequestListState } from './RequestBloc';
 
 let mockEventRepository: MockEventRepository;
 let mockRequestRepository: MockRequestRepository;
@@ -143,6 +143,19 @@ it("changes the current event by user's selection", async() => {
   await expectation;
 });
 
+it("emits empty event list when failed to load them", async() => {
+  mockEventRepository.getAllEventsObservable.mockReturnValue(throwError(new Error("error")));
+
+  bloc = DefaultRequestBloc.create(mockEventRepository, mockRequestRepository);
+
+  const observer = new EventuallyObserver<Event[]>();
+  const expectation = observer.expectValue(events => {
+    expect(events.length).toBe(0);
+  });
+  subscription.add(bloc.allEvents.subscribe(observer));
+  await expectation;
+});
+
 it("emits requests for current event", async() => {
   mockEventRepository.getAllEventsObservable.mockReturnValue(never().pipe(
     startWith(eventData1),
@@ -224,4 +237,55 @@ it("reloads requests when user changes the current event", async() => {
   bloc.currentEventIdChanged.next("e2");
   await expectationOfLoadingRequestsForEvent2;
   await expectationOfLoadedRequestsForEvent2;
+});
+
+it("emits a state of error when failed to load request", async () => {
+  const error = new Error("error occured");
+  mockEventRepository.getAllEventsObservable.mockReturnValue(never().pipe(
+    startWith(eventData1),
+  ));
+  mockRequestRepository.getAllRequestsObservable.mockReturnValue(throwError(error));
+
+  bloc = DefaultRequestBloc.create(mockEventRepository, mockRequestRepository);
+
+  const observer = new EventuallyObserver<IRequestList>();
+  const expectation = observer.expectValue(requestList => {
+    expect(requestList.state).toBe(RequestListState.Error);
+    expect((requestList as IRequestListError).message).toBe(error.toString());
+  });
+  subscription.add(bloc.requestList.subscribe(observer));
+  await expectation;
+});
+
+it("resumes from error by selecting another event", async () => {
+  mockEventRepository.getAllEventsObservable.mockReturnValue(never().pipe(
+    startWith(eventData1),
+  ));
+  mockRequestRepository.getAllRequestsObservable.mockImplementation((eventId: string) => {
+    switch (eventId) {
+      case "e1":
+        return throwError(new Error("failed to load requests for e1"));
+      case "e2":
+        return never().pipe(startWith(requestData2));
+      default:
+        return never();
+    }
+  });
+
+  bloc = DefaultRequestBloc.create(mockEventRepository, mockRequestRepository);
+
+  const observer = new EventuallyObserver<IRequestList>();
+  const expectationOfRequestsForEvent1 = observer.expectValue(requestList => {
+    expect(requestList.state).toBe(RequestListState.Error);
+  });
+  subscription.add(bloc.requestList.subscribe(observer));
+  await expectationOfRequestsForEvent1;
+
+  const expectationOfRequestsForEvent2 = observer.expectValue(requestList => {
+    expect(requestList.state).toBe(RequestListState.Loaded);
+    expect((requestList as IRequestListLoaded).requests).toBe(requestData2);
+  });
+
+  bloc.currentEventIdChanged.next("e2");
+  await expectationOfRequestsForEvent2;
 });
