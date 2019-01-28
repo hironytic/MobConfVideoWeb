@@ -31,7 +31,7 @@ interface IExpectation<T> {
   resolve: ExpectationResolve;
 }
 
-export default class Eventually<T> implements Observer<T> {
+export default class EventuallyObserver<T> implements Observer<T> {
   private static onReceived<T>(expectations: Array<IExpectation<T>>, value: T) {
     const resolves: ExpectationResolve[] = [];
     const resolvedIndices: number[] = [];
@@ -57,11 +57,11 @@ export default class Eventually<T> implements Observer<T> {
   private errorExpectations: Array<IExpectation<any>> = [];
 
   public next(value: T) {
-    Eventually.onReceived(this.nextExpectations, value);
+    EventuallyObserver.onReceived(this.nextExpectations, value);
   }
   
   public error(err: any) {
-    Eventually.onReceived(this.errorExpectations, err);
+    EventuallyObserver.onReceived(this.errorExpectations, err);
   }
 
   public complete() {
