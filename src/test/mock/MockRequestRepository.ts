@@ -22,12 +22,13 @@
 // THE SOFTWARE.
 //
 
-import { never } from 'rxjs';
+import { never, Observable } from 'rxjs';
+import Request from "src/model/Request";
 import { IAddRequestFromSessionData, IAddRequestWithoutSessionData, IRequestRepository } from 'src/repository/RequestRepository';
 
 export default class MockRequestRepository implements IRequestRepository {
-  public getAllRequestsObservable = jest.fn((eventId: string) => never());
-  public getRequestObservable = jest.fn((eventId: string, requestId: string) => never());
-  public addRequestFromSession = jest.fn((data: IAddRequestFromSessionData) => Promise.reject());
-  public addRequestWithoutSession = jest.fn((data: IAddRequestWithoutSessionData) => Promise.reject());
+  public getAllRequestsObservable = jest.fn((eventId: string) => never() as Observable<Request[]>);
+  public getRequestObservable = jest.fn((eventId: string, requestId: string) => never() as Observable<Request>);
+  public addRequestFromSession = jest.fn((data: IAddRequestFromSessionData) => Promise.reject<void>());
+  public addRequestWithoutSession = jest.fn((data: IAddRequestWithoutSessionData) => Promise.reject<void>());
 }

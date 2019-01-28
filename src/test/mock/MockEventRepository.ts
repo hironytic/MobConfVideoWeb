@@ -22,9 +22,10 @@
 // THE SOFTWARE.
 //
 
-import { never } from 'rxjs';
+import { never, Observable } from 'rxjs';
+import Event from 'src/model/Event';
 import { IEventRepository } from "src/repository/EventRepository";
 
 export default class MockEventRepository implements IEventRepository {
-  public getAllEventsObservable = jest.fn(() => never());
+  public getAllEventsObservable = jest.fn(() => never() as Observable<Event[]>);
 }
