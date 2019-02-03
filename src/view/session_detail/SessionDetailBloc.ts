@@ -74,7 +74,6 @@ export interface ISessionDetailBloc extends IBloc {
   // inputs
   showSession: Observer<IShowSessionParam>;
   dialogClosed: Observer<void>;
-  requestClicked: Observer<void>;
 
   // outputs
   dialogOpen: Observable<boolean>;
