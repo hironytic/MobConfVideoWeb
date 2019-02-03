@@ -33,7 +33,7 @@ import MockConferenceRepository from 'src/test/mock/MockConferenceRepository';
 import MockEventRepository from 'src/test/mock/MockEventRepository';
 import MockSessionRepository from 'src/test/mock/MockSessionRepository';
 import DefaultSessionDetailBloc from './DefaultSessionDetailBloc';
-import { ISessionDetail, ISessionDetailBloc, ISessionDetailLoaded, SessionDetailState, ISessionDetailError } from './SessionDetailBloc';
+import { ISessionDetail, ISessionDetailBloc, ISessionDetailError, ISessionDetailLoaded, SessionDetailState } from './SessionDetailBloc';
 
 let mockConferenceRepository: MockConferenceRepository;
 let mockEventRepository: MockEventRepository;
