@@ -35,7 +35,7 @@ import { IRequestBloc, IRequestList, IRequestListError, IRequestListLoaded, Requ
 let mockEventRepository: MockEventRepository;
 let mockRequestRepository: MockRequestRepository;
 let subscription: Subscription;
-let bloc: IRequestBloc | undefined;
+let bloc: IRequestBloc;
 
 const eventData1 = [
   new Event("e1", "Event 1", false),
@@ -57,11 +57,15 @@ const requestData2 = [
   new Request("r5", "s3", "Request 5", "Conference 3", 15, "https://example.com/video4", "https://example.com/slide5", "", true),
 ];
 
+function createBloc() {
+  bloc = DefaultRequestBloc.create(mockEventRepository, mockRequestRepository);
+}
+
 beforeEach(() => {
   mockEventRepository = new MockEventRepository();
   mockRequestRepository = new MockRequestRepository();
   subscription = new Subscription();
-  bloc = undefined;
+  bloc = undefined!;
 });
 
 afterEach(() => {
@@ -76,7 +80,7 @@ it("emits all events", async () => {
     startWith(eventData1),
   ));
 
-  bloc = DefaultRequestBloc.create(mockEventRepository, mockRequestRepository);
+  createBloc();
 
   const observer = new EventuallyObserver<Event[]>();
   const expectation = observer.expectValue(events => {
@@ -94,7 +98,7 @@ it("emits next all events", async () => {
     startWith(eventData1),
   ));
 
-  bloc = DefaultRequestBloc.create(mockEventRepository, mockRequestRepository);
+  createBloc();
 
   const observer = new EventuallyObserver<Event[]>();
   const expectation1 = observer.expectValue(events => {
@@ -115,7 +119,7 @@ it("initially shows the first event", async() => {
     startWith(eventData2),
   ));
 
-  bloc = DefaultRequestBloc.create(mockEventRepository, mockRequestRepository);
+  createBloc();
 
   const observer = new EventuallyObserver<string | false>();
   const expectation = observer.expectValue(eventId => {
@@ -130,7 +134,7 @@ it("changes the current event by user's selection", async() => {
     startWith(eventData2),
   ));
 
-  bloc = DefaultRequestBloc.create(mockEventRepository, mockRequestRepository);
+  createBloc();
 
   const observer = new EventuallyObserver<string | false>();
   subscription.add(bloc.currentEventId.subscribe(observer));
@@ -146,7 +150,7 @@ it("changes the current event by user's selection", async() => {
 it("emits empty event list when failed to load them", async() => {
   mockEventRepository.getAllEventsObservable.mockReturnValue(throwError(new Error("error")));
 
-  bloc = DefaultRequestBloc.create(mockEventRepository, mockRequestRepository);
+  createBloc();
 
   const observer = new EventuallyObserver<Event[]>();
   const expectation = observer.expectValue(events => {
@@ -164,7 +168,7 @@ it("emits requests for current event", async() => {
     startWith(requestData1),
   ));
 
-  bloc = DefaultRequestBloc.create(mockEventRepository, mockRequestRepository);
+  createBloc();
 
   const observer = new EventuallyObserver<IRequestList>();
   const expectation = observer.expectValue(requestList => {
@@ -183,7 +187,7 @@ it("emits a state of loading requests when loading", async() => {
   const mockSubject = new Subject<Request[]>();
   mockRequestRepository.getAllRequestsObservable.mockReturnValue(mockSubject);
 
-  bloc = DefaultRequestBloc.create(mockEventRepository, mockRequestRepository);
+  createBloc();
 
   const observer = new EventuallyObserver<IRequestList>();
   const expectationOfLoading = observer.expectValue(requestList => {
@@ -215,7 +219,7 @@ it("reloads requests when user changes the current event", async() => {
     }
   });
 
-  bloc = DefaultRequestBloc.create(mockEventRepository, mockRequestRepository);
+  createBloc();
 
   const observer = new EventuallyObserver<IRequestList>();
   const expectationOfRequestsForEvent1 = observer.expectValue(requestList => {
@@ -246,7 +250,7 @@ it("emits a state of error when failed to load request", async () => {
   ));
   mockRequestRepository.getAllRequestsObservable.mockReturnValue(throwError(error));
 
-  bloc = DefaultRequestBloc.create(mockEventRepository, mockRequestRepository);
+  createBloc();
 
   const observer = new EventuallyObserver<IRequestList>();
   const expectation = observer.expectValue(requestList => {
@@ -272,7 +276,7 @@ it("resumes from error by selecting another event", async () => {
     }
   });
 
-  bloc = DefaultRequestBloc.create(mockEventRepository, mockRequestRepository);
+  createBloc();
 
   const observer = new EventuallyObserver<IRequestList>();
   const expectationOfRequestsForEvent1 = observer.expectValue(requestList => {

@@ -32,15 +32,19 @@ import { IRequestDetail, IRequestDetailBloc, IRequestDetailError, IRequestDetail
 
 let mockRequestRepository: MockRequestRepository;
 let subscription: Subscription;
-let bloc: IRequestDetailBloc | undefined;
+let bloc: IRequestDetailBloc;
 
 const request1 = new Request("r1", "s1", "Request 1", "Conference 1", 30, "https://example.com/video1", "https://example.com/slide1", "", true);
 const request1x = new Request("r1", "s1", "Request 1x", "Conference 1", 30, "https://example.com/video1", "https://example.com/slide1", "", true);
 
+function createBloc() {
+  bloc = DefaultRequestDetailBloc.create(mockRequestRepository);
+}
+
 beforeEach(() => {
   mockRequestRepository = new MockRequestRepository();
   subscription = new Subscription();
-  bloc = undefined;
+  bloc = undefined!;
 });
 
 afterEach(() => {
@@ -51,7 +55,7 @@ afterEach(() => {
 });
 
 it("is closed on beginning", async () => {
-  bloc = DefaultRequestDetailBloc.create(mockRequestRepository);
+  createBloc();
   const observer = new EventuallyObserver<boolean>();
   const expectation = observer.expectValue(value => {
     expect(value).toBe(false);
@@ -61,7 +65,7 @@ it("is closed on beginning", async () => {
 });
 
 it("is opened by user's request", async () => {
-  bloc = DefaultRequestDetailBloc.create(mockRequestRepository);
+  createBloc();
   const observer = new EventuallyObserver<boolean>();
   const expectation = observer.expectValue(value => {
     expect(value).toBe(true);
@@ -76,7 +80,7 @@ it("is opened by user's request", async () => {
 });
 
 it("is closed by user's request", async () => {
-  bloc = DefaultRequestDetailBloc.create(mockRequestRepository);
+  createBloc();
   const observer = new EventuallyObserver<boolean>();
   const expectationForOpened = observer.expectValue(value => {
     expect(value).toBe(true);
@@ -100,7 +104,7 @@ it("shows a request", async() => {
   mockRequestRepository.getRequestObservable.mockReturnValue(never().pipe(
     startWith(request1),
   ));
-  bloc = DefaultRequestDetailBloc.create(mockRequestRepository);
+  createBloc();
   const observer = new EventuallyObserver<IRequestDetail>();
   bloc.requestDetail.subscribe(observer);
 
@@ -120,7 +124,7 @@ it("shows a request", async() => {
 });
 
 it("loads an appropriate request", async () => {
-  bloc = DefaultRequestDetailBloc.create(mockRequestRepository);
+  createBloc();
   bloc.showRequest.next({
     eventId: "e1",
     requestId: "r1",
@@ -136,7 +140,7 @@ it("follow the change of the request", async () => {
   mockRequestRepository.getRequestObservable.mockReturnValue(mockSubject.pipe(
     startWith(request1),
   ));
-  bloc = DefaultRequestDetailBloc.create(mockRequestRepository);
+  createBloc();
   const observer = new EventuallyObserver<IRequestDetail>();
   bloc.requestDetail.subscribe(observer);
 
@@ -162,7 +166,7 @@ it("follow the change of the request", async () => {
 it("emits an error state when failed to load request", async () => {
   const error = new Error("failed to load");
   mockRequestRepository.getRequestObservable.mockReturnValue(throwError(error));
-  bloc = DefaultRequestDetailBloc.create(mockRequestRepository);
+  createBloc();
   const observer = new EventuallyObserver<IRequestDetail>();
   bloc.requestDetail.subscribe(observer);
 
