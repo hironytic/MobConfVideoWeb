@@ -1,5 +1,5 @@
 //
-// MockRequestRepository.ts
+// ModalReflector.ts
 //
 // Copyright (c) 2019 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,13 +22,33 @@
 // THE SOFTWARE.
 //
 
-import { never, Observable } from 'rxjs';
-import Request from "src/model/Request";
-import { IAddRequestFromSessionData, IAddRequestWithoutSessionData, IRequestRepository } from 'src/repository/RequestRepository';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { IModalLogicInput, IModalLogicOutput } from 'src/common/ModalLogic';
 
-export default class MockRequestRepository implements IRequestRepository {
-  public getAllRequestsObservable = jest.fn((eventId: string) => never() as Observable<Request[]>);
-  public getRequestObservable = jest.fn((eventId: string, requestId: string) => never() as Observable<Request>);
-  public addRequestFromSession = jest.fn((data: IAddRequestFromSessionData) => Promise.reject<void>(new Error("Not Implemented")));
-  public addRequestWithoutSession = jest.fn((data: IAddRequestWithoutSessionData) => Promise.reject<void>(new Error("Not Implemented")));
+export default class ModalReflector<R> {
+  public visible: Observable<boolean>;
+
+  private visibleSubject: BehaviorSubject<boolean>;
+
+  constructor() {
+    this.visibleSubject = new BehaviorSubject<boolean>(false);
+    this.visible = this.visibleSubject;
+  }
+
+  public bindTo(bloc: IModalLogicInput<R> & IModalLogicOutput): Subscription {
+    const visibleSubject = this.visibleSubject;
+    return bloc.open.subscribe(open => {
+      if (visibleSubject.value === open) {
+        return;
+      }
+
+      if (open) {
+        bloc.onEntered.next();
+        visibleSubject.next(true);
+      } else {
+        bloc.onExited.next();
+        visibleSubject.next(false);
+      }
+    });
+  }
 }
