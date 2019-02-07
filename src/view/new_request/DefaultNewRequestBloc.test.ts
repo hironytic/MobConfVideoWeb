@@ -26,8 +26,8 @@ import { Subscription } from 'rxjs';
 import EventuallyObserver from 'src/test/EventuallyObserver';
 import MockRequestRepository from "src/test/mock/MockRequestRepository";
 import ModalReflector from 'src/test/ModalReflector';
-import DefaultNewRequestBloc from './DefaultNewRequestBloc';
-import { INewRequestBloc } from './NewRequestBloc';
+import DefaultNewRequestBloc, { SNACKBAR_INFINITY, SNACKBAR_LONG } from './DefaultNewRequestBloc';
+import { INewRequestBloc, ISnackbarSetting } from './NewRequestBloc';
 
 let mockRequestRepository: MockRequestRepository;
 let subscription: Subscription;
@@ -200,7 +200,7 @@ it("sends request with specified request-key", async () => {
   const snackbarObserver = new EventuallyObserver<boolean>();
   const expectation2 = snackbarObserver.expectValue(snackbarVisible => {
     expect(snackbarVisible).toBeTruthy();
-  })
+  });
   subscription.add(snackbar.visible.subscribe(snackbarObserver));
 
   bloc.requestKeyDialogBloc.onClose.next(true);
@@ -212,10 +212,168 @@ it("sends request with specified request-key", async () => {
   });
 });
 
-// TODO:
-// it shows a snackbar of 'sending'
-// it shows a snackbar of 'sent'
-// it shows request-key dialog when request-key doesn't match
-// it shows a snackbar of 'error'
-// it doesn't ask request-key if it is already known
-// it sends second request with same request-key
+it("shows a snackbar of 'sending'", async () => {
+  mockRequestRepository.addRequestFromSession.mockReturnValue(Promise.resolve());
+  createBloc();
+
+  await waitForRequestKeyDialog();
+  bloc.requestKeyDialogBloc.onValueChanged.next("foobar");
+
+  const snackbarObserver = new EventuallyObserver<boolean>();
+  const expectation1 = snackbarObserver.expectValue(snackbarVisible => {
+    expect(snackbarVisible).toBeTruthy();
+  });
+  subscription.add(snackbar.visible.subscribe(snackbarObserver));
+  const snackbarSettingObserver = new EventuallyObserver<ISnackbarSetting>();
+  const expectation2 = snackbarSettingObserver.expectValue(setting => {
+    expect(setting).toEqual({
+      message: "通信中",
+      autoHideDuration: SNACKBAR_INFINITY,
+    });
+  });
+  subscription.add(bloc.snackbarBloc.setting.subscribe(snackbarSettingObserver));
+
+  bloc.requestKeyDialogBloc.onClose.next(true);
+  await Promise.all([expectation1, expectation2]);
+});
+
+async function waitForSending() {
+  await waitForRequestKeyDialog();
+  bloc.requestKeyDialogBloc.onValueChanged.next("foobar");
+
+  const snackbarObserver = new EventuallyObserver<boolean>();
+  const expectation1 = snackbarObserver.expectValue(snackbarVisible => {
+    expect(snackbarVisible).toBeTruthy();
+  });
+  subscription.add(snackbar.visible.subscribe(snackbarObserver));
+  const snackbarSettingObserver = new EventuallyObserver<ISnackbarSetting>();
+  const expectation2 = snackbarSettingObserver.expectValue(setting => {
+    expect(setting).toEqual({
+      message: "通信中",
+      autoHideDuration: SNACKBAR_INFINITY,
+    });
+  });
+  subscription.add(bloc.snackbarBloc.setting.subscribe(snackbarSettingObserver));
+
+  bloc.requestKeyDialogBloc.onClose.next(true);
+  await Promise.all([expectation1, expectation2]);
+}
+
+it("shows a snackbar of 'sent'", async () => {
+  let mockResolve = () => { return };
+  mockRequestRepository.addRequestFromSession.mockReturnValue(new Promise<void>(resolve => {
+    mockResolve = resolve;
+  }));
+  createBloc();
+
+  await waitForSending();
+
+  const snackbarSettingObserver = new EventuallyObserver<ISnackbarSetting>();
+  const expectation = snackbarSettingObserver.expectValue(setting => {
+    expect(setting).toEqual({
+      message: "リクエストを送信しました。",
+      autoHideDuration: SNACKBAR_LONG,
+    });
+  });
+  subscription.add(bloc.snackbarBloc.setting.subscribe(snackbarSettingObserver));
+
+  mockResolve();
+  await expectation;
+});
+
+it("shows request-key dialog when request-key doesn't match", async () => {
+  let mockReject =  (_: any) => { return };
+  mockRequestRepository.addRequestFromSession.mockReturnValue(new Promise<void>((_, reject) => {
+    mockReject = reject;
+  }));
+
+  createBloc();
+
+  await waitForSending();
+
+  const requestKeyDialogObserver = new EventuallyObserver<boolean>();  
+  const expectation = requestKeyDialogObserver.expectValue(visible => {
+    expect(visible).toBeTruthy();
+  });
+  subscription.add(requestKeyDialog.visible.subscribe(requestKeyDialogObserver));
+
+  mockReject({
+    code: "failed-precondition",
+    details: "invalid_request_key",
+  });
+  await expectation;
+});
+
+it("shows a snackbar of 'error'", async () => {
+  let mockReject =  (_: any) => { return };
+  mockRequestRepository.addRequestFromSession.mockReturnValue(new Promise<void>((_, reject) => {
+    mockReject = reject;
+  }));
+
+  createBloc();
+
+  await waitForSending();
+
+  const snackbarSettingObserver = new EventuallyObserver<ISnackbarSetting>();
+  const expectation = snackbarSettingObserver.expectValue(setting => {
+    expect(setting).toEqual({
+      message: "エラー: リクエストを送信できませんでした。",
+      autoHideDuration: SNACKBAR_LONG,
+    });
+  });
+  subscription.add(bloc.snackbarBloc.setting.subscribe(snackbarSettingObserver));
+
+  mockReject({
+    code: "not-found",
+    details: "invalid_session",
+  });
+  await expectation;
+});
+
+it("doesn't ask request-key if it is already known", async () => {
+  let mockResolve = () => { return };
+  mockRequestRepository.addRequestFromSession.mockReturnValueOnce(new Promise<void>(resolve => {
+    mockResolve = resolve;
+  }));
+  createBloc();
+
+  // first request
+  await waitForSending();
+
+  const snackbarSettingObserver = new EventuallyObserver<ISnackbarSetting>();
+  const expectation1 = snackbarSettingObserver.expectValue(setting => {
+    expect(setting).toEqual({
+      message: "リクエストを送信しました。",
+      autoHideDuration: SNACKBAR_LONG,
+    });
+  });
+  subscription.add(bloc.snackbarBloc.setting.subscribe(snackbarSettingObserver));
+
+  mockResolve();
+  await expectation1;
+
+  // second request
+  const newRequestFromSessionDialogObserver = new EventuallyObserver<boolean>();
+  const expectation2 = newRequestFromSessionDialogObserver.expectValue(visible => {
+    expect(visible).toBeTruthy();
+  });
+  subscription.add(newRequestFromSessionDialog.visible.subscribe(newRequestFromSessionDialogObserver));
+  bloc.addRequestFromSession.next({
+    sessionId: "s2",
+  });
+  await expectation2;
+
+  const expectation3 = snackbarSettingObserver.expectValue(setting => {
+    expect(setting).toEqual({
+      message: "通信中",
+      autoHideDuration: SNACKBAR_INFINITY,
+    });
+  });
+  bloc.newRequestFromSessionDialogBloc.onClose.next(true);
+  await expectation3;
+
+  expect(mockRequestRepository.addRequestFromSession).toHaveBeenLastCalledWith({
+    requestKey: "foobar",
+    sessionId: "s2",
+  });
+});

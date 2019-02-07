@@ -107,8 +107,8 @@ class ModalLogic<R = void, P = void> {
         const item = queue.shift()!;
         prepare(item.param);
         modalResolve = item.resolve;
-        open.next(true);
         status = Status.opening;
+        open.next(true);
       }
     }
   

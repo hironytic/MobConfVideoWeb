@@ -29,9 +29,9 @@ import { sleep } from 'src/common/Sleep';
 import { IRequestRepository } from 'src/repository/RequestRepository';
 import { IAddRequestFromSessionParams, INewRequestBloc, INewRequestFromSessionDialogBloc, IRequestKeyDialogBloc, ISnackbarBloc, ISnackbarSetting } from "./NewRequestBloc";
 
-const SNACKBAR_SHORT = 1500;
-const SNACKBAR_LONG = 2750;
-const SNACKBAR_INFINITY = undefined;
+export const SNACKBAR_SHORT = 1500;
+export const SNACKBAR_LONG = 2750;
+export const SNACKBAR_INFINITY = undefined;
 
 class DefaultNewRequestBloc implements INewRequestBloc {
   public static create(

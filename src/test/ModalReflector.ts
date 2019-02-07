@@ -43,11 +43,11 @@ export default class ModalReflector<R> {
       }
 
       if (open) {
-        bloc.onEntered.next();
         visibleSubject.next(true);
+        bloc.onEntered.next();
       } else {
-        bloc.onExited.next();
         visibleSubject.next(false);
+        bloc.onExited.next();
       }
     });
   }
