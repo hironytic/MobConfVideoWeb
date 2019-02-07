@@ -40,7 +40,6 @@ class DefaultSessionDetailBloc implements ISessionDetailBloc {
 
     const showSession = new Subject<IShowSessionParam>();
     const dialogClosed = new Subject<void>();
-    const requestClicked = new Subject<void>();
 
     const dialogOpen = merge(
       dialogClosed.pipe(
@@ -111,7 +110,6 @@ class DefaultSessionDetailBloc implements ISessionDetailBloc {
       subscription,
       showSession,
       dialogClosed,
-      requestClicked,
       dialogOpen,
       sessionDetail,
     );
@@ -123,7 +121,6 @@ class DefaultSessionDetailBloc implements ISessionDetailBloc {
     // inputs
     public showSession: Observer<IShowSessionParam>,
     public dialogClosed: Observer<void>,
-    public requestClicked: Observer<void>,
 
     // outputs
     public dialogOpen: Observable<boolean>,

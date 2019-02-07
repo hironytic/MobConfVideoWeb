@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-import { combineLatest, ConnectableObservable, merge, Observable, Observer, of, Subject, Subscription } from "rxjs";
+import { combineLatest, ConnectableObservable, merge, never, Observable, Observer, Subject, Subscription } from "rxjs";
 import { catchError, distinctUntilChanged, map, publishBehavior, shareReplay, startWith, switchMap, withLatestFrom } from 'rxjs/operators';
 import DropdownState from 'src/common/DropdownState';
 import DropdownStateItem from 'src/common/DropdownStateItem';
@@ -83,16 +83,18 @@ class DefaultVideoBloc implements IVideoBloc {
         }));
         return new DropdownState({
           value,
-          items: [{value: "-", title: "指定なし"}, ...dropdownItems],
+          items: [new DropdownStateItem({value: "-", title: "指定なし"}), ...dropdownItems],
         });
       }),
-      catchError(() => of(new DropdownState({
-        value: "_error_",
-        items: [{
+      catchError(() => never().pipe(
+        startWith(new DropdownState({
           value: "_error_",
-          title: "<<エラー>>"
-        }]
-      }))),
+          items: [{
+            value: "_error_",
+            title: "<<エラー>>"
+          }]
+        })),
+      )),
       publishBehavior(new DropdownState({
         value: "",
         items: []
@@ -123,13 +125,15 @@ class DefaultVideoBloc implements IVideoBloc {
         value,
         items: sessionTimeItems,
       })),
-      catchError((_) => of(new DropdownState({
-        value: "_error_",
-        items: [{
+      catchError((_) => never().pipe(
+        startWith(new DropdownState({
           value: "_error_",
-          title: "<<エラー>>"
-        }]
-      }))),
+          items: [{
+            value: "_error_",
+            title: "<<エラー>>"
+          }]
+        })),
+      )),
       publishBehavior(new DropdownState({
         value: "",
         items: []
@@ -203,10 +207,12 @@ class DefaultVideoBloc implements IVideoBloc {
 
     const sessionListState = sessionFilter.pipe(
       switchMap(loadSessions),
-      catchError((error) => of({
-        state: SessionListState.Error,
-        message: error.toString(),
-      } as ISessionList)),
+      catchError((error) => never().pipe(
+        startWith({
+          state: SessionListState.Error,
+          message: error.toString(),
+        } as ISessionList),
+      )),
       publishBehavior({
         state: SessionListState.NotLoaded,
       } as ISessionList),

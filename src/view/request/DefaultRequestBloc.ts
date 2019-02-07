@@ -22,8 +22,8 @@
 // THE SOFTWARE.
 //
 
-import { concat, ConnectableObservable, Observable, Observer, of, Subject, Subscription } from "rxjs";
-import { catchError, distinctUntilChanged, map, publishBehavior, skip, startWith, switchMap, take } from 'rxjs/operators';
+import { concat, ConnectableObservable, never, Observable, Observer, of, Subject, Subscription } from "rxjs";
+import { catchError, distinctUntilChanged, filter, map, publishBehavior, startWith, switchMap, take } from 'rxjs/operators';
 import Event from "src/model/Event";
 import { IEventRepository } from 'src/repository/EventRepository';
 import { IRequestRepository } from 'src/repository/RequestRepository';
@@ -39,7 +39,7 @@ class DefaultRequestBloc implements IRequestBloc {
     const currentEventIdChanged = new Subject();    
 
     const allEvents = eventRepository.getAllEventsObservable().pipe(
-      catchError(error => of([] as Event[])),
+      catchError(error => never().pipe(startWith([] as Event[]))),
       publishBehavior([] as Event[]),
     ) as ConnectableObservable<Event[]>;
     subscription.add(allEvents.connect());
@@ -48,9 +48,9 @@ class DefaultRequestBloc implements IRequestBloc {
     // in the first all-events-list
     const currentEventId = concat(
       allEvents.pipe(
-        skip(1),  // skip initial value (empty list)
+        filter(events => events.length > 0),  // skip (initial) empty list
         take(1),  // first one after loaded
-        map((events) => (events.length > 0) ? events[0].id : false)
+        map(events => events[0].id),
       ),
       currentEventIdChanged,
     ).pipe(
@@ -71,14 +71,14 @@ class DefaultRequestBloc implements IRequestBloc {
             } as IRequestList)),
             startWith({
               state: RequestListState.Loading,
-            } as IRequestList)
+            } as IRequestList),
+            catchError((error) => of({
+              state: RequestListState.Error,
+              message: error.toString(),
+            } as IRequestList)),
           );
         }
       }),
-      catchError((error) => of({
-        state: RequestListState.Error,
-        message: error.toString(),
-      } as IRequestList)),
       publishBehavior({ state: RequestListState.NotLoaded }),
     ) as ConnectableObservable<IRequestList>;
     subscription.add(requestList.connect());
