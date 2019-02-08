@@ -136,7 +136,7 @@ it("loads an appropriate request", async () => {
 });
 
 it("follow the change of the request", async () => {
-  const mockSubject = new Subject();
+  const mockSubject = new Subject<Request>();
   mockRequestRepository.getRequestObservable.mockReturnValue(mockSubject.pipe(
     startWith(request1),
   ));

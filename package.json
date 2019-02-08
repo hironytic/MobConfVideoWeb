@@ -5,16 +5,16 @@
   "jest": {
     "moduleNameMapper": {
       "^src/(.*)$": "<rootDir>/src/$1"
-    }    
+    }
   },
   "dependencies": {
-    "@material-ui/core": "^3.9.0",
+    "@material-ui/core": "^3.9.2",
     "@material-ui/icons": "^3.0.2",
-    "firebase": "^5.8.0",
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0",
+    "firebase": "^5.8.2",
+    "react": "^16.8.1",
+    "react-dom": "^16.8.1",
     "react-scripts-ts": "3.1.0",
-    "rxjs": "^6.3.3"
+    "rxjs": "^6.4.0"
   },
   "scripts": {
     "start": "react-scripts-ts start",
@@ -23,10 +23,10 @@
     "eject": "react-scripts-ts eject"
   },
   "devDependencies": {
-    "@types/jest": "^23.3.13",
-    "@types/node": "^10.12.18",
-    "@types/react": "^16.7.20",
-    "@types/react-dom": "^16.0.11",
-    "typescript": "^3.2.4"
+    "@types/jest": "^23.3.14",
+    "@types/node": "^10.12.23",
+    "@types/react": "^16.8.2",
+    "@types/react-dom": "^16.8.0",
+    "typescript": "^3.3.3"
   }
 }
