@@ -48,19 +48,27 @@ class DefaultSessionRepository implements ISessionRepository {
       let isUnsubscribed = false;
       (async () => {
         try {
-          let sessions: Session[] = [];
           let snapshot = await query.get();
-          while (!isUnsubscribed && snapshot.size > 0) {
-            sessions = sessions.concat(snapshot.docs.map(doc => Session.fromSnapshot(doc)));
-            subscriber.next(sessions);
-            await new Promise(resolve => setTimeout(resolve, 100));
-            if (!isUnsubscribed) {
+          if (isUnsubscribed) { return; }
+
+          if (snapshot.size <= 0) {
+            subscriber.next([]);
+            subscriber.complete();
+          } else {
+            let sessions: Session[] = [];
+            do {
+              sessions = sessions.concat(snapshot.docs.map(doc => Session.fromSnapshot(doc)));
+              subscriber.next(sessions);
+              await new Promise(resolve => setTimeout(resolve, 100));
+              if (isUnsubscribed) { return; }
+    
               snapshot = await query
                 .startAfter(snapshot.docs[snapshot.docs.length - 1])
                 .get();
-            }
+              if (isUnsubscribed) { return; }
+            } while (snapshot.size > 0);
+            subscriber.complete();
           }
-          subscriber.complete();
         } catch (error) {
           subscriber.error(error);
         }
