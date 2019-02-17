@@ -60,6 +60,7 @@ class DefaultSessionRepository implements ISessionRepository {
                 .get();
             }
           }
+          subscriber.complete();
         } catch (error) {
           subscriber.error(error);
         }
