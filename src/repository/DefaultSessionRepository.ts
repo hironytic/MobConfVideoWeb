@@ -33,8 +33,8 @@ class DefaultSessionRepository implements ISessionRepository {
   public getSessionsObservable(filter: SessionFilter): Observable<Session[]> {
     return new Observable(subscriber => {
       let query: firestore.Query = firebase
-      .firestore()
-      .collection("sessions");
+        .firestore()
+        .collection("sessions");
       if (filter.conferenceId !== undefined) {
         query = query.where("conferenceId", "==", filter.conferenceId);
       }
@@ -43,18 +43,40 @@ class DefaultSessionRepository implements ISessionRepository {
       }
       query = query
         .orderBy("starts", "asc")
-        .limit(200);
+        .limit(100);
 
-      const canceller = query
-        .onSnapshot(snapshot => {
-          const requests = snapshot.docs.map((doc) => Session.fromSnapshot(doc));
-          subscriber.next(requests);
-        }, error => {
+      let isUnsubscribed = false;
+      (async () => {
+        try {
+          let snapshot = await query.get();
+          if (isUnsubscribed) { return; }
+
+          if (snapshot.size <= 0) {
+            subscriber.next([]);
+            subscriber.complete();
+          } else {
+            let sessions: Session[] = [];
+            do {
+              sessions = sessions.concat(snapshot.docs.map(doc => Session.fromSnapshot(doc)));
+              subscriber.next(sessions);
+              await new Promise(resolve => setTimeout(resolve, 100));
+              if (isUnsubscribed) { return; }
+    
+              snapshot = await query
+                .startAfter(snapshot.docs[snapshot.docs.length - 1])
+                .get();
+              if (isUnsubscribed) { return; }
+            } while (snapshot.size > 0);
+            subscriber.complete();
+          }
+        } catch (error) {
           subscriber.error(error);
-        });
-
-      return canceller;
-    });    
+        }
+      })();
+      return () => {
+        isUnsubscribed = true;
+      };
+    });
   }
 
   public getSessionObservable(sessionId: string): Observable<Session> {
