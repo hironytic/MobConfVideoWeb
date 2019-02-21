@@ -53,7 +53,6 @@ class DefaultSessionRepository implements ISessionRepository {
 
           if (snapshot.size <= 0) {
             subscriber.next([]);
-            subscriber.complete();
           } else {
             let sessions: Session[] = [];
             do {
@@ -67,7 +66,6 @@ class DefaultSessionRepository implements ISessionRepository {
                 .get();
               if (isUnsubscribed) { return; }
             } while (snapshot.size > 0);
-            subscriber.complete();
           }
         } catch (error) {
           subscriber.error(error);
