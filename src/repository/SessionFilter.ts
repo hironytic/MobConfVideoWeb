@@ -25,18 +25,22 @@
 interface ISessionFilter {
   conferenceId?: string;
   minutes?: number;
+  keywords?: string[];
 }
 
 class SessionFilter implements ISessionFilter {
   public conferenceId?: string;
   public minutes?: number;
+  public keywords?: string[];
 
   public constructor({
     conferenceId,
     minutes,
+    keywords,
   }: ISessionFilter) {
     this.conferenceId = conferenceId;
     this.minutes = minutes;
+    this.keywords = keywords;
   }
 }
 
