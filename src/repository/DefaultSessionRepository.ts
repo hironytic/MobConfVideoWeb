@@ -30,7 +30,6 @@ import SessionFilter from './SessionFilter';
 import { ISessionRepository } from './SessionRepository';
 
 function isTextContainsKeyword(text: string, keyword: string) {
-  // FIXME: consider line break
   return text.indexOf(keyword) >= 0;
 }
 
