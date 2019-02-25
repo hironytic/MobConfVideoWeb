@@ -98,7 +98,9 @@ class DefaultSessionRepository implements ISessionRepository {
                   .map(doc => Session.fromSnapshot(doc))
                   .filter(filterByKeywords(filter.keywords))
               );
-              subscriber.next(sessions);
+              if (sessions.length > 0) {
+                subscriber.next(sessions);
+              }
               await new Promise(resolve => setTimeout(resolve, 100));
               if (isUnsubscribed) { return; }
     
@@ -107,6 +109,9 @@ class DefaultSessionRepository implements ISessionRepository {
                 .get();
               if (isUnsubscribed) { return; }
             } while (snapshot.size > 0);
+            if (sessions.length === 0) {
+              subscriber.next([]);
+            }
           }
         } catch (error) {
           subscriber.error(error);
