@@ -70,11 +70,13 @@ export interface IVideoBloc extends IBloc {
   expandFilterPanel: Observer<boolean>;
   filterConferenceChanged: Observer<string>;
   filterSessionTimeChanged: Observer<string>;
+  filterKeywordsChanged: Observer<string>;
   executeFilter: Observer<void>;
 
   // outputs
   isFilterPanelExpanded: Observable<boolean>;
   filterConference: Observable<DropdownState>;
   filterSessionTime: Observable<DropdownState>;
+  filterKeywords: Observable<string>;
   sessionList: Observable<ISessionList>;
 }
