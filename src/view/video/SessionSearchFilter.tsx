@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-import { Button, Card, CardActions, CardContent, Collapse, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
+import { Button, Card, CardActions, CardContent, Collapse, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, TextField, Typography } from '@material-ui/core';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import React from 'react';
@@ -107,6 +107,30 @@ class SessionSearchFilter extends React.Component {
                                   </Select>
                                 </FormControl>
                               )}
+                            </Snapshot>
+                          </Grid>
+                          <Grid item={true} xs={12} style={{textAlign: "start"}}>
+                            <Snapshot source={bloc.filterKeywords} initialValue="">
+                              {(value: string) => {
+                                const onChange: React.ChangeEventHandler<HTMLInputElement> = event => {
+                                  bloc.filterKeywordsChanged.next(event.target.value);
+                                };
+                                return (
+                                  <TextField
+                                    type="text"
+                                    autoFocus={false}
+                                    label="キーワード"
+                                    placeholder="スペースで区切って指定"
+                                    margin="none"
+                                    fullWidth={true}
+                                    onChange={onChange}
+                                    value={value}
+                                    InputLabelProps={{
+                                      shrink: true,
+                                    }}
+                                  />
+                                );
+                              }}
                             </Snapshot>
                           </Grid>
                         </Grid>
