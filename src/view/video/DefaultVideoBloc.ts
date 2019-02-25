@@ -153,7 +153,7 @@ class DefaultVideoBloc implements IVideoBloc {
       map(([conf, min, keywords]) => new SessionFilter({
         conferenceId: (conf === '-') ? undefined : conf,
         minutes: (min === '-') ? undefined : parseInt(min, 10),
-        keywords: (keywords.trim() === "") ? undefined : keywords.trim().split(/ +/),
+        keywords: (keywords.trim() === "") ? undefined : keywords.trim().split(/\s+/),
       })),
     );
 
