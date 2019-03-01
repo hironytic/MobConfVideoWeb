@@ -24,7 +24,7 @@
 
 import { Avatar, Card, CardActionArea, CircularProgress, Grid, StyledComponentProps, Theme, Typography, withStyles } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
-import React from 'react';
+import React, { Fragment } from 'react';
 import Snapshot from 'src/common/Snapshot';
 import Speaker from 'src/model/Speaker';
 import SessionDetailContext from '../session_detail/SessionDetailContext';
@@ -97,16 +97,18 @@ class SessionList extends React.Component<StyledComponentProps> {
       )
     }
 
+    // sort keywords in order from longest to shortest
+    const keywordList = [...loaded.keywordList].sort((left, right) => right.length - left.length)
     return (
       <Grid container={true}
             spacing={24}
             alignItems="flex-start">
-        {loaded.sessions.map((sessionItem) => this.renderSessionItem(sessionItem))}
+        {loaded.sessions.map((sessionItem) => this.renderSessionItem(sessionItem, keywordList))}
       </Grid>
     )
   }
 
-  private renderSessionItem(sessionItem: ISessionItem) {
+  private renderSessionItem(sessionItem: ISessionItem, keywordList: string[]) {
     return (
       <Grid key={sessionItem.session.id} item={true} xs={12}>
         <Card style={{
@@ -143,7 +145,7 @@ class SessionList extends React.Component<StyledComponentProps> {
                       </Typography>
                     </Grid>
                     <Grid item={true} xs={12}>
-                      {this.renderDescription(sessionItem.session.description)}
+                      {this.renderDescription(sessionItem.session.description, keywordList)}
                     </Grid>
                     <Grid item={true} xs={12}>
                       {sessionItem.session.speakers.map((speaker, index) => this.renderSpeaker(speaker, index))}
@@ -178,32 +180,114 @@ class SessionList extends React.Component<StyledComponentProps> {
     }
   }
 
-  private renderDescription(description: string) {
+  private renderDescription(description: string, keywordList: string[]) {
+    interface IBoldRange {
+      offset: number,
+      length: number,
+    }
+    interface ILineWithBoldRange {
+      line: string,
+      boldRanges: IBoldRange[],
+    }
+
     const maxLines = 3;
     const maxChars = 140;
 
     const lines = description.split(/\r\n|\r|\n/);
-    const displayLines: string[] = [];
-    let count = 0;
-    for (const line of lines) {
-      if (displayLines.length >= maxLines) {
-        displayLines.push("…");
-        break;
-      }
+    const lineWithBoldRanges: ILineWithBoldRange[] = lines.map(line => {
+      let searchOffset = 0;
+      let nextRange: IBoldRange | null;
+      const boldRanges: IBoldRange[] = [];
+      do {
+        // assume that keywordList is sorted in order from longest to shortest
+        nextRange = keywordList.reduce((acc, keyword) => {
+          const offset = line.indexOf(keyword, searchOffset);
+          if (offset >= 0 && (acc === null || offset < acc.offset)) {
+            return {offset, length: keyword.length};
+          } else {
+            return acc;
+          }
+        }, null as (IBoldRange | null));
+        if (nextRange !== null) {
+          boldRanges.push(nextRange);
+          searchOffset = nextRange.offset + nextRange.length;
+        }
+      } while (nextRange !== null);
+      return { line, boldRanges };
+    });
 
-      const length = line.length;
-      if (count + length < maxChars) {
-        count += length;
-        displayLines.push(line);
-      } else {
-        displayLines.push(line.substr(0, maxChars - count) + "…");
-        break;
+    const displayLines: ILineWithBoldRange[] = [];
+    const firstKeywordLine = lineWithBoldRanges.findIndex(lwbr => lwbr.boldRanges.length > 0);
+    if (firstKeywordLine === -1) {
+      // the case that no keywords are found in description
+      let count = 0;
+      for (const line of lines) {
+        if (displayLines.length >= maxLines) {
+          displayLines.push({line: "…", boldRanges: []});
+          break;
+        }
+
+        const length = line.length;
+        if (count + length < maxChars) {
+          count += length;
+          displayLines.push({line, boldRanges: []});
+        } else {
+          displayLines.push({line: line.substr(0, maxChars - count) + "…", boldRanges: []});
+          break;
+        }
+      }
+    } else {
+      // the case that keywords are found in description
+      let count = 0;
+      for (let lineIndex = firstKeywordLine; lineIndex < lineWithBoldRanges.length; lineIndex++) {
+        if (displayLines.length >= maxLines) {
+          displayLines.push({line: "…", boldRanges: []});
+          break;
+        }
+
+        let lwbr = lineWithBoldRanges[lineIndex];
+        if (lineIndex === firstKeywordLine) {
+          if (lwbr.boldRanges[0].offset >= maxChars) {
+            const beginOffset = lwbr.boldRanges[0].offset - Math.floor(maxChars / 2);
+            const beginOffset2 = beginOffset - "…".length;
+            lwbr = {
+              line: "…" + lwbr.line.substring(beginOffset),
+              boldRanges: lwbr.boldRanges.map(range => ({offset: range.offset - beginOffset2, length: range.length})),
+            }
+          } else {
+            if (firstKeywordLine > 0) {
+              displayLines.push({line: "…", boldRanges: []});
+            }
+          }
+        }
+        const length = lwbr.line.length;
+        if (count + length < maxChars) {
+          count += length;
+          displayLines.push({line: lwbr.line, boldRanges: lwbr.boldRanges});
+        } else {
+          displayLines.push({line: lwbr.line.substr(0, maxChars - count) + "…", boldRanges: lwbr.boldRanges.filter(range => range.offset + range.length <= maxChars - count)});
+          break;
+        }
       }
     }
 
-    return displayLines.map((line, index) => (
+    function renderBold(lwbr: ILineWithBoldRange) {
+      const elements: JSX.Element[] = [];
+      let current = 0;
+      for (const range of lwbr.boldRanges) {
+        elements.push((<Fragment>{lwbr.line.substring(current, range.offset)}</Fragment>));
+        elements.push((<b>{lwbr.line.substr(range.offset, range.length)}</b>));
+        current = range.offset + range.length;
+      }
+      if (current < lwbr.line.length) {
+        elements.push((<Fragment>{lwbr.line.substring(current, lwbr.line.length)}</Fragment>));
+      }
+      return elements;
+    }
+
+    return displayLines.map((lwbr, index) => (
       <Typography key={index} variant="body1" color="textPrimary">
-        {line.length > 0 ? line : (<br/>)}
+        {lwbr.line.length > 0 ? renderBold(lwbr) : (<br/>)}
       </Typography>
     ));
   }

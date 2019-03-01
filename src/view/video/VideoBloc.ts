@@ -56,6 +56,7 @@ export interface ISessionListLoading {
 export interface ISessionListLoaded {
   state: SessionListState.Loaded;
   sessions: ISessionItem[];
+  keywordList: string[];
 }
 
 export interface ISessionListError {

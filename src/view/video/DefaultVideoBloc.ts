@@ -200,7 +200,8 @@ class DefaultVideoBloc implements IVideoBloc {
       ).pipe(
         map(({sessions, events, conferenceNameMap}) => ({
           state: SessionListState.Loaded,
-          sessions: sessions.map<ISessionItem>(convertSession(conferenceNameMap, events))
+          sessions: sessions.map<ISessionItem>(convertSession(conferenceNameMap, events)),
+          keywordList: (filter.keywords !== undefined) ? filter.keywords : [],
         } as ISessionList)),
         startWith({
           state: SessionListState.Loading,          
