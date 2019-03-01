@@ -371,6 +371,36 @@ it("shows the session list", async () => {
   await expectation2;
 });
 
+it("shows keyword list with session list", async () => {
+  mockConferenceRepository.getAllConferencesObservable.mockReturnValue(never().pipe(
+    startWith(conferences1),
+  ));
+  mockEventRepository.getAllEventsObservable.mockReturnValue(never().pipe(
+    startWith(events1),
+  ));
+  const sessionSubject = new Subject<Session[]>();
+  mockSessionRepository.getSessionsObservable.mockReturnValue(sessionSubject);
+  createBloc();
+
+  const observer = new EventuallyObserver<ISessionList>();
+  const expectation1 = observer.expectValue(sessionList => {
+    expect(sessionList.state).toBe(SessionListState.Loading);
+  });
+  subscription.add(bloc.sessionList.subscribe(observer));
+  bloc.filterKeywordsChanged.next("event session");
+  bloc.executeFilter.next();
+  await expectation1;
+
+  const expectation2 = observer.expectValue(sessionList => {
+    expect(sessionList.state).toBe(SessionListState.Loaded);
+    
+    const loaded = sessionList as ISessionListLoaded;
+    expect(loaded.keywordList).toEqual(["event", "session"]);
+  });
+  sessionSubject.next(sessions1);
+  await expectation2;
+});
+
 it("emits the error state of session list", async () => {
   mockConferenceRepository.getAllConferencesObservable.mockReturnValue(never().pipe(
     startWith(conferences1),
