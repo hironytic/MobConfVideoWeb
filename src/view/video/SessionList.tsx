@@ -228,7 +228,7 @@ class SessionList extends React.Component<StyledComponentProps> {
 
         let lwbr = lineWithBoldRanges[lineIndex];
         if (lineIndex === firstKeywordLine) {
-          if (lwbr.boldRanges[0].offset >= maxChars) {
+          if (lwbr.boldRanges[0].offset > maxChars / 2) {
             const beginOffset = lwbr.boldRanges[0].offset - Math.floor(maxChars / 2);
             const beginOffset2 = beginOffset - "…".length;
             lwbr = {
