@@ -25,6 +25,7 @@
 import { Avatar, Card, CardActionArea, CircularProgress, Grid, StyledComponentProps, Theme, Typography, withStyles } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
 import React, { Fragment } from 'react';
+import CaseInsensitiveSearch from 'src/common/CaseInsensitiveSearch';
 import Snapshot from 'src/common/Snapshot';
 import Speaker from 'src/model/Speaker';
 import SessionDetailContext from '../session_detail/SessionDetailContext';
@@ -294,12 +295,13 @@ class SessionList extends React.Component<StyledComponentProps> {
     let searchOffset = 0;
     let nextRange: IBoldRange | null;
     const boldRanges: IBoldRange[] = [];
+    const searchList = keywordList.map(keyword => new CaseInsensitiveSearch(keyword));
     do {
       // assume that keywordList is sorted in order from longest to shortest
-      nextRange = keywordList.reduce((acc, keyword) => {
-        const offset = line.indexOf(keyword, searchOffset);
-        if (offset >= 0 && (acc === null || offset < acc.offset)) {
-          return {offset, length: keyword.length};
+      nextRange = searchList.reduce((acc, search) => {
+        const searchResult = search.searchIn(line, searchOffset);
+        if (searchResult !== null && (acc === null || searchResult.index < acc.offset)) {
+          return {offset: searchResult.index, length: searchResult.length};
         } else {
           return acc;
         }

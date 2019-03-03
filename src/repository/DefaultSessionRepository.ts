@@ -25,13 +25,10 @@
 import firebase, { firestore } from "firebase/app";
 import "firebase/firestore";
 import { Observable } from 'rxjs';
+import CaseInsensitiveSearch from 'src/common/CaseInsensitiveSearch';
 import Session from 'src/model/Session';
 import SessionFilter from './SessionFilter';
 import { ISessionRepository } from './SessionRepository';
-
-function isTextContainsKeyword(text: string, keyword: string) {
-  return text.indexOf(keyword) >= 0;
-}
 
 function filterByKeywords(keywords?: string[]): (session: Session) => boolean {
   if (keywords === undefined) {
@@ -40,20 +37,22 @@ function filterByKeywords(keywords?: string[]): (session: Session) => boolean {
 
   return session => {
     for (const keyword of keywords) {
-      if (isTextContainsKeyword(session.title, keyword)) {
+      const searcher = new CaseInsensitiveSearch(keyword);
+      
+      if (searcher.foundIn(session.title)) {
         return true;
       }
 
-      if (isTextContainsKeyword(session.description, keyword)) {
+      if (searcher.foundIn(session.description)) {
         return true;
       }
 
       for (const speaker of session.speakers) {
-        if (isTextContainsKeyword(speaker.name, keyword)) {
+        if (searcher.foundIn(speaker.name)) {
           return true;
         }
         if (speaker.twitter !== undefined) {
-          if (isTextContainsKeyword(speaker.twitter, keyword)) {
+          if (searcher.foundIn(speaker.twitter)) {
             return true;
           }
         }
