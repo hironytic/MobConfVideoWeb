@@ -56,6 +56,7 @@ export interface ISessionListLoading {
 export interface ISessionListLoaded {
   state: SessionListState.Loaded;
   sessions: ISessionItem[];
+  keywordList: string[];
 }
 
 export interface ISessionListError {
@@ -70,11 +71,13 @@ export interface IVideoBloc extends IBloc {
   expandFilterPanel: Observer<boolean>;
   filterConferenceChanged: Observer<string>;
   filterSessionTimeChanged: Observer<string>;
+  filterKeywordsChanged: Observer<string>;
   executeFilter: Observer<void>;
 
   // outputs
   isFilterPanelExpanded: Observable<boolean>;
   filterConference: Observable<DropdownState>;
   filterSessionTime: Observable<DropdownState>;
+  filterKeywords: Observable<string>;
   sessionList: Observable<ISessionList>;
 }

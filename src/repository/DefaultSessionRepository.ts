@@ -25,9 +25,44 @@
 import firebase, { firestore } from "firebase/app";
 import "firebase/firestore";
 import { Observable } from 'rxjs';
+import CaseInsensitiveSearch from 'src/common/CaseInsensitiveSearch';
 import Session from 'src/model/Session';
 import SessionFilter from './SessionFilter';
 import { ISessionRepository } from './SessionRepository';
+
+function filterByKeywords(keywords?: string[]): (session: Session) => boolean {
+  if (keywords === undefined) {
+    return session => true;
+  }
+
+  return session => {
+    for (const keyword of keywords) {
+      const searcher = new CaseInsensitiveSearch(keyword);
+      
+      if (searcher.foundIn(session.title)) {
+        return true;
+      }
+
+      if (searcher.foundIn(session.description)) {
+        return true;
+      }
+
+      for (const speaker of session.speakers) {
+        if (searcher.foundIn(speaker.name)) {
+          return true;
+        }
+        if (speaker.twitter !== undefined) {
+          if (searcher.foundIn(speaker.twitter)) {
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
+  };
+}
+
 
 class DefaultSessionRepository implements ISessionRepository {
   public getSessionsObservable(filter: SessionFilter): Observable<Session[]> {
@@ -56,8 +91,14 @@ class DefaultSessionRepository implements ISessionRepository {
           } else {
             let sessions: Session[] = [];
             do {
-              sessions = sessions.concat(snapshot.docs.map(doc => Session.fromSnapshot(doc)));
-              subscriber.next(sessions);
+              sessions = sessions.concat(
+                snapshot.docs
+                  .map(doc => Session.fromSnapshot(doc))
+                  .filter(filterByKeywords(filter.keywords))
+              );
+              if (sessions.length > 0) {
+                subscriber.next(sessions);
+              }
               await new Promise(resolve => setTimeout(resolve, 100));
               if (isUnsubscribed) { return; }
     
@@ -66,6 +107,9 @@ class DefaultSessionRepository implements ISessionRepository {
                 .get();
               if (isUnsubscribed) { return; }
             } while (snapshot.size > 0);
+            if (sessions.length === 0) {
+              subscriber.next([]);
+            }
           }
         } catch (error) {
           subscriber.error(error);

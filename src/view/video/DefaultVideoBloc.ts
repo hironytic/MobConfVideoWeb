@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-import { combineLatest, ConnectableObservable, merge, never, Observable, Observer, Subject, Subscription } from "rxjs";
+import { BehaviorSubject, combineLatest, ConnectableObservable, merge, never, Observable, Observer, Subject, Subscription } from "rxjs";
 import { catchError, distinctUntilChanged, map, publishBehavior, shareReplay, startWith, switchMap, withLatestFrom } from 'rxjs/operators';
 import DropdownState from 'src/common/DropdownState';
 import DropdownStateItem from 'src/common/DropdownStateItem';
@@ -46,6 +46,7 @@ class DefaultVideoBloc implements IVideoBloc {
     const expandFilterPanel = new Subject<boolean>();
     const filterConferenceChanged = new Subject<string>();
     const filterSessionTimeChanged = new Subject<string>();
+    const filterKeywords = new BehaviorSubject<string>("");
     const executeFilter = new Subject<void>();
 
     const isFilterPanelExpanded = merge(
@@ -144,13 +145,15 @@ class DefaultVideoBloc implements IVideoBloc {
     const currentFilters = combineLatest(
       currentConferenceFilter,
       currentSessionTimeFilter,
+      filterKeywords,
     );
 
     const sessionFilter = executeFilter.pipe(
       withLatestFrom(currentFilters, (e, v) => v),
-      map(([conf, min]) => new SessionFilter({
+      map(([conf, min, keywords]) => new SessionFilter({
         conferenceId: (conf === '-') ? undefined : conf,
         minutes: (min === '-') ? undefined : parseInt(min, 10),
+        keywords: (keywords.trim() === "") ? undefined : keywords.trim().split(/\s+/),
       })),
     );
 
@@ -197,7 +200,8 @@ class DefaultVideoBloc implements IVideoBloc {
       ).pipe(
         map(({sessions, events, conferenceNameMap}) => ({
           state: SessionListState.Loaded,
-          sessions: sessions.map<ISessionItem>(convertSession(conferenceNameMap, events))
+          sessions: sessions.map<ISessionItem>(convertSession(conferenceNameMap, events)),
+          keywordList: (filter.keywords !== undefined) ? filter.keywords : [],
         } as ISessionList)),
         startWith({
           state: SessionListState.Loading,          
@@ -224,10 +228,12 @@ class DefaultVideoBloc implements IVideoBloc {
       expandFilterPanel,
       filterConferenceChanged,
       filterSessionTimeChanged,
+      filterKeywords,
       executeFilter,
       isFilterPanelExpanded,
       filterConference,
       filterSessionTime,
+      filterKeywords,
       sessionListState,
     )
   }
@@ -239,12 +245,15 @@ class DefaultVideoBloc implements IVideoBloc {
     public expandFilterPanel: Observer<boolean>,
     public filterConferenceChanged: Observer<string>,
     public filterSessionTimeChanged: Observer<string>,
+    public filterKeywordsChanged: Observer<string>,
+
     public executeFilter: Observer<void>,
 
     // outputs
     public isFilterPanelExpanded: Observable<boolean>,
     public filterConference: Observable<DropdownState>,
     public filterSessionTime: Observable<DropdownState>,
+    public filterKeywords: Observable<string>,
     public sessionList: Observable<ISessionList>,
   ) {}
 

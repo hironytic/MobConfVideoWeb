@@ -1,7 +1,7 @@
 //
-// SessionFilter.ts
+// CaseInsensitiveSearch.ts
 //
-// Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2019 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,26 +22,35 @@
 // THE SOFTWARE.
 //
 
-interface ISessionFilter {
-  conferenceId?: string;
-  minutes?: number;
-  keywords?: string[];
+export interface ICaseInsensitiveSearchResult {
+  index: number;
+  length: number;
 }
 
-class SessionFilter implements ISessionFilter {
-  public conferenceId?: string;
-  public minutes?: number;
-  public keywords?: string[];
+export default class CaseInsensitiveSearch {
+  public str: string;
+  private regExp: RegExp;
 
-  public constructor({
-    conferenceId,
-    minutes,
-    keywords,
-  }: ISessionFilter) {
-    this.conferenceId = conferenceId;
-    this.minutes = minutes;
-    this.keywords = keywords;
+  constructor(str: string) {
+    this.str = str;
+    this.regExp = new RegExp(str.replace(/[-[\]{}()*+?.,\\^$|#\s]/, "\\$&"), "ig");
+  }
+
+  public foundIn(text: string): boolean {
+    this.regExp.lastIndex = 0;
+    return this.regExp.test(text);
+  }
+
+  public searchIn(text: string, position: number): ICaseInsensitiveSearchResult | null {
+    this.regExp.lastIndex = position;
+    const match = this.regExp.exec(text);
+    if (match !== null) {
+      return {
+        index: match.index,
+        length: match[0].length,
+      };
+    } else {
+      return null;
+    }
   }
 }
-
-export default SessionFilter;

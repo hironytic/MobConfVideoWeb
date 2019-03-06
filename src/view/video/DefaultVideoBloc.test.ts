@@ -216,6 +216,35 @@ it("changes selection of session time filter by user's operation", async () => {
   await expectation2;
 });
 
+it("initially shows empty keywords filter", async () => {
+  createBloc();
+
+  const observer = new EventuallyObserver<string>();
+  const expectation = observer.expectValue(filterKeywords => {
+    expect(filterKeywords).toBe("");
+  });
+  subscription.add(bloc.filterKeywords.subscribe(observer));
+  await expectation;
+});
+
+it("changes the keywords filter by user's input", async () => {
+  createBloc();
+
+  const observer = new EventuallyObserver<string>();
+  const expectation1 = observer.expectValue(filterKeywords => {
+    expect(filterKeywords).toBe("foo");
+  });
+  subscription.add(bloc.filterKeywords.subscribe(observer));
+  bloc.filterKeywordsChanged.next("foo");
+  await expectation1;
+
+  const expectation2 = observer.expectValue(filterKeywords => {
+    expect(filterKeywords).toBe("foo bar");
+  });
+  bloc.filterKeywordsChanged.next("foo bar");
+  await expectation2;
+});
+
 it("initially has session list which is not loaded yet", async () => {
   createBloc();
 
@@ -285,6 +314,7 @@ it("passes the filter setting to the repository", async () => {
 
   bloc.filterConferenceChanged.next("c2");
   bloc.filterSessionTimeChanged.next("30");
+  bloc.filterKeywordsChanged.next("key word");
 
   const sessionListObserver = new EventuallyObserver<ISessionList>();
   const expectationOfLoading = sessionListObserver.expectValue(sessionList => {
@@ -297,6 +327,7 @@ it("passes the filter setting to the repository", async () => {
   expect(mockSessionRepository.getSessionsObservable).toHaveBeenCalledWith(new SessionFilter({
     conferenceId: "c2",
     minutes: 30,
+    keywords: ["key", "word"],
   }));
 });
 
@@ -335,6 +366,36 @@ it("shows the session list", async () => {
     expect(loaded.sessions[1].session).toBe(sessions1[1]);
     expect(loaded.sessions[1].conferenceName).toBe("Conf 2");
     expect(loaded.sessions[1].watchedEvents).toEqual([]);
+  });
+  sessionSubject.next(sessions1);
+  await expectation2;
+});
+
+it("shows keyword list with session list", async () => {
+  mockConferenceRepository.getAllConferencesObservable.mockReturnValue(never().pipe(
+    startWith(conferences1),
+  ));
+  mockEventRepository.getAllEventsObservable.mockReturnValue(never().pipe(
+    startWith(events1),
+  ));
+  const sessionSubject = new Subject<Session[]>();
+  mockSessionRepository.getSessionsObservable.mockReturnValue(sessionSubject);
+  createBloc();
+
+  const observer = new EventuallyObserver<ISessionList>();
+  const expectation1 = observer.expectValue(sessionList => {
+    expect(sessionList.state).toBe(SessionListState.Loading);
+  });
+  subscription.add(bloc.sessionList.subscribe(observer));
+  bloc.filterKeywordsChanged.next("event session");
+  bloc.executeFilter.next();
+  await expectation1;
+
+  const expectation2 = observer.expectValue(sessionList => {
+    expect(sessionList.state).toBe(SessionListState.Loaded);
+    
+    const loaded = sessionList as ISessionListLoaded;
+    expect(loaded.keywordList).toEqual(["event", "session"]);
   });
   sessionSubject.next(sessions1);
   await expectation2;
