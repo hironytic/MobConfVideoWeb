@@ -39,27 +39,29 @@ function filterByKeywords(keywords?: string[]): (session: Session) => boolean {
     for (const keyword of keywords) {
       const searcher = new CaseInsensitiveSearch(keyword);
       
-      if (searcher.foundIn(session.title)) {
-        return true;
-      }
-
-      if (searcher.foundIn(session.description)) {
-        return true;
-      }
-
-      for (const speaker of session.speakers) {
-        if (searcher.foundIn(speaker.name)) {
-          return true;
-        }
-        if (speaker.twitter !== undefined) {
-          if (searcher.foundIn(speaker.twitter)) {
-            return true;
+      if (!searcher.foundIn(session.title)) {
+        if (!searcher.foundIn(session.description)) {
+          let found = false;
+          for (const speaker of session.speakers) {
+            if (searcher.foundIn(speaker.name)) {
+              found = true;
+              break;
+            }
+            if (speaker.twitter !== undefined) {
+              if (searcher.foundIn(speaker.twitter)) {
+                found = true;
+                break;
+              }
+            }
+          }
+          if (!found) {
+            return false;
           }
         }
       }
     }
 
-    return false;
+    return true;
   };
 }
 
