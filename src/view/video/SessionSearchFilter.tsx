@@ -120,7 +120,7 @@ class SessionSearchFilter extends React.Component {
                                     type="text"
                                     autoFocus={false}
                                     label="キーワード"
-                                    placeholder="スペースで区切って指定"
+                                    placeholder="スペースで区切って指定（AND検索）"
                                     margin="none"
                                     fullWidth={true}
                                     onChange={onChange}
