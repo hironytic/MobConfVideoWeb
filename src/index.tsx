@@ -23,7 +23,6 @@ async function initialize() {
   // Initialize Cloud Firestore through Firebase
   const db = firebase.firestore();
   db.settings({
-    timestampsInSnapshots: true
   });
 
   setupBackNavigation();
