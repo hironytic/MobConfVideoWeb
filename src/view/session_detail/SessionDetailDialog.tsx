@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-import { AppBar, Avatar, Button, CircularProgress, Dialog, DialogContent, Grid, IconButton, StyledComponentProps, Theme, Toolbar, Typography, withStyles } from '@material-ui/core';
+import { AppBar, Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent, Grid, IconButton, StyledComponentProps, Theme, Toolbar, Typography, withStyles } from '@material-ui/core';
 import withMobileDialog, { InjectedProps } from '@material-ui/core/withMobileDialog';
 import CloseIcon from '@material-ui/icons/ArrowBack';
 import CheckIcon from '@material-ui/icons/Check';
@@ -102,13 +102,21 @@ class SessionDetailDialog extends React.Component<IProps> {
           <DialogContent style={{paddingTop: 76}}>
             {this.renderBody(sessionDetail) }
           </DialogContent>
+          <DialogActions>
+            <React.Fragment />
+          </DialogActions>
         </React.Fragment>
       );
     } else {
       return (
-        <DialogContent>
-          {this.renderBody(sessionDetail) }
-        </DialogContent>
+        <React.Fragment>
+          <DialogContent>
+            {this.renderBody(sessionDetail) }
+          </DialogContent>
+          <DialogActions>
+            <React.Fragment />
+          </DialogActions>
+        </React.Fragment>
       );
     }
   }
