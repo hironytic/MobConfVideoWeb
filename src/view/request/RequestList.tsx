@@ -93,7 +93,7 @@ class RequestList extends React.Component<IProps> {
         <div style={{
           marginTop: 70,
         }}>
-          <Typography variant="body1" color="textSecondary">
+          <Typography variant="body2" color="textSecondary">
             リクエストがありません
           </Typography>
         </div>  
@@ -106,7 +106,7 @@ class RequestList extends React.Component<IProps> {
         padding: 20,
       }}>
         <Grid container={true}
-              spacing={24}
+              spacing={3}
               alignItems="flex-start">
           {loaded.requests.map((request) => this.renderRequestItem(currentEventId, request))}
         </Grid>
@@ -139,28 +139,28 @@ class RequestList extends React.Component<IProps> {
                   };
                   return (
                     <CardActionArea style={{padding: 20}} onClick={onClick}>
-                      <Grid container={true} spacing={16} justify="space-between">
+                      <Grid container={true} spacing={2} justify="space-between">
                         <Grid item={true} xs={6}>
-                          <Typography variant="body1" color="textSecondary">
+                          <Typography variant="body2" color="textSecondary">
                             {request.conference}
                           </Typography>
                         </Grid>
                         <Grid item={true} xs={6} style={{textAlign: "end"}}>
                           {(request.minutes) ? (
-                            <Typography variant="body1" color="textSecondary">
+                            <Typography variant="body2" color="textSecondary">
                               {request.minutes}分
                             </Typography>
                           ) : (<React.Fragment/>)}
                         </Grid>
                         <Grid item={true} xs={12}>
-                          <Typography variant="headline" color="textPrimary">
+                          <Typography variant="h5" color="textPrimary">
                             {request.title}
                           </Typography>
                         </Grid>
                         <Grid item={true} xs={12} style={{textAlign: "end"}}>
                           <Grid item={true}>
                             {(request.isWatched) ? (
-                              <CheckIcon nativeColor="green" />
+                              <CheckIcon htmlColor="green" />
                             ) : (
                               <React.Fragment/>
                             )}
@@ -183,10 +183,10 @@ class RequestList extends React.Component<IProps> {
       <div style={{
         marginTop: 70,
       }}>
-        <Typography variant="body1" color="error">
+        <Typography variant="body2" color="error">
           エラーが発生しました
         </Typography>
-        <Typography variant="body1" color="textSecondary">
+        <Typography variant="body2" color="textSecondary">
           {error.message}
         </Typography>
       </div>  
@@ -194,4 +194,4 @@ class RequestList extends React.Component<IProps> {
   }
 }
 
-export default withTheme()(RequestList);
+export default withTheme(RequestList);

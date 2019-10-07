@@ -48,7 +48,7 @@ class SessionSearchFilter extends React.Component {
               <CardContent>
                 <Grid container={true} alignItems="center">
                   <Grid item={true} xs={6} style={{textAlign: "start"}}>
-                    <Typography variant="body1" color="textPrimary">
+                    <Typography variant="body2" color="textPrimary">
                     検索条件
                     </Typography>
                   </Grid>
@@ -72,7 +72,7 @@ class SessionSearchFilter extends React.Component {
                   return (
                     <Collapse in={isFilterpanelExpanded}>
                       <CardContent>
-                        <Grid container={true} spacing={24}>
+                        <Grid container={true} spacing={3}>
                           <Grid item={true} xs={12} style={{textAlign: "start"}}>
                             <Snapshot source={bloc.filterConference}>
                               {(data: DropdownState) => (data === undefined) ? (<React.Fragment/>) : (

@@ -31,18 +31,18 @@ class Maintenance extends React.Component {
       <React.Fragment>
         <AppBar position="sticky">
           <Toolbar>
-            <Typography variant="title" color="inherit">
+            <Typography variant="h6" color="inherit">
               👷🏻‍♂️👷🏻‍♀️ メンテナンス中
             </Typography>
           </Toolbar>
         </AppBar>
         <div style={{ padding: 20 }}>
-          <Typography variant="subheading">
+          <Typography variant="subtitle1">
             🚧 ただいま メンテナンス中です 🚧
           </Typography>
         </div>
         <div style={{ padding: 20 }}>
-          <Typography variant="body1">
+          <Typography variant="body2">
             ご不便をおかけして申し訳ありません。もうしばらくお待ちください。
           </Typography>
         </div>
