@@ -139,16 +139,16 @@ class SessionDetailDialog extends React.Component<IProps> {
 
   private renderLoadedBody(loaded: ISessionDetailLoaded) {
     return (
-      <Grid container={true} spacing={16} justify="space-between">
+      <Grid container={true} spacing={2} justify="space-between">
         <Grid item={true} xs={12}>
-          <Grid container={true} spacing={16} justify="space-between">
+          <Grid container={true} spacing={2} justify="space-between">
             <Grid item={true}>
-              <Typography variant="body1" color="textSecondary">
+              <Typography variant="body2" color="textSecondary">
                 {loaded.session.conferenceName}
               </Typography>
             </Grid>
             <Grid item={true} style={{textAlign: "end"}}>
-              <Typography variant="body1" color="textSecondary">
+              <Typography variant="body2" color="textSecondary">
                 {loaded.session.session.minutes}分
               </Typography>
             </Grid>
@@ -156,7 +156,7 @@ class SessionDetailDialog extends React.Component<IProps> {
         </Grid>
         {this.renderWatchedEvents(loaded.session.watchedEvents)}
         <Grid item={true} xs={12}>
-          <Typography variant="headline" color="textPrimary">
+          <Typography variant="h5" color="textPrimary">
             {loaded.session.session.title}              
           </Typography>
         </Grid>
@@ -180,9 +180,13 @@ class SessionDetailDialog extends React.Component<IProps> {
                   )}
                 </Grid>
                 <Grid item={true}>
+                  {loaded.session.session.video !== undefined ? (
                     <Button href={loaded.session.session.video} target="_blank" color="primary">
                       <VideoIcon/> ビデオ
                     </Button>
+                  ) : (
+                    <React.Fragment/>
+                  )}
                 </Grid>
               </Grid>
             </Grid>
@@ -214,10 +218,10 @@ class SessionDetailDialog extends React.Component<IProps> {
     } else {
       return (
         <Grid item={true} xs={12}>
-          <Grid container={true} spacing={16} justify="flex-start">
+          <Grid container={true} spacing={2} justify="flex-start">
             {watchedEvents.map(event => (
               <Grid key={event.id} item={true}>
-                <Typography variant="body1" color="textSecondary" className={this.props.classes!.watched}>
+                <Typography variant="body2" color="textSecondary" className={this.props.classes!.watched}>
                   <CheckIcon className={this.props.classes!.watchedIcon} />{event.name}
                 </Typography>
               </Grid>
@@ -231,7 +235,7 @@ class SessionDetailDialog extends React.Component<IProps> {
   private renderDescription(description: string) {
     const lines = description.split(/\r\n|\r|\n/);
     return lines.map((line, index) => (
-      <Typography key={index} variant="body1" color="textPrimary">
+      <Typography key={index} variant="body2" color="textPrimary">
         {line.length > 0 ? line : (<br/>)}
       </Typography>
     ));
@@ -239,12 +243,12 @@ class SessionDetailDialog extends React.Component<IProps> {
 
   private renderSpeaker(speaker: Speaker, index: number) {
     return (
-      <Grid key={index} container={true} spacing={8} alignItems="center" justify="flex-start">
+      <Grid key={index} container={true} spacing={1} alignItems="center" justify="flex-start">
         <Grid item={true}>
           <Avatar src={speaker.icon}/>
         </Grid>
         <Grid item={true}>
-          <Typography variant="body1" color="textPrimary">
+          <Typography variant="body2" color="textPrimary">
             {speaker.name}
           </Typography>
         </Grid>
@@ -255,10 +259,10 @@ class SessionDetailDialog extends React.Component<IProps> {
   private renderErrorBody(error: ISessionDetailError) {
     return (
       <div style={{textAlign: "center"}}>
-        <Typography variant="body1" color="error">
+        <Typography variant="body2" color="error">
           エラーが発生しました
         </Typography>
-        <Typography variant="body1" color="textSecondary">
+        <Typography variant="body2" color="textSecondary">
           {error.message}
         </Typography>
       </div>

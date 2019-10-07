@@ -100,7 +100,7 @@ class SessionList extends React.Component<StyledComponentProps> {
         <div style={{
           marginTop: 50,
         }}>
-          <Typography variant="body1" color="textSecondary">
+          <Typography variant="body2" color="textSecondary">
             動画セッションが見つかりません
           </Typography>
         </div>  
@@ -111,7 +111,7 @@ class SessionList extends React.Component<StyledComponentProps> {
     const keywordList = [...loaded.keywordList].sort((left, right) => right.length - left.length)
     return (
       <Grid container={true}
-            spacing={24}
+            spacing={3}
             alignItems="flex-start">
         {loaded.sessions.map((sessionItem) => this.renderSessionItem(sessionItem, keywordList))}
       </Grid>
@@ -134,16 +134,16 @@ class SessionList extends React.Component<StyledComponentProps> {
               };
               return (
                 <CardActionArea style={{padding: 20}} onClick={sessionTapped}>
-                  <Grid container={true} spacing={16} justify="space-between">
+                  <Grid container={true} spacing={2} justify="space-between">
                     <Grid item={true} xs={12}>
-                      <Grid container={true} spacing={16} justify="space-between">
+                      <Grid container={true} spacing={2} justify="space-between">
                         <Grid item={true}>
-                          <Typography variant="body1" color="textSecondary">
+                          <Typography variant="body2" color="textSecondary">
                             {sessionItem.conferenceName}
                           </Typography>
                         </Grid>
                         <Grid item={true} style={{textAlign: "end"}}>
-                          <Typography variant="body1" color="textSecondary">
+                          <Typography variant="body2" color="textSecondary">
                             {sessionItem.session.minutes}分
                           </Typography>
                         </Grid>
@@ -151,7 +151,7 @@ class SessionList extends React.Component<StyledComponentProps> {
                     </Grid>
                     {this.renderWatchedEvents(sessionItem.watchedEvents)}
                     <Grid item={true} xs={12}>
-                      <Typography variant="headline" color="textPrimary">
+                      <Typography variant="h5" color="textPrimary">
                         {this.renderBold(sessionTitleLwbr)}
                       </Typography>
                     </Grid>
@@ -177,10 +177,10 @@ class SessionList extends React.Component<StyledComponentProps> {
     } else {
       return (
         <Grid item={true} xs={12}>
-          <Grid container={true} spacing={16} justify="flex-start">
+          <Grid container={true} spacing={2} justify="flex-start">
             {watchedEvents.map(event => (
               <Grid key={event.id} item={true}>
-                <Typography variant="body1" color="textSecondary" className={this.props.classes!.watched}>
+                <Typography variant="body2" color="textSecondary" className={this.props.classes!.watched}>
                   <CheckIcon className={this.props.classes!.watchedIcon} />{event.name}
                 </Typography>
               </Grid>
@@ -254,7 +254,7 @@ class SessionList extends React.Component<StyledComponentProps> {
     }
 
     return displayLines.map((lwbr, index) => (
-      <Typography key={index} variant="body1" color="textPrimary">
+      <Typography key={index} variant="body2" color="textPrimary">
         {lwbr.line.length > 0 ? this.renderBold(lwbr) : (<br/>)}
       </Typography>
     ));
@@ -263,12 +263,12 @@ class SessionList extends React.Component<StyledComponentProps> {
   private renderSpeaker(speaker: Speaker, index: number, keywordList: string[]) {
     const lwbr = this.detectBoldRange(speaker.name, keywordList);
     return (
-      <Grid key={index} container={true} spacing={8} alignItems="center" justify="flex-start">
+      <Grid key={index} container={true} spacing={1} alignItems="center" justify="flex-start">
         <Grid item={true}>
           <Avatar src={speaker.icon}/>
         </Grid>
         <Grid item={true}>
-          <Typography variant="body1" color="textPrimary">
+          <Typography variant="body2" color="textPrimary">
             {this.renderBold(lwbr)}
           </Typography>
         </Grid>
@@ -281,10 +281,10 @@ class SessionList extends React.Component<StyledComponentProps> {
       <div style={{
         marginTop: 70,
       }}>
-        <Typography variant="body1" color="error">
+        <Typography variant="body2" color="error">
           エラーが発生しました
         </Typography>
-        <Typography variant="body1" color="textSecondary">
+        <Typography variant="body2" color="textSecondary">
           {error.message}
         </Typography>
       </div>  

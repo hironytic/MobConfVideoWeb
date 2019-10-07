@@ -40,7 +40,7 @@ class HomeAppBar extends React.Component {
               <Snapshot source={bloc.currentPageIndex} initialValue={0}>
                 {(currentPageIndex: number) => (
                   <Toolbar>
-                    <Typography variant="title" color="inherit">
+                    <Typography variant="h6" color="inherit">
                       {this.getPageTitle(currentPageIndex)}
                     </Typography>
                     <div style={{flexGrow: 1}} />

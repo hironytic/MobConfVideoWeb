@@ -51,7 +51,7 @@ class RequestPage extends React.Component<IProps> {
                   if (events.length === 0) {
                     return (
                       <div>
-                        <CircularProgress size={18} style={{margin: this.props.theme.spacing.unit * 2}}/>
+                        <CircularProgress size={18} style={{margin: this.props.theme.spacing(2)}}/>
                       </div>
                     );
                   }
@@ -76,4 +76,4 @@ class RequestPage extends React.Component<IProps> {
   }
 }
 
-export default withTheme()(RequestPage);
+export default withTheme(RequestPage);
