@@ -14,7 +14,7 @@
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
     "react-scripts-ts": "3.1.0",
-    "rxjs": "^6.4.0",
+    "rxjs": "^6.5.3",
     "tslib": "^1.10.0"
   },
   "scripts": {
