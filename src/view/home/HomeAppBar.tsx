@@ -45,8 +45,8 @@ class HomeAppBar extends React.Component {
                     </Typography>
                     <div style={{flexGrow: 1}} />
                     <Tabs value={currentPageIndex} onChange={currentPageIndexChanged}>
-                      <Tab label="リクエスト" icon={<ListIcon />} />
-                      <Tab label="動画" icon={<VideoIcon />} />
+                      <Tab label="リクエスト一覧" icon={<ListIcon />} />
+                      <Tab label="動画を見つける" icon={<VideoIcon />} />
                     </Tabs>
                   </Toolbar>
                 )}
@@ -62,7 +62,7 @@ class HomeAppBar extends React.Component {
   private getPageTitle(pageIndex: number): string {
     switch (pageIndex) {
       case 0:
-        return "リクエスト";
+        return "リクエスト一覧";
 
       case 1:
         return "動画を見つける";
