@@ -45,8 +45,8 @@ class HomeAppBar extends React.Component {
                     </Typography>
                     <div style={{flexGrow: 1}} />
                     <Tabs value={currentPageIndex} onChange={currentPageIndexChanged}>
-                      <Tab label="リクエスト一覧" icon={<ListIcon />} />
-                      <Tab label="動画を見つける" icon={<VideoIcon />} />
+                      <Tab label="受付済み" icon={<ListIcon />} />
+                      <Tab label="動画検索" icon={<VideoIcon />} />
                     </Tabs>
                   </Toolbar>
                 )}
