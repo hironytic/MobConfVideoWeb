@@ -112,7 +112,9 @@ class DefaultVideoBloc implements IVideoBloc {
       new DropdownStateItem({value: "30", title: "30分"}),
       new DropdownStateItem({value: "45", title: "45分"}),
       new DropdownStateItem({value: "50", title: "50分"}),
+      new DropdownStateItem({value: "60", title: "60分"}),
       new DropdownStateItem({value: "70", title: "70分"}),
+      new DropdownStateItem({value: "120", title: "120分"}),
     ];
 
     const currentSessionTimeFilter = filterSessionTimeChanged.pipe(
