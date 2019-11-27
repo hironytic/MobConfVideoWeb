@@ -1,6 +1,6 @@
 {
   "name": "mob_conf_video_web",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "private": true,
   "jest": {
     "moduleNameMapper": {
