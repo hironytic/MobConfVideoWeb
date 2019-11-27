@@ -240,11 +240,24 @@ class SessionDetailDialog extends React.Component<IProps> {
     }
   }
 
+  private preserveBeginningSpace(line: string): string {
+    let prefix = "";
+    while (line.charAt(0) === " ") {
+      prefix = prefix + "\u00a0";
+      line = line.substring(1);
+    }
+    if (prefix.length > 0) {
+      return prefix + line;
+    } else {
+      return line;
+    }
+  }
+
   private renderDescription(description: string) {
     const lines = description.split(/\r\n|\r|\n/);
     return lines.map((line, index) => (
       <Typography key={index} variant="body2" color="textPrimary">
-        {line.length > 0 ? line : (<br/>)}
+        {line.length > 0 ? this.preserveBeginningSpace(line) : (<br/>)}
       </Typography>
     ));
   }
