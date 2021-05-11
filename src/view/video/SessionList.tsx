@@ -247,7 +247,8 @@ class SessionList extends React.Component<StyledComponentProps> {
           count += length;
           displayLines.push({line: lwbr.line, boldRanges: lwbr.boldRanges});
         } else {
-          displayLines.push({line: lwbr.line.substr(0, maxChars - count) + "…", boldRanges: lwbr.boldRanges.filter(range => range.offset + range.length <= maxChars - count)});
+          const currentCount = count;
+          displayLines.push({line: lwbr.line.substr(0, maxChars - currentCount) + "…", boldRanges: lwbr.boldRanges.filter(range => range.offset + range.length <= maxChars - currentCount)});
           break;
         }
       }
@@ -297,9 +298,11 @@ class SessionList extends React.Component<StyledComponentProps> {
     const boldRanges: IBoldRange[] = [];
     const searchList = keywordList.map(keyword => new CaseInsensitiveSearch(keyword));
     do {
+      const currentOffset = searchOffset;
+
       // assume that keywordList is sorted in order from longest to shortest
       nextRange = searchList.reduce((acc, search) => {
-        const searchResult = search.searchIn(line, searchOffset);
+        const searchResult = search.searchIn(line, currentOffset);
         if (searchResult !== null && (acc === null || searchResult.index < acc.offset)) {
           return {offset: searchResult.index, length: searchResult.length};
         } else {
