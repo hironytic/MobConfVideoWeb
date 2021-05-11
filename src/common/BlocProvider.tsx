@@ -1,7 +1,7 @@
 //
 // BlocProvider.tsx
 //
-// Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2018-2021 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -33,11 +33,22 @@ interface IProps<T extends IBloc> {
   creator: BlocCreator<T>;
 }
 
-class BlocProvider<T extends IBloc> extends React.Component<IProps<T>> {
+interface IState<T extends IBloc> {
+  bloc?: T;
+}
+
+class BlocProvider<T extends IBloc> extends React.Component<IProps<T>, IState<T>> {
   private bloc?: T;
 
-  public componentWillMount() {
-    this.bloc = this.props.creator();
+  public constructor(props: Readonly<IProps<T>> | IProps<T>) {
+    super(props);
+    this.state = {
+      bloc: undefined,
+    };
+  }
+
+  public componentDidMount() {
+    this.bloc = this.state.bloc;
   }
 
   public componentWillUnmount() {
@@ -47,21 +58,30 @@ class BlocProvider<T extends IBloc> extends React.Component<IProps<T>> {
     }
   }
 
-  public componentWillReceiveProps() {
-    if (this.bloc !== undefined) {
-      this.bloc.dispose();
+  public static getDerivedStateFromProps<T extends IBloc>(props: IProps<T>, state: IState<T>): IState<T> {
+    return {
+      bloc: props.creator(),
+    };
+  }
+
+  public componentDidUpdate(prevProps: IProps<T>, prevState: IState<T>) {
+    if (this.state.bloc !== this.bloc) {
+      this.bloc?.dispose();
+      this.bloc = this.state.bloc
     }
-    this.bloc = this.props.creator();
-    this.setState({});
   }
 
   public render() {
-    const Provider = this.props.context.Provider;
-    return (
-      <Provider value={this.bloc!}>
-        {this.props.children}
-      </Provider>
-    )
+    if (this.state.bloc !== undefined) {
+      const Provider = this.props.context.Provider;
+      return (
+        <Provider value={this.state.bloc}>
+          {this.props.children}
+        </Provider>
+      )
+    } else {
+      return (<React.Fragment/>);
+    }
   }
 }
 

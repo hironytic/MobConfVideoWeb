@@ -1,7 +1,7 @@
 //
 // Snapshot.tsx
 //
-// Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2018-2021 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -38,19 +38,24 @@ interface IState<T> {
 type Builder<T> = (value?: T) => ReactNode;
 
 class Snapshot<T> extends React.Component<IProps<T>, IState<T>> {
-  public state = {
-    value: this.props.initialValue,
-  }
-
   private subscription?: Subscription;
+
+  public constructor(props: Readonly<IProps<T>> | IProps<T>) {
+    super(props);
+    this.state = {
+      value: props.initialValue,
+    };
+  }
 
   public componentDidMount() {
     this.subscribe();
   }
 
-  public componentWillReceiveProps() {
-    this.unsubscribe();
-    this.subscribe();
+  public componentDidUpdate(prevProps: Readonly<IProps<T>>) {
+    if (this.props.source !== prevProps.source) {
+      this.unsubscribe();
+      this.subscribe();
+    }
   }
 
   public componentWillUnmount() {
