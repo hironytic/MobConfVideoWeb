@@ -22,7 +22,8 @@
 // THE SOFTWARE.
 //
 
-import firebase, { firestore } from "firebase/app";
+import firebase from "firebase/app";
+import firestore = firebase.firestore;
 import "firebase/firestore";
 import { Observable } from 'rxjs';
 import CaseInsensitiveSearch from 'src/common/CaseInsensitiveSearch';
