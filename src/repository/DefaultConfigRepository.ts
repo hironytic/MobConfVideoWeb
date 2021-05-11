@@ -26,7 +26,7 @@ import firebase from "firebase/app";
 import "firebase/firestore";
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
-import Config from 'src/model/Config';
+import Config from '../model/Config';
 import { IConfigRepository } from './ConfigRepository';
 
 class DefaultConfigRepository implements IConfigRepository {

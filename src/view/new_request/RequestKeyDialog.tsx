@@ -24,8 +24,8 @@
 
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@material-ui/core';
 import React, { Key } from 'react';
-import { executeBackNavigation, prepareBackNavigation } from 'src/common/BackNavigation';
-import Snapshot from 'src/common/Snapshot';
+import { executeBackNavigation, prepareBackNavigation } from '../../common/BackNavigation';
+import Snapshot from '../../common/Snapshot';
 import { INewRequestBloc } from './NewRequestBloc';
 import NewRequestContext from './NewRequestContext';
 

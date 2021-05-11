@@ -23,8 +23,8 @@
 //
 
 import React, { Key } from 'react';
-import BlocProvider from 'src/common/BlocProvider';
-import RepositoryContext from 'src/RepositoryContext';
+import BlocProvider from '../../common/BlocProvider';
+import RepositoryContext from '../../RepositoryContext';
 import DefaultRequestDetailBloc from './DefaultRequestDetailBloc';
 import RequestDetailContext from './RequestDetailContext';
 

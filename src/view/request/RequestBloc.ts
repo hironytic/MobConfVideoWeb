@@ -23,9 +23,9 @@
 //
 
 import { Observable, Observer } from "rxjs";
-import { IBloc } from 'src/common/Bloc';
-import Event from "src/model/Event";
-import Request from "src/model/Request";
+import { IBloc } from '../../common/Bloc';
+import Event from "../../model/Event";
+import Request from "../../model/Request";
 
 export enum RequestListState {
   NotLoaded,

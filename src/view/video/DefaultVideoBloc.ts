@@ -24,15 +24,15 @@
 
 import { BehaviorSubject, combineLatest, ConnectableObservable, merge, never, Observable, Observer, Subject, Subscription } from "rxjs";
 import { catchError, distinctUntilChanged, map, publishBehavior, shareReplay, startWith, switchMap, withLatestFrom } from 'rxjs/operators';
-import DropdownState from 'src/common/DropdownState';
-import DropdownStateItem from 'src/common/DropdownStateItem';
-import Conference from 'src/model/Conference';
-import Event from 'src/model/Event';
-import Session from 'src/model/Session';
-import { IConferenceRepository } from 'src/repository/ConferenceRepository';
-import { IEventRepository } from 'src/repository/EventRepository';
-import SessionFilter from 'src/repository/SessionFilter';
-import { ISessionRepository } from 'src/repository/SessionRepository';
+import DropdownState from '../../common/DropdownState';
+import DropdownStateItem from '../../common/DropdownStateItem';
+import Conference from '../../model/Conference';
+import Event from '../../model/Event';
+import Session from '../../model/Session';
+import { IConferenceRepository } from '../../repository/ConferenceRepository';
+import { IEventRepository } from '../../repository/EventRepository';
+import SessionFilter from '../../repository/SessionFilter';
+import { ISessionRepository } from '../../repository/SessionRepository';
 import { IIdAndName, ISessionItem, ISessionList, IVideoBloc, SessionListState } from './VideoBloc';
 
 class DefaultVideoBloc implements IVideoBloc {

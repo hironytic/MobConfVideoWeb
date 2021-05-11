@@ -24,9 +24,9 @@
 
 import { never, Subject, Subscription, throwError } from 'rxjs';
 import { startWith } from 'rxjs/operators';
-import Request from 'src/model/Request';
-import EventuallyObserver from 'src/test/EventuallyObserver';
-import MockRequestRepository from 'src/test/mock/MockRequestRepository';
+import Request from '../../model/Request';
+import EventuallyObserver from '../../test/EventuallyObserver';
+import MockRequestRepository from '../../test/mock/MockRequestRepository';
 import DefaultRequestDetailBloc from './DefaultRequestDetailBloc';
 import { IRequestDetail, IRequestDetailBloc, IRequestDetailError, IRequestDetailLoaded, RequestDetailState } from "./RequestDetailBloc";
 

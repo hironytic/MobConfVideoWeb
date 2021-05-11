@@ -23,7 +23,7 @@
 //
 
 import { Observable } from 'rxjs';
-import Session from 'src/model/Session';
+import Session from '../model/Session';
 import SessionFilter from './SessionFilter';
 
 export interface ISessionRepository {

@@ -23,8 +23,8 @@
 //
 
 import { never, Observable } from 'rxjs';
-import Event from 'src/model/Event';
-import { IEventRepository } from "src/repository/EventRepository";
+import Event from '../../model/Event';
+import { IEventRepository } from "../../repository/EventRepository";
 
 export default class MockEventRepository implements IEventRepository {
   public getAllEventsObservable = jest.fn(() => never() as Observable<Event[]>);

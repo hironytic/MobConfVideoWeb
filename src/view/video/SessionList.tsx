@@ -25,9 +25,9 @@
 import { Avatar, Card, CardActionArea, CircularProgress, Grid, StyledComponentProps, Theme, Typography, withStyles } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
 import React, { Fragment } from 'react';
-import CaseInsensitiveSearch from 'src/common/CaseInsensitiveSearch';
-import Snapshot from 'src/common/Snapshot';
-import Speaker from 'src/model/Speaker';
+import CaseInsensitiveSearch from '../../common/CaseInsensitiveSearch';
+import Snapshot from '../../common/Snapshot';
+import Speaker from '../../model/Speaker';
 import SessionDetailContext from '../session_detail/SessionDetailContext';
 import { IIdAndName, ISessionItem, ISessionList, ISessionListError, ISessionListLoaded, SessionListState } from './VideoBloc';
 import VideoContext from './VideoContext';

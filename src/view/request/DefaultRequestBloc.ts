@@ -24,9 +24,9 @@
 
 import { concat, ConnectableObservable, never, Observable, Observer, of, Subject, Subscription } from "rxjs";
 import { catchError, distinctUntilChanged, filter, map, publishBehavior, startWith, switchMap, take } from 'rxjs/operators';
-import Event from "src/model/Event";
-import { IEventRepository } from 'src/repository/EventRepository';
-import { IRequestRepository } from 'src/repository/RequestRepository';
+import Event from "../../model/Event";
+import { IEventRepository } from '../../repository/EventRepository';
+import { IRequestRepository } from '../../repository/RequestRepository';
 import { IRequestBloc, IRequestList, RequestListState } from './RequestBloc';
 
 class DefaultRequestBloc implements IRequestBloc {

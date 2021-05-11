@@ -23,8 +23,8 @@
 //
 
 import { never, Observable } from 'rxjs';
-import Request from "src/model/Request";
-import { IAddRequestFromSessionData, IAddRequestWithoutSessionData, IRequestRepository } from 'src/repository/RequestRepository';
+import Request from "../../model/Request";
+import { IAddRequestFromSessionData, IAddRequestWithoutSessionData, IRequestRepository } from '../../repository/RequestRepository';
 
 export default class MockRequestRepository implements IRequestRepository {
   public getAllRequestsObservable = jest.fn((eventId: string) => never() as Observable<Request[]>);

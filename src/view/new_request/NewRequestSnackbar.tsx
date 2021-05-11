@@ -24,7 +24,7 @@
 
 import { Snackbar } from '@material-ui/core';
 import React, { Key } from 'react';
-import Snapshot from 'src/common/Snapshot';
+import Snapshot from '../../common/Snapshot';
 import { ISnackbarSetting } from './NewRequestBloc';
 import NewRequestContext from './NewRequestContext';
 

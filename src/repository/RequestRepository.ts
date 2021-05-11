@@ -23,7 +23,7 @@
 //
 
 import { Observable } from 'rxjs';
-import Request from "src/model/Request";
+import Request from "../model/Request";
 
 export interface IAddRequestFromSessionData {
   requestKey: string;

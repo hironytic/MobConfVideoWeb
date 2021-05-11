@@ -25,8 +25,8 @@
 import { CircularProgress, Tab, Tabs, Theme, withTheme } from '@material-ui/core';
 import React, { Key } from 'react';
 import { combineLatest } from 'rxjs';
-import Snapshot from 'src/common/Snapshot';
-import Event from 'src/model/Event';
+import Snapshot from '../../common/Snapshot';
+import Event from '../../model/Event';
 import DefaultRequestDetailBlocProvider from '../request_detail/DefaultRequestDetailBlocProvider';
 import RequestDetailDialog from '../request_detail/RequestDetailDialog';
 import RequestContext from './RequestContext';

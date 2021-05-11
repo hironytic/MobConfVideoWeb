@@ -24,11 +24,11 @@
 
 import { never, Subject, Subscription, throwError } from 'rxjs';
 import { startWith } from 'rxjs/operators';
-import Event from 'src/model/Event';
-import Request from 'src/model/Request';
-import EventuallyObserver from 'src/test/EventuallyObserver';
-import MockEventRepository from 'src/test/mock/MockEventRepository';
-import MockRequestRepository from 'src/test/mock/MockRequestRepository';
+import Event from '../../model/Event';
+import Request from '../../model/Request';
+import EventuallyObserver from '../../test/EventuallyObserver';
+import MockEventRepository from '../../test/mock/MockEventRepository';
+import MockRequestRepository from '../../test/mock/MockRequestRepository';
 import DefaultRequestBloc from "./DefaultRequestBloc";
 import { IRequestBloc, IRequestList, IRequestListError, IRequestListLoaded, RequestListState } from './RequestBloc';
 

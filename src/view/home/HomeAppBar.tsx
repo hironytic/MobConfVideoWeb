@@ -26,7 +26,7 @@ import { AppBar, Tab, Tabs, Toolbar, Typography } from "@material-ui/core";
 import ListIcon from '@material-ui/icons/List';
 import VideoIcon from '@material-ui/icons/VideoLabel';
 import * as React from 'react';
-import Snapshot from 'src/common/Snapshot';
+import Snapshot from '../../common/Snapshot';
 import HomeContext from './HomeContext';
 
 class HomeAppBar extends React.Component {

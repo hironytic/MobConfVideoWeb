@@ -23,8 +23,8 @@
 //
 
 import { never, Observable } from 'rxjs';
-import Conference from 'src/model/Conference';
-import { IConferenceRepository } from 'src/repository/ConferenceRepository';
+import Conference from '../../model/Conference';
+import { IConferenceRepository } from '../../repository/ConferenceRepository';
 
 export default class MockConferenceRepository implements IConferenceRepository {
   public getAllConferencesObservable = jest.fn(() => never() as Observable<Conference[]>);
