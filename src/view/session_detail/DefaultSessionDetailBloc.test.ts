@@ -24,14 +24,14 @@
 
 import { never, Subscription, throwError } from "rxjs";
 import { startWith } from 'rxjs/operators';
-import Conference from 'src/model/Conference';
-import Event from 'src/model/Event';
-import Session from 'src/model/Session';
-import Speaker from 'src/model/Speaker';
-import EventuallyObserver from 'src/test/EventuallyObserver';
-import MockConferenceRepository from 'src/test/mock/MockConferenceRepository';
-import MockEventRepository from 'src/test/mock/MockEventRepository';
-import MockSessionRepository from 'src/test/mock/MockSessionRepository';
+import Conference from '../../model/Conference';
+import Event from '../../model/Event';
+import Session from '../../model/Session';
+import Speaker from '../../model/Speaker';
+import EventuallyObserver from '../../test/EventuallyObserver';
+import MockConferenceRepository from '../../test/mock/MockConferenceRepository';
+import MockEventRepository from '../../test/mock/MockEventRepository';
+import MockSessionRepository from '../../test/mock/MockSessionRepository';
 import DefaultSessionDetailBloc from './DefaultSessionDetailBloc';
 import { ISessionDetail, ISessionDetailBloc, ISessionDetailError, ISessionDetailLoaded, SessionDetailState } from './SessionDetailBloc';
 

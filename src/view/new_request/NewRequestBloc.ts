@@ -23,8 +23,8 @@
 //
 
 import { Observable, Observer } from "rxjs";
-import { IBloc } from 'src/common/Bloc';
-import { IModalLogicInput, IModalLogicOutput } from 'src/common/ModalLogic';
+import { IBloc } from '../../common/Bloc';
+import { IModalLogicInput, IModalLogicOutput } from '../../common/ModalLogic';
 
 export interface IAddRequestFromSessionParams {
   sessionId: string;

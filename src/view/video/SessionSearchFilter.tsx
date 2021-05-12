@@ -26,10 +26,10 @@ import { Button, Card, CardActions, CardContent, Collapse, FormControl, Grid, Ic
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import React from 'react';
-import { bindClickEvent } from 'src/common/ButtonUtils';
-import DropdownState from 'src/common/DropdownState';
-import { bindChangeEvent } from 'src/common/DropdownUtils';
-import Snapshot from 'src/common/Snapshot';
+import { bindClickEvent } from '../../common/ButtonUtils';
+import DropdownState from '../../common/DropdownState';
+import { bindChangeEvent } from '../../common/DropdownUtils';
+import Snapshot from '../../common/Snapshot';
 import VideoContext from './VideoContext';
 
 class SessionSearchFilter extends React.Component {

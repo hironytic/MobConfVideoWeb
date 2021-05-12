@@ -26,8 +26,8 @@ import { Card, CardActionArea, CircularProgress, Grid, Theme, Typography, withTh
 import grey from '@material-ui/core/colors/grey';
 import CheckIcon from '@material-ui/icons/Check';
 import React, { Key } from 'react';
-import Snapshot from 'src/common/Snapshot';
-import Request from 'src/model/Request';
+import Snapshot from '../../common/Snapshot';
+import Request from '../../model/Request';
 import RequestDetailContext from '../request_detail/RequestDetailContext';
 import SessionDetailContext from '../session_detail/SessionDetailContext';
 import { IRequestList, IRequestListError, IRequestListLoaded, RequestListState } from './RequestBloc';

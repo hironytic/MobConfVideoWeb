@@ -23,7 +23,7 @@
 //
 
 import { Subscription } from 'rxjs';
-import EventuallyObserver from 'src/test/EventuallyObserver';
+import EventuallyObserver from '../../test/EventuallyObserver';
 import DefaultHomeBloc from "./DefaultHomeBloc";
 import { IHomeBloc } from './HomeBloc';
 

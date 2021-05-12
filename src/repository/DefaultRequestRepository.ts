@@ -26,7 +26,7 @@ import firebase from "firebase/app";
 import "firebase/firestore";
 import "firebase/functions";
 import { Observable } from 'rxjs';
-import Request from "src/model/Request";
+import Request from "../model/Request";
 import { IAddRequestFromSessionData, IAddRequestWithoutSessionData, IRequestRepository } from './RequestRepository';
 
 class DefaultRequestRepository implements IRequestRepository {

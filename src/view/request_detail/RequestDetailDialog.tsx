@@ -28,8 +28,8 @@ import CloseIcon from '@material-ui/icons/ArrowBack';
 import SlideIcon from '@material-ui/icons/Note';
 import VideoIcon from '@material-ui/icons/OndemandVideo';
 import React, { Key } from 'react';
-import { executeBackNavigation, prepareBackNavigation } from 'src/common/BackNavigation';
-import Snapshot from 'src/common/Snapshot';
+import { executeBackNavigation, prepareBackNavigation } from '../../common/BackNavigation';
+import Snapshot from '../../common/Snapshot';
 import { IRequestDetail, IRequestDetailError, IRequestDetailLoaded, RequestDetailState } from './RequestDetailBloc';
 import RequestDetailContext from './RequestDetailContext';
 

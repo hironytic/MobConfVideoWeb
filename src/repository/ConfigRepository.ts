@@ -23,7 +23,7 @@
 //
 
 import { Observable } from 'rxjs';
-import Config from 'src/model/Config';
+import Config from '../model/Config';
 
 export interface IConfigRepository {
   getConfigObservable(): Observable<Config>;

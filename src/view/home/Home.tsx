@@ -23,7 +23,7 @@
 //
 
 import * as React from 'react';
-import Snapshot from 'src/common/Snapshot';
+import Snapshot from '../../common/Snapshot';
 import NewRequest from '../new_request/NewRequest';
 import RequestPage from '../request/RequestPage';
 import SessionDetailDialog from '../session_detail/SessionDetailDialog';

@@ -23,8 +23,8 @@
 //
 
 import { Observable, Observer } from 'rxjs';
-import { IBloc } from 'src/common/Bloc';
-import Session from 'src/model/Session';
+import { IBloc } from '../../common/Bloc';
+import Session from '../../model/Session';
 
 export interface IIdAndName {
   id: string,

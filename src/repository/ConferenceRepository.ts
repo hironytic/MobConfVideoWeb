@@ -23,7 +23,7 @@
 //
 
 import { Observable } from 'rxjs';
-import Conference from 'src/model/Conference';
+import Conference from '../model/Conference';
 
 export interface IConferenceRepository {
   getAllConferencesObservable(): Observable<Conference[]>;

@@ -23,7 +23,7 @@
 //
 
 import { Observable } from 'rxjs';
-import Event from 'src/model/Event';
+import Event from '../model/Event';
 
 export interface IEventRepository {
   getAllEventsObservable(): Observable<Event[]>;

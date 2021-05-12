@@ -24,10 +24,10 @@
 
 import { ConnectableObservable, merge, Observable, Observer, of, Subject, Subscription } from 'rxjs';
 import { catchError, map, publishBehavior, shareReplay, startWith, switchMap, withLatestFrom } from 'rxjs/operators';
-import Conference from 'src/model/Conference';
-import { IConferenceRepository } from 'src/repository/ConferenceRepository';
-import { IEventRepository } from 'src/repository/EventRepository';
-import { ISessionRepository } from 'src/repository/SessionRepository';
+import Conference from '../../model/Conference';
+import { IConferenceRepository } from '../../repository/ConferenceRepository';
+import { IEventRepository } from '../../repository/EventRepository';
+import { ISessionRepository } from '../../repository/SessionRepository';
 import { IIdAndName, ISessionDetail, ISessionDetailBloc, ISessionItem, IShowSessionParam, SessionDetailState } from "./SessionDetailBloc";
 
 class DefaultSessionDetailBloc implements ISessionDetailBloc {

@@ -23,7 +23,7 @@
 //
 
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { IModalLogicInput, IModalLogicOutput } from 'src/common/ModalLogic';
+import { IModalLogicInput, IModalLogicOutput } from '../common/ModalLogic';
 
 export default class ModalReflector<R> {
   public visible: Observable<boolean>;

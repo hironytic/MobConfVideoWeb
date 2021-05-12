@@ -26,7 +26,7 @@ import firebase from "firebase/app";
 import "firebase/firestore";
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
-import Event from 'src/model/Event';
+import Event from '../model/Event';
 import { IEventRepository } from './EventRepository';
 
 class DefaultEventRepository implements IEventRepository {

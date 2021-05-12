@@ -23,7 +23,7 @@
 //
 
 import { Observable, Observer } from 'rxjs';
-import { IBloc } from "src/common/Bloc";
+import { IBloc } from "../../common/Bloc";
 
 export interface IHomeBloc extends IBloc {
   // inputs

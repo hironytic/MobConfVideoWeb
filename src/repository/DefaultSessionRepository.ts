@@ -22,11 +22,11 @@
 // THE SOFTWARE.
 //
 
-import firebase, { firestore } from "firebase/app";
+import firebase from "firebase/app";
 import "firebase/firestore";
 import { Observable } from 'rxjs';
-import CaseInsensitiveSearch from 'src/common/CaseInsensitiveSearch';
-import Session from 'src/model/Session';
+import CaseInsensitiveSearch from '../common/CaseInsensitiveSearch';
+import Session from '../model/Session';
 import SessionFilter from './SessionFilter';
 import { ISessionRepository } from './SessionRepository';
 
@@ -69,7 +69,7 @@ function filterByKeywords(keywords?: string[]): (session: Session) => boolean {
 class DefaultSessionRepository implements ISessionRepository {
   public getSessionsObservable(filter: SessionFilter): Observable<Session[]> {
     return new Observable(subscriber => {
-      let query: firestore.Query = firebase
+      let query: firebase.firestore.Query = firebase
         .firestore()
         .collection("sessions");
       if (filter.conferenceId !== undefined) {

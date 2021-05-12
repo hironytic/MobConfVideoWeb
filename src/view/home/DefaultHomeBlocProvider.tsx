@@ -23,7 +23,7 @@
 //
 
 import React, { Key } from 'react';
-import BlocProvider from 'src/common/BlocProvider';
+import BlocProvider from '../../common/BlocProvider';
 import DefaultHomeBloc from './DefaultHomeBloc';
 import HomeContext from './HomeContext';
 

@@ -26,7 +26,7 @@ import firebase from "firebase/app";
 import "firebase/firestore";
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
-import Conference from 'src/model/Conference';
+import Conference from '../model/Conference';
 import { IConferenceRepository } from './ConferenceRepository';
 
 class DefaultConferenceRepository implements IConferenceRepository {

@@ -23,9 +23,9 @@
 //
 
 import { Observable, Observer } from "rxjs";
-import { IBloc } from 'src/common/Bloc';
-import DropdownState from 'src/common/DropdownState';
-import Session from 'src/model/Session';
+import { IBloc } from '../../common/Bloc';
+import DropdownState from '../../common/DropdownState';
+import Session from '../../model/Session';
 
 export interface IIdAndName {
   id: string,

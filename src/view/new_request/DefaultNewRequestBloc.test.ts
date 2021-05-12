@@ -23,9 +23,9 @@
 //
 
 import { Subscription } from 'rxjs';
-import EventuallyObserver from 'src/test/EventuallyObserver';
-import MockRequestRepository from "src/test/mock/MockRequestRepository";
-import ModalReflector from 'src/test/ModalReflector';
+import EventuallyObserver from '../../test/EventuallyObserver';
+import MockRequestRepository from "../../test/mock/MockRequestRepository";
+import ModalReflector from '../../test/ModalReflector';
 import DefaultNewRequestBloc, { SNACKBAR_INFINITY, SNACKBAR_LONG } from './DefaultNewRequestBloc';
 import { INewRequestBloc, ISnackbarSetting } from './NewRequestBloc';
 

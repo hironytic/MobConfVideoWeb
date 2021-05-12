@@ -23,10 +23,10 @@
 //
 
 import { BehaviorSubject, Observer } from 'rxjs';
-import asObserver from 'src/common/AsObserver';
-import ModalLogic from 'src/common/ModalLogic';
-import { sleep } from 'src/common/Sleep';
-import { IRequestRepository } from 'src/repository/RequestRepository';
+import asObserver from '../../common/AsObserver';
+import ModalLogic from '../../common/ModalLogic';
+import { sleep } from '../../common/Sleep';
+import { IRequestRepository } from '../../repository/RequestRepository';
 import { IAddRequestFromSessionParams, INewRequestBloc, INewRequestFromSessionDialogBloc, IRequestKeyDialogBloc, ISnackbarBloc, ISnackbarSetting } from "./NewRequestBloc";
 
 export const SNACKBAR_SHORT = 1500;

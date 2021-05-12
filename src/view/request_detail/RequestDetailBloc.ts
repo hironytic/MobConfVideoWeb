@@ -23,8 +23,8 @@
 //
 
 import { Observable, Observer } from 'rxjs';
-import { IBloc } from 'src/common/Bloc';
-import Request from 'src/model/Request';
+import { IBloc } from '../../common/Bloc';
+import Request from '../../model/Request';
 
 export enum RequestDetailState {
   NotLoaded,

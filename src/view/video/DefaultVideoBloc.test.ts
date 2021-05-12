@@ -24,17 +24,17 @@
 
 import { never, Subject, Subscription, throwError } from 'rxjs';
 import { startWith } from 'rxjs/operators';
-import DropdownState from 'src/common/DropdownState';
-import DropdownStateItem from 'src/common/DropdownStateItem';
-import Conference from 'src/model/Conference';
-import Event from 'src/model/Event';
-import Session from 'src/model/Session';
-import Speaker from 'src/model/Speaker';
-import SessionFilter from 'src/repository/SessionFilter';
-import EventuallyObserver from 'src/test/EventuallyObserver';
-import MockConferenceRepository from 'src/test/mock/MockConferenceRepository';
-import MockEventRepository from 'src/test/mock/MockEventRepository';
-import MockSessionRepository from 'src/test/mock/MockSessionRepository';
+import DropdownState from '../../common/DropdownState';
+import DropdownStateItem from '../../common/DropdownStateItem';
+import Conference from '../../model/Conference';
+import Event from '../../model/Event';
+import Session from '../../model/Session';
+import Speaker from '../../model/Speaker';
+import SessionFilter from '../../repository/SessionFilter';
+import EventuallyObserver from '../../test/EventuallyObserver';
+import MockConferenceRepository from '../../test/mock/MockConferenceRepository';
+import MockEventRepository from '../../test/mock/MockEventRepository';
+import MockSessionRepository from '../../test/mock/MockSessionRepository';
 import DefaultVideoBloc from './DefaultVideoBloc';
 import { ISessionList, ISessionListError, ISessionListLoaded, IVideoBloc, SessionListState } from './VideoBloc';
 

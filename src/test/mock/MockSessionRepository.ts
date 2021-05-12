@@ -23,9 +23,9 @@
 //
 
 import { never, Observable } from 'rxjs';
-import Session from 'src/model/Session';
-import SessionFilter from 'src/repository/SessionFilter';
-import { ISessionRepository } from 'src/repository/SessionRepository';
+import Session from '../../model/Session';
+import SessionFilter from '../../repository/SessionFilter';
+import { ISessionRepository } from '../../repository/SessionRepository';
 
 export default class MockSessionRepository implements ISessionRepository {
   public getSessionsObservable = jest.fn((filter: SessionFilter) => never() as Observable<Session[]>);

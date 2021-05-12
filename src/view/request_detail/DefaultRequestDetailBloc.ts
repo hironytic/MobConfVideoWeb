@@ -24,7 +24,7 @@
 
 import { ConnectableObservable, merge, Observable, Observer, of, Subject, Subscription } from 'rxjs';
 import { catchError, map, publishBehavior, startWith, switchMap } from 'rxjs/operators';
-import { IRequestRepository } from 'src/repository/RequestRepository';
+import { IRequestRepository } from '../../repository/RequestRepository';
 import { IRequestDetail, IRequestDetailBloc, IRequestRef, RequestDetailState } from './RequestDetailBloc';
 
 class DefaultRequestDetailBloc implements IRequestDetailBloc {
