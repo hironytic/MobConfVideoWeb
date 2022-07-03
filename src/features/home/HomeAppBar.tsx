@@ -1,7 +1,7 @@
 //
-// Index.tsx
+// HomeAppBar.tsx
 //
-// Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2018-2022 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,21 +22,23 @@
 // THE SOFTWARE.
 //
 
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { App } from './App';
-import reportWebVitals from './reportWebVitals';
+import { AppBar, Tab, Tabs, Toolbar, Typography } from "@mui/material";
+import { List } from "@mui/icons-material";
+import { VideoLabel } from "@mui/icons-material";
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+export function HomeAppBar(): JSX.Element {
+  return (
+    <AppBar position="sticky">
+      <Toolbar>
+        <Typography variant="h6" color="inherit">
+          MobConfVideo
+        </Typography>
+        <div style={{ flexGrow: 1 }} />
+        <Tabs value={0}>
+          <Tab label="受付済み" icon={<List/>}/>
+          <Tab label="動画検索" icon={<VideoLabel/>}/>
+        </Tabs>
+      </Toolbar>
+    </AppBar>
+  )
+}
