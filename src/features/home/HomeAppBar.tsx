@@ -22,23 +22,55 @@
 // THE SOFTWARE.
 //
 
-import { AppBar, Tab, Tabs, Toolbar, Typography } from "@mui/material";
+import { AppBar, createTheme, Tab, Tabs, ThemeProvider, Toolbar, Typography } from "@mui/material";
 import { List } from "@mui/icons-material";
 import { VideoLabel } from "@mui/icons-material";
 
 export function HomeAppBar(): JSX.Element {
+  const appBarTheme = createTheme({
+    palette: {
+      primary: {
+        main: "#f5c300",
+        contrastText: "#fff",
+      },
+    },
+    components: {
+      MuiAppBar: {
+        styleOverrides: {
+          root: {
+            backgroundColor: "#11509a",
+          },
+        },
+      },
+      MuiTab: {
+        styleOverrides: {
+          root: {
+            color: "white",
+            opacity: 0.7,
+            "&.Mui-selected": {
+              color: "white",
+              opacity: 1.0,
+            },
+          },
+        },
+      },
+    },
+  });
+  
   return (
-    <AppBar position="sticky">
-      <Toolbar>
-        <Typography variant="h6" color="inherit">
-          MobConfVideo
-        </Typography>
-        <div style={{ flexGrow: 1 }} />
-        <Tabs value={0}>
-          <Tab label="受付済み" icon={<List/>}/>
-          <Tab label="動画検索" icon={<VideoLabel/>}/>
-        </Tabs>
-      </Toolbar>
-    </AppBar>
-  )
+    <ThemeProvider theme={appBarTheme}>
+      <AppBar position="sticky">
+        <Toolbar>
+          <Typography variant="h6">
+            MobConfVideo
+          </Typography>
+          <div style={{ flexGrow: 1 }} />
+          <Tabs value={0}>
+            <Tab label="受付済み" icon={<List/>}/>
+            <Tab label="動画検索" icon={<VideoLabel/>}/>
+          </Tabs>
+        </Toolbar>
+      </AppBar>
+    </ThemeProvider>
+  );
 }
