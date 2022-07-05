@@ -23,8 +23,8 @@
 //
 
 import { AppBar, createTheme, Tab, Tabs, ThemeProvider, Toolbar, Typography } from "@mui/material";
-import { List } from "@mui/icons-material";
-import { VideoLabel } from "@mui/icons-material";
+import { List, VideoLabel } from "@mui/icons-material";
+import { Link, Location, matchPath, useLocation } from "react-router-dom";
 
 export function HomeAppBar(): JSX.Element {
   const appBarTheme = createTheme({
@@ -61,16 +61,51 @@ export function HomeAppBar(): JSX.Element {
     <ThemeProvider theme={appBarTheme}>
       <AppBar position="sticky">
         <Toolbar>
-          <Typography variant="h6">
-            MobConfVideo
-          </Typography>
+          <PageTitle/>
           <div style={{ flexGrow: 1 }} />
-          <Tabs value={0}>
-            <Tab label="受付済み" icon={<List/>}/>
-            <Tab label="動画検索" icon={<VideoLabel/>}/>
-          </Tabs>
+          <AppTabs/>
         </Toolbar>
       </AppBar>
     </ThemeProvider>
+  );
+}
+
+function getTab({ pathname }: Location) {
+  if (matchPath({ path: "/request", end: false }, pathname) !== null) {
+    return "request";
+  } else if (matchPath({ path: "/video", end: false }, pathname) !== null) {
+    return "video";
+  } else {
+    return "request";
+  }
+}
+
+function PageTitle(): JSX.Element {
+  const location = useLocation();
+  const tab = getTab(location);
+  const title = (() => {
+    switch (tab) {
+      case "request":
+        return "リクエスト一覧";
+      case "video":
+        return "動画を見つける";
+      default:
+        return "";
+    }
+  })();
+  return (
+    <Typography variant="h6">{title}</Typography>
+  );
+}
+
+function AppTabs(): JSX.Element {
+  const location = useLocation();
+  const tab = getTab(location);
+  
+  return (
+    <Tabs value={tab}>
+      <Tab value="request" label="受付済み" icon={<List/>} to="/request" component={Link} />
+      <Tab value="video" label="動画検索" icon={<VideoLabel/>} to="/video" component={Link}/>
+    </Tabs>
   );
 }

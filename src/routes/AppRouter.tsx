@@ -30,6 +30,8 @@ export function AppRouter(): JSX.Element {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home/>}>
+          <Route path="request" element={<p>Request</p>}/>
+          <Route path="video" element={<p>Video</p>}/>
           
           <Route path="*" element={<></>} />
         </Route>
