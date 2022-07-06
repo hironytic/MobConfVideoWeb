@@ -1,5 +1,5 @@
 //
-// ConfigContext.ts
+// ConfigProvider.tsx
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,8 +22,15 @@
 // THE SOFTWARE.
 //
 
-import { Config } from "./Config";
-import React from "react";
-import { NEVER, Observable } from "rxjs";
+import { ConfigContext } from "../features/config/ConfigContext";
+import { ProviderProps } from "./ProviderProps";
+import { of } from "rxjs";
+import { Config } from "../features/config/Config";
 
-export const ConfigContext = React.createContext<Observable<Config>>(NEVER);
+export function ConfigProvider({ children }: ProviderProps): JSX.Element {
+  return (
+    <ConfigContext.Provider value={of(new Config(false))}>
+      {children}
+    </ConfigContext.Provider>
+  );
+}

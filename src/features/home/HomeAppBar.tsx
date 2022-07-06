@@ -26,12 +26,12 @@ import { AppBar, createTheme, Tab, Tabs, ThemeProvider, Toolbar, Typography } fr
 import { List, VideoLabel } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 
-export const HomeTab = {
+export const HomeTabs = {
   Request: "request",
   Video: "video",
 } as const;
 
-export type HomeTab = typeof HomeTab[keyof typeof HomeTab];
+export type HomeTab = typeof HomeTabs[keyof typeof HomeTabs];
 
 interface HomeAppBarProps {
   title: string;
@@ -86,8 +86,8 @@ export function HomeAppBar({ title, tab }: HomeAppBarProps): JSX.Element {
 function AppTabs( { tab }: { tab: HomeTab | undefined }): JSX.Element {
   return (
     <Tabs value={tab ?? false}>
-      <Tab value={HomeTab.Request} label="受付済み" icon={<List/>} to="/request" component={Link} />
-      <Tab value={HomeTab.Video} label="動画検索" icon={<VideoLabel/>} to="/video" component={Link}/>
+      <Tab value={HomeTabs.Request} label="受付済み" icon={<List/>} to="/request" component={Link} />
+      <Tab value={HomeTabs.Video} label="動画検索" icon={<VideoLabel/>} to="/video" component={Link}/>
     </Tabs>
   );
 }

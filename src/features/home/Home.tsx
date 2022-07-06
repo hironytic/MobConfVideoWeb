@@ -22,19 +22,24 @@
 // THE SOFTWARE.
 //
 
-import { HomeAppBar, HomeTab } from "./HomeAppBar";
+import { HomeAppBar, HomeTab, HomeTabs } from "./HomeAppBar";
 import { Location, matchPath, Outlet, useLocation } from "react-router-dom";
 import { CssBaseline } from "@mui/material";
 import { Maintenance } from "./Maintenance";
 import { useContext } from "react";
 import { ConfigContext } from "../config/ConfigContext";
+import { ObserveOrUndefined } from "../../utils/Observe";
 
 export function Home(): JSX.Element {
-  const config = useContext(ConfigContext);
+  const config$ = useContext(ConfigContext);
   return (
     <>
       <CssBaseline />
-      { (config.isInMaintenance) ? <Maintenance /> : <OrdinaryHome/> }
+      <ObserveOrUndefined source={config$}>
+        {config => (config !== undefined) && (
+          (config.isInMaintenance) ? <Maintenance /> : <OrdinaryHome/>
+        )}
+      </ObserveOrUndefined>
     </>
   );
 }
@@ -52,9 +57,9 @@ function OrdinaryHome(): JSX.Element {
 
 function getTab({ pathname }: Location): HomeTab | undefined {
   if (matchPath({ path: "/request", end: false }, pathname) !== null) {
-    return HomeTab.Request;
+    return HomeTabs.Request;
   } else if (matchPath({ path: "/video", end: false }, pathname) !== null) {
-    return HomeTab.Video;
+    return HomeTabs.Video;
   } else {
     return undefined;
   }
@@ -62,9 +67,9 @@ function getTab({ pathname }: Location): HomeTab | undefined {
 
 function pageTitle(navRoute: HomeTab | undefined): string {
   switch (navRoute) {
-    case HomeTab.Request:
+    case HomeTabs.Request:
         return "リクエスト一覧";
-    case HomeTab.Video:
+    case HomeTabs.Video:
         return "動画を見つける";
     default:
         return "";

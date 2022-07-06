@@ -1,5 +1,5 @@
 //
-// ConfigContext.ts
+// ProviderProps.tsx
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,8 +22,8 @@
 // THE SOFTWARE.
 //
 
-import { Config } from "./Config";
 import React from "react";
-import { NEVER, Observable } from "rxjs";
 
-export const ConfigContext = React.createContext<Observable<Config>>(NEVER);
+export interface ProviderProps {
+  children: React.ReactNode;
+}

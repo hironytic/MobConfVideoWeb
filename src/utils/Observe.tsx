@@ -1,5 +1,5 @@
 //
-// App.tsx
+// Observe.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,13 +22,54 @@
 // THE SOFTWARE.
 //
 
-import { AppRouter } from "./routes/AppRouter";
-import { AppProvider } from "./providers/AppProvider";
+import { Observable } from "rxjs";
+import { ReactNode, useEffect, useState } from "react";
 
-export function App(): JSX.Element {
+interface ObserveProps<T> {
+  source: Observable<T> | undefined;
+  initialValue: T;
+  children: (value: T) => ReactNode;
+}
+
+export function Observe<T>({ source, initialValue, children }: ObserveProps<T>): JSX.Element {
+  const [value, updateValue] = useState(initialValue);
+  
+  useEffect(() => {
+    const disposable = source?.subscribe(value => {
+      updateValue(value);
+    });
+    return () => {
+      disposable?.unsubscribe();
+    };
+  }, [source]);
+  
   return (
-    <AppProvider>
-      <AppRouter />
-    </AppProvider>
+    <>
+      {children(value)}
+    </>
+  );
+}
+
+interface ObserveOrUndefinedProps<T> {
+  source: Observable<T> | undefined;
+  children: (value: T | undefined) => ReactNode;
+}
+
+export function ObserveOrUndefined<T>({ source, children }: ObserveOrUndefinedProps<T>): JSX.Element {
+  const [value, updateValue] = useState<T | undefined>(undefined);
+
+  useEffect(() => {
+    const disposable = source?.subscribe(value => {
+      updateValue(value);
+    });
+    return () => {
+      disposable?.unsubscribe();
+    };
+  }, [source]);
+
+  return (
+    <>
+      {children(value)}
+    </>
   );
 }
