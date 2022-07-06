@@ -24,9 +24,21 @@
 
 import { AppBar, createTheme, Tab, Tabs, ThemeProvider, Toolbar, Typography } from "@mui/material";
 import { List, VideoLabel } from "@mui/icons-material";
-import { Link, Location, matchPath, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-export function HomeAppBar(): JSX.Element {
+export const HomeTab = {
+  Request: "request",
+  Video: "video",
+} as const;
+
+export type HomeTab = typeof HomeTab[keyof typeof HomeTab];
+
+interface HomeAppBarProps {
+  title: string;
+  tab: HomeTab | undefined;
+}
+
+export function HomeAppBar({ title, tab }: HomeAppBarProps): JSX.Element {
   const appBarTheme = createTheme({
     palette: {
       primary: {
@@ -61,51 +73,21 @@ export function HomeAppBar(): JSX.Element {
     <ThemeProvider theme={appBarTheme}>
       <AppBar position="sticky">
         <Toolbar>
-          <PageTitle/>
+          <Typography variant="h6">{title}</Typography>
           <div style={{ flexGrow: 1 }} />
-          <AppTabs/>
+          <AppTabs tab={tab}/>
         </Toolbar>
       </AppBar>
     </ThemeProvider>
   );
 }
 
-function getTab({ pathname }: Location) {
-  if (matchPath({ path: "/request", end: false }, pathname) !== null) {
-    return "request";
-  } else if (matchPath({ path: "/video", end: false }, pathname) !== null) {
-    return "video";
-  } else {
-    return "request";
-  }
-}
 
-function PageTitle(): JSX.Element {
-  const location = useLocation();
-  const tab = getTab(location);
-  const title = (() => {
-    switch (tab) {
-      case "request":
-        return "リクエスト一覧";
-      case "video":
-        return "動画を見つける";
-      default:
-        return "";
-    }
-  })();
+function AppTabs( { tab }: { tab: HomeTab | undefined }): JSX.Element {
   return (
-    <Typography variant="h6">{title}</Typography>
-  );
-}
-
-function AppTabs(): JSX.Element {
-  const location = useLocation();
-  const tab = getTab(location);
-  
-  return (
-    <Tabs value={tab}>
-      <Tab value="request" label="受付済み" icon={<List/>} to="/request" component={Link} />
-      <Tab value="video" label="動画検索" icon={<VideoLabel/>} to="/video" component={Link}/>
+    <Tabs value={tab ?? false}>
+      <Tab value={HomeTab.Request} label="受付済み" icon={<List/>} to="/request" component={Link} />
+      <Tab value={HomeTab.Video} label="動画検索" icon={<VideoLabel/>} to="/video" component={Link}/>
     </Tabs>
   );
 }

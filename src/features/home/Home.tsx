@@ -22,16 +22,39 @@
 // THE SOFTWARE.
 //
 
-import { HomeAppBar } from "./HomeAppBar";
-import { Outlet } from "react-router-dom";
+import { HomeAppBar, HomeTab } from "./HomeAppBar";
+import { Location, matchPath, Outlet, useLocation } from "react-router-dom";
 import { CssBaseline } from "@mui/material";
 
 export function Home(): JSX.Element {
+  const location = useLocation();
+  const tab = getTab(location);
   return (
     <>
       <CssBaseline />
-      <HomeAppBar/>
+      <HomeAppBar title={pageTitle(tab)} tab={tab} />
       <Outlet/>
     </>
   );
+}
+
+function getTab({ pathname }: Location): HomeTab | undefined {
+  if (matchPath({ path: "/request", end: false }, pathname) !== null) {
+    return HomeTab.Request;
+  } else if (matchPath({ path: "/video", end: false }, pathname) !== null) {
+    return HomeTab.Video;
+  } else {
+    return undefined;
+  }
+}
+
+function pageTitle(navRoute: HomeTab | undefined): string {
+  switch (navRoute) {
+    case HomeTab.Request:
+        return "リクエスト一覧";
+    case HomeTab.Video:
+        return "動画を見つける";
+    default:
+        return "";
+  }
 }
