@@ -25,13 +25,25 @@
 import { HomeAppBar, HomeTab } from "./HomeAppBar";
 import { Location, matchPath, Outlet, useLocation } from "react-router-dom";
 import { CssBaseline } from "@mui/material";
+import { Maintenance } from "./Maintenance";
+import { useContext } from "react";
+import { ConfigContext } from "../config/ConfigContext";
 
 export function Home(): JSX.Element {
+  const config = useContext(ConfigContext);
+  return (
+    <>
+      <CssBaseline />
+      { (config.isInMaintenance) ? <Maintenance /> : <OrdinaryHome/> }
+    </>
+  );
+}
+
+function OrdinaryHome(): JSX.Element {
   const location = useLocation();
   const tab = getTab(location);
   return (
     <>
-      <CssBaseline />
       <HomeAppBar title={pageTitle(tab)} tab={tab} />
       <Outlet/>
     </>
