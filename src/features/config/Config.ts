@@ -22,7 +22,20 @@
 // THE SOFTWARE.
 //
 
+import { QueryDocumentSnapshot } from "@firebase/firestore/lite";
+
+interface ConfigData {
+  inMaintenance: boolean;
+}
+
 export class Config {
+  public static fromSnapshot(snapshot: QueryDocumentSnapshot<ConfigData>): Config {
+    const data = snapshot.data()
+    return new Config(
+      data.inMaintenance,
+    );
+  }
+  
   constructor(
     public isInMaintenance: boolean
   ) {}
