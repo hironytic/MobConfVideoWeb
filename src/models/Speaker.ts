@@ -1,5 +1,5 @@
 //
-// Config.ts
+// Speaker.ts
 //
 // Copyright (c) 2018-2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,21 +22,10 @@
 // THE SOFTWARE.
 //
 
-import { QueryDocumentSnapshot } from "@firebase/firestore/lite";
-
-interface ConfigData {
-  inMaintenance: boolean;
-}
-
-export class Config {
-  static fromSnapshot(snapshot: QueryDocumentSnapshot<ConfigData>): Config {
-    const data = snapshot.data()
-    return new Config(
-      data.inMaintenance,
-    );
-  }
-  
-  constructor(
-    public isInMaintenance: boolean
-  ) {}
+export class Speaker {
+  public constructor(
+    public name: string,
+    public twitter: string | undefined,
+    public icon: string | undefined,
+  ) { }
 }

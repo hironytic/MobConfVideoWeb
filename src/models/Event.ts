@@ -1,5 +1,5 @@
 //
-// Config.ts
+// Event.ts
 //
 // Copyright (c) 2018-2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -24,19 +24,24 @@
 
 import { QueryDocumentSnapshot } from "@firebase/firestore/lite";
 
-interface ConfigData {
-  inMaintenance: boolean;
+interface EventData {
+  name: string;
+  accepting: boolean;
 }
 
-export class Config {
-  static fromSnapshot(snapshot: QueryDocumentSnapshot<ConfigData>): Config {
+export class Event {
+  static fromSnapshot(snapshot: QueryDocumentSnapshot<EventData>): Event {
     const data = snapshot.data()
-    return new Config(
-      data.inMaintenance,
+    return new Event(
+      snapshot.id,
+      data.name,
+      data.accepting,
     );
   }
-  
-  constructor(
-    public isInMaintenance: boolean
-  ) {}
+
+  public constructor(
+    public id: string,
+    public name: string,
+    public isAccepting: boolean
+  ) { }
 }

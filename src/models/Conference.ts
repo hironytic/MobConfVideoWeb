@@ -1,5 +1,5 @@
 //
-// Config.ts
+// Conference.ts
 //
 // Copyright (c) 2018-2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,21 +22,26 @@
 // THE SOFTWARE.
 //
 
-import { QueryDocumentSnapshot } from "@firebase/firestore/lite";
+import { QueryDocumentSnapshot, Timestamp } from "@firebase/firestore/lite";
 
-interface ConfigData {
-  inMaintenance: boolean;
+interface ConferenceData {
+  name: string;
+  starts: Timestamp;
 }
 
-export class Config {
-  static fromSnapshot(snapshot: QueryDocumentSnapshot<ConfigData>): Config {
-    const data = snapshot.data()
-    return new Config(
-      data.inMaintenance,
+export class Conference {
+  static fromSnapshot(snapshot: QueryDocumentSnapshot<ConferenceData>): Conference {
+    const data = snapshot.data();
+    return new Conference(
+      snapshot.id,
+      data.name,
+      data.starts.toDate(),
     );
-  }
-  
+  } 
+
   constructor(
-    public isInMaintenance: boolean
+    public id: string,
+    public name: string,
+    public starts: Date
   ) {}
 }

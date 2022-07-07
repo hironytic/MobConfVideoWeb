@@ -1,5 +1,5 @@
 //
-// Config.ts
+// Request.ts
 //
 // Copyright (c) 2018-2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -24,19 +24,42 @@
 
 import { QueryDocumentSnapshot } from "@firebase/firestore/lite";
 
-interface ConfigData {
-  inMaintenance: boolean;
+interface RequestData {
+  sessionId?: string;
+  title: string;
+  conference: string;
+  minutes?: number;
+  video: string;
+  slide?: string;
+  memo?: string;
+  watched: boolean;
 }
 
-export class Config {
-  static fromSnapshot(snapshot: QueryDocumentSnapshot<ConfigData>): Config {
-    const data = snapshot.data()
-    return new Config(
-      data.inMaintenance,
+export class Request {
+  static fromSnapshot(snapshot: QueryDocumentSnapshot<RequestData>): Request {
+    const data = snapshot.data();
+    return new Request(
+      snapshot.id,
+      data.sessionId,
+      data.title,
+      data.conference,
+      data.minutes,
+      data.video,
+      data.slide,
+      data.memo,
+      data.watched,
     );
   }
-  
+
   constructor(
-    public isInMaintenance: boolean
-  ) {}
+    public id: string,
+    public sessionId: string | undefined,
+    public title: string,
+    public conference: string,
+    public minutes: number | undefined,
+    public videoUrl: string,
+    public slideUrl: string | undefined,
+    public memo: string | undefined,
+    public isWatched: boolean
+  ) { }
 }
