@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-import { Config } from "./Config";
+import { Config } from "../../models/Config";
 import React from "react";
 import { NEVER, Observable } from "rxjs";
 

@@ -25,7 +25,7 @@
 import { ConfigContext } from "../features/config/ConfigContext";
 import { ProviderProps } from "./ProviderProps";
 import { of } from "rxjs";
-import { Config } from "../features/config/Config";
+import { Config } from "../models/Config";
 
 export function ConfigProvider({ children }: ProviderProps): JSX.Element {
   return (
