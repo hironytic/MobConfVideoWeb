@@ -1,5 +1,5 @@
 //
-// ProviderProps.tsx
+// ProviderProps.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
