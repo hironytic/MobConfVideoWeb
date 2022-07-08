@@ -1,7 +1,7 @@
 //
-// AppRouter.tsx
+// RequestPage.tsx
 //
-// Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2018-2022 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,21 +22,29 @@
 // THE SOFTWARE.
 //
 
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Home } from "../features/home/Home";
-import { RequestPage } from "../features/request/RequestPage";
+import { Event } from "../../models/Event";
+import { EventTabs } from "./EventTabs";
+import { RequestList } from "./RequestList";
 
-export function AppRouter(): JSX.Element {
+export function RequestPage(): JSX.Element {
+  const events: Event[] = [
+    new Event("test", "Test", false),
+    new Event("mobconfvideo12", "第12回", false),
+    new Event("mobconfvideo11", "第11回", false),
+    new Event("mobconfvideo10", "第10回", false),
+    new Event("mobconfvideo9", "第9回", false),
+    new Event("mobconfvideo8", "第8回", false),
+    new Event("mobconfvideo7", "第7回", false),
+    new Event("mobconfvideo6", "第6回", false),
+    new Event("mobconfvideo5", "第5回", false),
+  ];
+  const currentId = "mobconfvideo12";
+  const onCurrentIdChanged = (currentId: string | false) => {};
+  
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home/>}>
-          <Route path="request" element={<RequestPage/>}/>
-          <Route path="video" element={<p>Video</p>}/>
-          
-          <Route path="*" element={<></>} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  )
+    <>
+      <EventTabs events={events} currentId={currentId} onCurrentIdChanged={onCurrentIdChanged} />
+      <RequestList/>
+    </>
+  );
 }

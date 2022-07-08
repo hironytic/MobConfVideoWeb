@@ -1,5 +1,5 @@
 //
-// AppRouter.tsx
+// EventTabs.tsx
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,21 +22,31 @@
 // THE SOFTWARE.
 //
 
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Home } from "../features/home/Home";
-import { RequestPage } from "../features/request/RequestPage";
+import { Event } from "../../models/Event";
+import { Box, CircularProgress, Tab, Tabs } from "@mui/material";
 
-export function AppRouter(): JSX.Element {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home/>}>
-          <Route path="request" element={<RequestPage/>}/>
-          <Route path="video" element={<p>Video</p>}/>
-          
-          <Route path="*" element={<></>} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  )
+interface EventTabsProps {
+  events: Event[];
+  currentId: string;
+  onCurrentIdChanged: (currentId: string | false) => void;
+}
+
+export function EventTabs({ events, currentId, onCurrentIdChanged }: EventTabsProps): JSX.Element {
+  if (events.length === 0) {
+    return (
+      <Box sx={{ textAlign: "center" }}>
+        <CircularProgress size={18} sx={{ m: 2 }} />
+      </Box>
+    );
+  } else {
+    return (
+      <Tabs value={currentId}
+            onChange={(_, value) => onCurrentIdChanged(value)}
+            variant="scrollable">
+        {events.map(event => (
+          <Tab key={event.id} label={event.name} value={event.id}/>
+        ))}
+      </Tabs>
+    );
+  }
 }

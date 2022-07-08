@@ -1,5 +1,5 @@
 //
-// AppRouter.tsx
+// RequestViewModel.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,21 +22,7 @@
 // THE SOFTWARE.
 //
 
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Home } from "../features/home/Home";
-import { RequestPage } from "../features/request/RequestPage";
+import { IRDE } from "../../utils/IRDE";
+import { Request } from "../../models/Request";
 
-export function AppRouter(): JSX.Element {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home/>}>
-          <Route path="request" element={<RequestPage/>}/>
-          <Route path="video" element={<p>Video</p>}/>
-          
-          <Route path="*" element={<></>} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  )
-}
+export type RequestListIRDE = IRDE<{}, {}, { requests: Request[] }, { message: string }>;

@@ -1,5 +1,5 @@
 //
-// AppRouter.tsx
+// IRDE.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,21 +22,30 @@
 // THE SOFTWARE.
 //
 
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Home } from "../features/home/Home";
-import { RequestPage } from "../features/request/RequestPage";
+export const IRDETypes = {
+  Initial: "Initial",
+  Running: "Running",
+  Done: "Done",
+  Error: "Error",
+} as const;
 
-export function AppRouter(): JSX.Element {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home/>}>
-          <Route path="request" element={<RequestPage/>}/>
-          <Route path="video" element={<p>Video</p>}/>
-          
-          <Route path="*" element={<></>} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  )
-}
+export type IRDEType = typeof IRDETypes[keyof typeof IRDETypes];
+
+type IRDEInitial<Props> = {
+  type: typeof IRDETypes.Initial;
+} & Props;
+
+type IRDERunning<Props> = {
+  type: typeof IRDETypes.Running;
+} & Props;
+
+type IRDEDone<Props> = {
+  type: typeof IRDETypes.Done;
+} & Props;
+
+type IRDEError<Props> = {
+  type: typeof IRDETypes.Error;
+} & Props;
+
+/** Union of four states -- initial, running, done and error */
+export type IRDE<IProps, RProps, DProps, EProps> = IRDEInitial<IProps> | IRDERunning<RProps> | IRDEDone<DProps> | IRDEError<EProps>;
