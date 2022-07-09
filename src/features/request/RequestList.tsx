@@ -93,7 +93,11 @@ function RequestListDoneBody({ currentEventId, requests }: RequestListDoneBodyPr
     <Box sx={{ mt: 2, p: 2 }}>
       <Grid container={true} spacing={3} alignItems="flex-start">
         {
-          requests.map(request => <RequestCard key={request.id} request={request} onClick={() => {}}/>)
+          requests.map(request => (
+            <Grid key={request.id} item={true} xs={12} md={6} lg={4}>
+              <RequestCard request={request} onClick={() => {}}/>
+            </Grid>
+          ))
         }
       </Grid>
     </Box>

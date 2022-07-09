@@ -40,37 +40,35 @@ export function RequestCard({ request, onClick }: RequestCardProps): JSX.Element
   };
   
   return (
-    <Grid item={true} xs={12} md={6} lg={4}>
-      <Card sx={cardSx}>
-        <CardActionArea sx={{ p: 2 }} onClick={() => onClick()}>
-          <Grid container={true} spacing={2} justifyContent="space-between">
-            <Grid item={true} xs={6}>
+    <Card sx={cardSx}>
+      <CardActionArea sx={{ p: 2 }} onClick={() => onClick()}>
+        <Grid container={true} spacing={2} justifyContent="space-between">
+          <Grid item={true} xs={6}>
+            <Typography variant="body2" color="textSecondary">
+              {request.conference}
+            </Typography>
+          </Grid>
+          <Grid item={true} xs={6} style={{textAlign: "end"}}>
+            {(request.minutes !== undefined) && (
               <Typography variant="body2" color="textSecondary">
-                {request.conference}
+                {request.minutes}分
               </Typography>
-            </Grid>
-            <Grid item={true} xs={6} style={{textAlign: "end"}}>
-              {(request.minutes !== undefined) && (
-                <Typography variant="body2" color="textSecondary">
-                  {request.minutes}分
-                </Typography>
+            )}
+          </Grid>
+          <Grid item={true} xs={12}>
+            <Typography variant="h5" color="textPrimary">
+              {request.title}
+            </Typography>
+          </Grid>
+          <Grid item={true} xs={12} style={{textAlign: "end"}}>
+            <Grid item={true}>
+              {(request.isWatched) && (
+                <Check htmlColor="green" />
               )}
             </Grid>
-            <Grid item={true} xs={12}>
-              <Typography variant="h5" color="textPrimary">
-                {request.title}
-              </Typography>
-            </Grid>
-            <Grid item={true} xs={12} style={{textAlign: "end"}}>
-              <Grid item={true}>
-                {(request.isWatched) && (
-                  <Check htmlColor="green" />
-                )}
-              </Grid>
-            </Grid>
           </Grid>
-        </CardActionArea>
-      </Card>
-    </Grid>
+        </Grid>
+      </CardActionArea>
+    </Card>
   );
 }

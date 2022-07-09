@@ -1,7 +1,7 @@
 //
-// AppRouter.tsx
+// Dropdown.tsx
 //
-// Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2018-2022 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,40 @@
 // THE SOFTWARE.
 //
 
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Home } from "../features/home/Home";
-import { RequestPage } from "../features/request/RequestPage";
-import { VideoPage } from "../features/video/VideoPage";
 
-export function AppRouter(): JSX.Element {
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+
+export interface DropdownState {
+  value: string;
+  items: DropdownStateItem[];
+}
+
+interface DropdownStateItem {
+  value: string;
+  title: string;
+}
+
+interface DropdownProps {
+  labelId: string;
+  label: string;
+  state: DropdownState;
+  minWidth?: number | string;
+  onChange: (value: string) => void;
+}
+
+export function Dropdown({ labelId, label, state, minWidth, onChange }: DropdownProps): JSX.Element {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home/>}>
-          <Route path="request" element={<RequestPage/>}/>
-          <Route path="video" element={<VideoPage/>}/>
-          
-          <Route path="*" element={<></>} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  )
+    <FormControl sx={{ minWidth }}>
+      <InputLabel id={labelId}>{label}</InputLabel>
+      <Select labelId={labelId} label={label} value={state.value} onChange={event => onChange(event.target.value)}>
+        {
+          state.items.map(item => (
+            <MenuItem key={item.value} value={item.value}>
+              {item.title}
+            </MenuItem>
+          ))
+        }
+      </Select>
+    </FormControl>
+  );
 }

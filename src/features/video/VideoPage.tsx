@@ -1,7 +1,7 @@
 //
-// AppRouter.tsx
+// VideoPage.tsx
 //
-// Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2018-2022 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,13 @@
 // THE SOFTWARE.
 //
 
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Home } from "../features/home/Home";
-import { RequestPage } from "../features/request/RequestPage";
-import { VideoPage } from "../features/video/VideoPage";
+import { Box } from "@mui/material";
+import { SessionSearchFilter } from "./SessionSearchFilter";
 
-export function AppRouter(): JSX.Element {
+export function VideoPage(): JSX.Element {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home/>}>
-          <Route path="request" element={<RequestPage/>}/>
-          <Route path="video" element={<VideoPage/>}/>
-          
-          <Route path="*" element={<></>} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  )
+    <Box sx={{ p: 2 }}>
+      <SessionSearchFilter isExpanded={true} onExpand={(value) => {}}/>
+    </Box>
+  );
 }
