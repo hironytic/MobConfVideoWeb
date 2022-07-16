@@ -23,7 +23,7 @@
 //
 
 import { IdAndName, SessionItem } from "./VideoViewModel";
-import { Avatar, Card, CardActionArea, Grid, Theme, Typography, useTheme } from "@mui/material";
+import { Avatar, Card, CardActionArea, Grid, styled, Typography } from "@mui/material";
 import { Check } from "@mui/icons-material";
 import { CaseInsensitiveSearch } from "../../utils/CaseInsensitiveSearch";
 import { Speaker } from "../../models/Speaker";
@@ -72,6 +72,19 @@ export function SessionCard({ sessionItem, keywordList, onClick }: SessionCardPr
   );
 }
 
+const WatchedTypography = styled(Typography)(({ theme }) => ({
+  borderStyle: "solid",
+  borderWidth: 1,
+  borderRadius: theme.shape.borderRadius,
+  padding: theme.shape.borderRadius,
+  borderColor: theme.palette.text.secondary,
+}));
+
+const WatchedCheck = styled(Check)(({ theme }) => ({
+  fontSize: theme.typography.body1.fontSize,
+  verticalAlign: "middle",
+}));
+
 interface WatchedEventsProps {
   events: IdAndName[];
 }
@@ -81,15 +94,9 @@ function WatchedEvents({ events }: WatchedEventsProps): JSX.Element {
       <Grid container={true} spacing={2} justifyContent="flex-start">
         {events.map(event => (
           <Grid key={event.id} item={true}>
-            <Typography variant="body2" color="textSecondary" sx={{
-              borderStyle: "solid",
-              borderWidth: "1px",
-              borderRadius: (theme) => `${theme.shape.borderRadius}px`,
-              padding: (theme) => `${theme.shape.borderRadius}px`,
-              borderColor: (theme) => theme.palette.text.secondary,
-            }}>
-              <Check sx={{ fontSize: (theme) => theme.typography.body1.fontSize, verticalAlign: "middle" }}/>{event.name}
-            </Typography>
+            <WatchedTypography variant="body2" color="textSecondary">
+              <WatchedCheck/>{event.name}
+            </WatchedTypography>
           </Grid>
         ))}
       </Grid>
