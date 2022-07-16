@@ -37,7 +37,7 @@ export interface SessionCardProps {
 export function SessionCard({ sessionItem, keywordList, onClick }: SessionCardProps): JSX.Element {
   const sessionTitleLwbr = detectBoldRange(sessionItem.session.title, keywordList);
   return (
-    <Card sx={{ mx: "auto" }}>
+    <Card sx={{ mx: "auto" }} elevation={3}>
       <CardActionArea sx={{ p: 2 }} onClick={() => onClick()}>
         <Grid container={true} spacing={2} justifyContent="space-between">
           <Grid item={true} xs={12}>
