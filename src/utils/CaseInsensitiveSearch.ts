@@ -1,7 +1,7 @@
 //
-// VideoPage.tsx
+// CaseInsensitiveSearch.ts
 //
-// Copyright (c) 2018-2022 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2019-2022 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,15 +22,35 @@
 // THE SOFTWARE.
 //
 
-import { Box } from "@mui/material";
-import { SessionSearchFilter } from "./SessionSearchFilter";
-import { SessionList } from "./SessionList";
+export interface CaseInsensitiveSearchResult {
+  index: number;
+  length: number;
+}
 
-export function VideoPage(): JSX.Element {
-  return (
-    <Box sx={{ p: 2 }}>
-      <SessionSearchFilter isExpanded={true} onExpand={(value) => {}}/>
-      <SessionList />
-    </Box>
-  );
+export class CaseInsensitiveSearch {
+  public str: string;
+  private regExp: RegExp;
+
+  constructor(str: string) {
+    this.str = str;
+    this.regExp = new RegExp(str.replace(/[-[\]{}()*+?.,\\^$|#\s]/, "\\$&"), "ig");
+  }
+
+  public foundIn(text: string): boolean {
+    this.regExp.lastIndex = 0;
+    return this.regExp.test(text);
+  }
+
+  public searchIn(text: string, position: number): CaseInsensitiveSearchResult | null {
+    this.regExp.lastIndex = position;
+    const match = this.regExp.exec(text);
+    if (match !== null) {
+      return {
+        index: match.index,
+        length: match[0].length,
+      };
+    } else {
+      return null;
+    }
+  }
 }
