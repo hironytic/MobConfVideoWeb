@@ -23,7 +23,7 @@
 //
 
 import React from "react";
-import { ConfigProvider } from "./ConfigProvider";
+import { AppConfigProvider } from "./AppConfigProvider";
 
 interface AppProviderProps {
   children: React.ReactNode;
@@ -31,8 +31,8 @@ interface AppProviderProps {
 
 export function AppProvider({ children }: AppProviderProps): JSX.Element {
   return (
-    <ConfigProvider>
+    <AppConfigProvider>
       {children}
-    </ConfigProvider>
+    </AppConfigProvider>
   );
 }

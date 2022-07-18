@@ -1,5 +1,5 @@
 //
-// ConfigProvider.tsx
+// Firebase.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,14 +22,28 @@
 // THE SOFTWARE.
 //
 
-import { ConfigContext } from "../features/config/ConfigContext";
-import { ProviderProps } from "./ProviderProps";
-import { of } from "rxjs";
+import { FirebaseApp, initializeApp } from 'firebase/app';
+import { Firestore, getFirestore as getFireStoreFromApp } from 'firebase/firestore';
 
-export function ConfigProvider({ children }: ProviderProps): JSX.Element {
-  return (
-    <ConfigContext.Provider value={of({ isInMaintenance: false })}>
-      {children}
-    </ConfigContext.Provider>
-  );
+async function getFirebaseConfig(): Promise<object> {
+  if (process.env.NODE_ENV !== 'production') {
+    const config = JSON.parse(process.env.REACT_APP_FIREBASE_CONFIG!)
+    return config;
+  } else {
+    return (await fetch('/__/firebase/init.json')).json();
+  }
+}
+
+async function initializeFirebaseApp(): Promise<FirebaseApp> {
+  const config = await getFirebaseConfig();
+  return initializeApp(config);
+}
+
+let firebaseApp: Promise<FirebaseApp> = initializeFirebaseApp();
+async function getFirebaseApp(): Promise<FirebaseApp> {
+  return firebaseApp;
+}
+
+export async function getFirestore(): Promise<Firestore> {
+  return getFireStoreFromApp(await getFirebaseApp())
 }

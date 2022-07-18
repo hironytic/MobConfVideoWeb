@@ -1,5 +1,5 @@
 //
-// ConfigContext.ts
+// AppConfigProvider.tsx
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,14 +22,16 @@
 // THE SOFTWARE.
 //
 
-import { Config } from "../../models/Config";
-import React from "react";
-import { NEVER, Observable } from "rxjs";
+import { ConfigContext } from "../features/config/ConfigContext";
+import { ProviderProps } from "./ProviderProps";
+import { useMemo } from "react";
+import { AppConfigRepository } from "../features/config/AppConfigRepository";
 
-export interface ConfigRepository {
-  config$: Observable<Config>;
+export function AppConfigProvider({ children }: ProviderProps): JSX.Element {
+  const configRepository = useMemo(() => new AppConfigRepository(), []);
+  return (
+    <ConfigContext.Provider value={configRepository}>
+      {children}
+    </ConfigContext.Provider>
+  );
 }
-
-export const ConfigContext = React.createContext<ConfigRepository>({
-  config$: NEVER,
-});
