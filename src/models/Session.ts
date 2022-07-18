@@ -22,10 +22,34 @@
 // THE SOFTWARE.
 //
 
-import { QueryDocumentSnapshot, Timestamp } from "@firebase/firestore/lite";
-import { Speaker } from "./Speaker";
+import { DocumentData, FirestoreDataConverter, QueryDocumentSnapshot, WithFieldValue, Timestamp } from "@firebase/firestore/lite";
+import { Request } from "./Request";
 
-interface SessionData {
+export interface Session {
+  id: string;
+  conferenceId: string;
+  watched: boolean;
+  watchedOn: WatchedOn;
+  title: string;
+  description: string;
+  starts: Date;
+  minutes: number;
+  slide: string | undefined;
+  video: string | undefined;
+  speakers: Speaker[];
+}
+
+export interface Speaker {
+  name: string;
+  twitter: string | undefined;
+  icon: string | undefined;
+}
+
+interface WatchedOn {
+  [eventId: string]: number;
+}
+
+interface FSSession {
   conferenceId: string;
   watched: boolean;
   watchedOn: WatchedOn | undefined;
@@ -35,49 +59,38 @@ interface SessionData {
   minutes: number;
   slide?: string;
   video?: string;
-  speakers: SpeakerData[];
+  speakers: Speaker[];
 }
+export const sessionConverter: FirestoreDataConverter<Session> = {
+  fromFirestore(snapshot: QueryDocumentSnapshot): Session {
+    const data = snapshot.data() as FSSession;
+    return {
+      id: snapshot.id,
+      conferenceId: data.conferenceId,
+      watched: data.watched,
+      watchedOn: data.watchedOn ?? {},
+      title: data.title,
+      description: data.description,
+      starts: data.starts.toDate(),
+      minutes: data.minutes,
+      slide: data.slide,
+      video: data.video,
+      speakers: data.speakers,
+    };
+  },
 
-interface WatchedOn {
-  [eventId: string]: number
-}
-
-interface SpeakerData {
-  name: string;
-  twitter?: string;
-  icon?: string;
-}
-
-export class Session {
-  static fromSnapshot(snapshot: QueryDocumentSnapshot<SessionData>): Session {
-    const data = snapshot.data();
-
-    return new Session(
-      snapshot.id,
-      data.conferenceId,
-      data.watched,
-      data.watchedOn || {},
-      data.title,
-      data.description,
-      data.starts.toDate(),
-      data.minutes,
-      data.slide,
-      data.video,
-      data.speakers.map((speaker) => new Speaker(speaker.name, speaker.twitter, speaker.icon))
-    );
+  toFirestore(modelObject: WithFieldValue<Session>): DocumentData {
+    return {
+      conferenceId: modelObject.conferenceId,
+      watched: modelObject.watched,
+      watchedOn: modelObject.watchedOn,
+      title: modelObject.title,
+      description: modelObject.description,
+      starts: modelObject.starts,
+      minutes: modelObject.minutes,
+      slide: modelObject.slide,
+      video: modelObject.video,
+      speakers: modelObject.speakers,
+    }
   }
-  
-  public constructor(
-    public id: string,
-    public conferenceId: string,
-    public watched: boolean,
-    public watchedOn: WatchedOn,
-    public title: string,
-    public description: string,
-    public starts: Date,
-    public minutes: number,
-    public slide: string | undefined,
-    public video: string | undefined,
-    public speakers: Speaker[],
-  ) { }
-}
+};

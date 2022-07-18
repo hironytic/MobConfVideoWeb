@@ -26,7 +26,7 @@ import { IdAndName, SessionItem } from "./VideoViewModel";
 import { Avatar, Card, CardActionArea, Grid, styled, Typography } from "@mui/material";
 import { Check } from "@mui/icons-material";
 import { CaseInsensitiveSearch } from "../../utils/CaseInsensitiveSearch";
-import { Speaker } from "../../models/Speaker";
+import { Speaker } from "../../models/Session";
 
 export interface SessionCardProps {
   sessionItem: SessionItem;

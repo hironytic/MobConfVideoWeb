@@ -22,21 +22,26 @@
 // THE SOFTWARE.
 //
 
-import { QueryDocumentSnapshot } from "@firebase/firestore/lite";
+import { DocumentData, FirestoreDataConverter, QueryDocumentSnapshot, WithFieldValue } from "@firebase/firestore/lite";
 
-interface ConfigData {
+export interface Config {
+  isInMaintenance: boolean;
+}
+
+interface FSConfig {
   inMaintenance: boolean;
 }
+export const configConverter: FirestoreDataConverter<Config> = {
+  fromFirestore(snapshot: QueryDocumentSnapshot): Config {
+    const data = snapshot.data() as FSConfig;
+    return {
+      isInMaintenance: data.inMaintenance,
+    };
+  },
 
-export class Config {
-  static fromSnapshot(snapshot: QueryDocumentSnapshot<ConfigData>): Config {
-    const data = snapshot.data()
-    return new Config(
-      data.inMaintenance,
-    );
+  toFirestore(modelObject: WithFieldValue<Config>): DocumentData {
+    return {
+      inMaintenance: modelObject.isInMaintenance,
+    };
   }
-  
-  constructor(
-    public isInMaintenance: boolean
-  ) {}
-}
+};

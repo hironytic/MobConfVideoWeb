@@ -22,44 +22,56 @@
 // THE SOFTWARE.
 //
 
-import { QueryDocumentSnapshot } from "@firebase/firestore/lite";
+import { DocumentData, FirestoreDataConverter, QueryDocumentSnapshot, WithFieldValue } from "@firebase/firestore/lite";
 
-interface RequestData {
-  sessionId?: string;
+export interface Request {
+  id: string;
+  sessionId: string | undefined;
   title: string;
   conference: string;
-  minutes?: number;
+  minutes: number | undefined;
+  videoUrl: string;
+  slideUrl: string | undefined;
+  memo: string | undefined;
+  isWatched: boolean;
+}
+
+interface FSRequest {
+  sessionId: string | undefined;
+  title: string;
+  conference: string;
+  minutes: number | undefined;
   video: string;
-  slide?: string;
-  memo?: string;
+  slide: string | undefined;
+  memo: string | undefined;
   watched: boolean;
 }
+export const requestConverter: FirestoreDataConverter<Request> = {
+  fromFirestore(snapshot: QueryDocumentSnapshot): Request {
+    const data = snapshot.data() as FSRequest;
+    return {
+      id: snapshot.id,
+      sessionId: data.sessionId,
+      title: data.title,
+      conference: data.conference,
+      minutes: data.minutes,
+      videoUrl: data.video,
+      slideUrl: data.slide,
+      memo: data.memo,
+      isWatched: data.watched,
+    };
+  },
 
-export class Request {
-  static fromSnapshot(snapshot: QueryDocumentSnapshot<RequestData>): Request {
-    const data = snapshot.data();
-    return new Request(
-      snapshot.id,
-      data.sessionId,
-      data.title,
-      data.conference,
-      data.minutes,
-      data.video,
-      data.slide,
-      data.memo,
-      data.watched,
-    );
+  toFirestore(modelObject: WithFieldValue<Request>): DocumentData {
+    return {
+      sessionId: modelObject.sessionId,
+      title: modelObject.title,
+      conference: modelObject.conference,
+      minutes: modelObject.minutes,
+      video: modelObject.videoUrl,
+      slide: modelObject.slideUrl,
+      memo: modelObject.memo,
+      watched: modelObject.isWatched,
+    };
   }
-
-  constructor(
-    public id: string,
-    public sessionId: string | undefined,
-    public title: string,
-    public conference: string,
-    public minutes: number | undefined,
-    public videoUrl: string,
-    public slideUrl: string | undefined,
-    public memo: string | undefined,
-    public isWatched: boolean
-  ) { }
-}
+};

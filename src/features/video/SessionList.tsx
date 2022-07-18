@@ -24,23 +24,58 @@
 
 import { IRDETypes } from "../../utils/IRDE";
 import { SessionItem, SessionListIRDE } from "./VideoViewModel";
-import { Box, CircularProgress, Grid, Stack, Typography } from "@mui/material";
+import { Box, CircularProgress, Grid, Typography } from "@mui/material";
 import { SessionCard } from "./SessionCard";
 import { Session } from "../../models/Session";
-import { Speaker } from "../../models/Speaker";
 
 export function SessionList(): JSX.Element {
-  const sessions = [
-    new Session("s1", "c1", true, {
-      "e1": 1,
-      "e3": 2
-    }, "Session 1", "これはテストセッションです。これはテストセッションです。これは", new Date(Date.UTC(2018, 7, 30, 11, 0)), 30, "https://example.com/slide1", "https://example.com/video1", [
-      new Speaker("Speaker 1", "speaker1", undefined),
-    ]),
-    new Session("s2", "c2", false, {}, "Session 2", "そうです。テストです。", new Date(Date.UTC(2018, 8, 1, 13, 0)), 30, undefined, "https://example.com/video2", [
-      new Speaker("Speaker 2", "speaker2", "https://example.com/image2"),
-      new Speaker("Speaker 3", undefined, "https://example.com/image3"),
-    ]),
+  const sessions: Session[] = [
+    {
+      id: "s1",
+      conferenceId: "c1",
+      watched: true,
+      watchedOn: {
+        "e1": 1,
+        "e3": 2
+      },
+      title: "Session 1",
+      description: "これはテストセッションです。これはテストセッションです。これは",
+      starts: new Date(Date.UTC(2018, 7, 30, 11, 0)),
+      minutes: 30,
+      slide: "https://example.com/slide1",
+      video: "https://example.com/video1",
+      speakers: [
+        {
+          name: "Speaker 1",
+          twitter: "speaker1",
+          icon: undefined
+        },
+      ],
+    },
+    {
+      id: "s2",
+      conferenceId: "c2",
+      watched: false,
+      watchedOn: {},
+      title: "Session 2",
+      description: "そうです。テストです。",
+      starts: new Date(Date.UTC(2018, 8, 1, 13, 0)),
+      minutes: 30,
+      slide: undefined,
+      video: "https://example.com/video2",
+      speakers: [
+        {
+          name: "Speaker 2",
+          twitter: "speaker2",
+          icon: "https://example.com/image2",
+        },
+        {
+          name: "Speaker 3",
+          twitter: undefined,
+          icon: "https://example.com/image3",
+        },
+      ],
+    },
   ];
   
   const sessionList: SessionListIRDE = {
@@ -94,7 +129,7 @@ function SessionListRunningBody(): JSX.Element {
 interface SessionListDoneBodyProps {
   sessions: SessionItem[];
   keywordList: string[];
-};
+}
 function SessionListDoneBody({ sessions, keywordList }: SessionListDoneBodyProps): JSX.Element {
   if (sessions.length === 0) {
     return (

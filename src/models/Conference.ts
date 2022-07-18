@@ -22,26 +22,35 @@
 // THE SOFTWARE.
 //
 
-import { QueryDocumentSnapshot, Timestamp } from "@firebase/firestore/lite";
+import {
+  DocumentData,
+  FirestoreDataConverter,
+  QueryDocumentSnapshot,
+  Timestamp,
+  WithFieldValue
+} from "@firebase/firestore/lite";
 
-interface ConferenceData {
+export interface Conference {
+  id: string;
+  name: string,
+  starts: Date;
+}
+
+interface FSConference {
   name: string;
   starts: Timestamp;
 }
-
-export class Conference {
-  static fromSnapshot(snapshot: QueryDocumentSnapshot<ConferenceData>): Conference {
-    const data = snapshot.data();
-    return new Conference(
-      snapshot.id,
-      data.name,
-      data.starts.toDate(),
-    );
-  } 
-
-  constructor(
-    public id: string,
-    public name: string,
-    public starts: Date
-  ) {}
-}
+export const conferenceConverter: FirestoreDataConverter<Conference> = {
+  fromFirestore(snapshot: QueryDocumentSnapshot): Conference {
+    const data = snapshot.data() as FSConference;
+    return {
+      id: snapshot.id,
+      name: data.name,
+      starts: data.starts.toDate(),
+    };
+  },
+  
+  toFirestore(modelObject: WithFieldValue<Conference>): DocumentData {
+    return modelObject;
+  }
+};

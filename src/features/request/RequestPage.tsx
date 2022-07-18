@@ -28,15 +28,51 @@ import { RequestList } from "./RequestList";
 
 export function RequestPage(): JSX.Element {
   const events: Event[] = [
-    new Event("test", "Test", false),
-    new Event("mobconfvideo12", "第12回", false),
-    new Event("mobconfvideo11", "第11回", false),
-    new Event("mobconfvideo10", "第10回", false),
-    new Event("mobconfvideo9", "第9回", false),
-    new Event("mobconfvideo8", "第8回", false),
-    new Event("mobconfvideo7", "第7回", false),
-    new Event("mobconfvideo6", "第6回", false),
-    new Event("mobconfvideo5", "第5回", false),
+    {
+      id: "test",
+      name: "Test",
+      isAccepting: false,
+    },
+    {
+      id: "mobconfvideo12",
+      name: "第12回",
+      isAccepting: false,
+    },
+    {
+      id: "mobconfvideo11",
+      name: "第11回",
+      isAccepting: false,
+    },
+    {
+      id: "mobconfvideo10",
+      name: "第10回",
+      isAccepting: false,
+    },
+    {
+      id: "mobconfvideo9",
+      name: "第9回",
+      isAccepting: false,
+    },
+    {
+      id: "mobconfvideo8",
+      name: "第8回",
+      isAccepting: false,
+    },
+    {
+      id: "mobconfvideo7",
+      name: "第7回",
+      isAccepting: false,
+    },
+    {
+      id: "mobconfvideo6",
+      name: "第6回",
+      isAccepting: false,
+    },
+    {
+      id: "mobconfvideo5",
+      name: "第5回",
+      isAccepting: false,
+    },
   ];
   const currentId = "mobconfvideo12";
   const onCurrentIdChanged = (currentId: string | false) => {};

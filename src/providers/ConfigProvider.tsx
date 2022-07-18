@@ -25,11 +25,10 @@
 import { ConfigContext } from "../features/config/ConfigContext";
 import { ProviderProps } from "./ProviderProps";
 import { of } from "rxjs";
-import { Config } from "../models/Config";
 
 export function ConfigProvider({ children }: ProviderProps): JSX.Element {
   return (
-    <ConfigContext.Provider value={of(new Config(false))}>
+    <ConfigContext.Provider value={of({ isInMaintenance: false })}>
       {children}
     </ConfigContext.Provider>
   );
