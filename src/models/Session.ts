@@ -22,8 +22,7 @@
 // THE SOFTWARE.
 //
 
-import { DocumentData, FirestoreDataConverter, QueryDocumentSnapshot, WithFieldValue, Timestamp } from "@firebase/firestore/lite";
-import { Request } from "./Request";
+import { DocumentData, FirestoreDataConverter, QueryDocumentSnapshot, WithFieldValue, Timestamp } from "@firebase/firestore";
 
 export interface Session {
   id: string;

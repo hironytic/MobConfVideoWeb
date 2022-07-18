@@ -28,7 +28,7 @@ import {
   QueryDocumentSnapshot,
   Timestamp,
   WithFieldValue
-} from "@firebase/firestore/lite";
+} from "@firebase/firestore";
 
 export interface Conference {
   id: string;
