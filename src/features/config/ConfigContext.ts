@@ -22,14 +22,7 @@
 // THE SOFTWARE.
 //
 
-import { Config } from "../../models/Config";
 import React from "react";
-import { NEVER, Observable } from "rxjs";
+import { ConfigViewModel, NullConfigViewModel } from "./ConfigViewModel";
 
-export interface ConfigRepository {
-  config$: Observable<Config>;
-}
-
-export const ConfigContext = React.createContext<ConfigRepository>({
-  config$: NEVER,
-});
+export const ConfigContext = React.createContext<ConfigViewModel>(new NullConfigViewModel());

@@ -24,6 +24,7 @@
 
 import { FirebaseApp, initializeApp } from 'firebase/app';
 import { Firestore, getFirestore as getFireStoreFromApp } from 'firebase/firestore';
+import { from, Observable, switchMap } from "rxjs";
 
 async function getFirebaseConfig(): Promise<object> {
   if (process.env.NODE_ENV !== 'production') {
@@ -46,4 +47,10 @@ async function getFirebaseApp(): Promise<FirebaseApp> {
 
 export async function getFirestore(): Promise<Firestore> {
   return getFireStoreFromApp(await getFirebaseApp())
+}
+
+export function withFirestore<T>(builder: (firestore: Firestore) => Observable<T>): Observable<T> {
+  return from(getFirestore()).pipe(
+    switchMap(firestore => builder(firestore))
+  );
 }

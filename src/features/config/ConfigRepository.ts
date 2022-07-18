@@ -1,5 +1,5 @@
 //
-// AppConfigRepository.ts
+// ConfigRepository.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,25 +22,23 @@
 // THE SOFTWARE.
 //
 
-import { ConfigRepository } from "./ConfigContext";
-import { from, map, Observable, retry, shareReplay, switchMap, tap } from "rxjs";
+import { map, Observable } from "rxjs";
 import { Config, configConverter } from "../../models/Config";
-import { getFirestore } from "../../Firebase";
+import { withFirestore } from "../../Firebase";
 import { collection, doc, DocumentSnapshot, onSnapshot } from 'firebase/firestore';
 
-export class AppConfigRepository implements ConfigRepository {
-  private config$_: Observable<Config> | undefined = undefined;
-  
+export interface ConfigRepository {
+  config$: Observable<Config>;
+}
+
+export class FirestoreConfigRepository implements ConfigRepository {
   get config$(): Observable<Config> {
-    if (this.config$_ === undefined) {
-      this.config$_ = from(getFirestore()).pipe(
-        switchMap(firestore => {
-          const collectionRef = collection(firestore, "config");
-          const docRef = doc(collectionRef, "config").withConverter(configConverter);
-          return new Observable<DocumentSnapshot<Config>>(subscriber => {
-            return onSnapshot(docRef, subscriber);
-          });
-        }),
+    return withFirestore(firestore => {
+      const collectionRef = collection(firestore, "config");
+      const docRef = doc(collectionRef, "config").withConverter(configConverter);
+      return new Observable<DocumentSnapshot<Config>>(subscriber => {
+        return onSnapshot(docRef, subscriber);
+      }).pipe(
         map(snapshot => {
           const config = snapshot.data();
           if (config === undefined) {
@@ -48,11 +46,7 @@ export class AppConfigRepository implements ConfigRepository {
           }
           return config;
         }),
-        tap({ error(error) { console.error("Error occurred in AppConfigRepository.config$", error) }}),
-        retry({ delay: 10_000 }),
-        shareReplay(1),
       );
-    }
-    return this.config$_;
+    });
   }
 }

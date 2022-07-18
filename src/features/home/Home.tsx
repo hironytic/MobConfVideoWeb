@@ -31,13 +31,13 @@ import { ConfigContext } from "../config/ConfigContext";
 import { ObserveOrUndefined } from "../../utils/Observe";
 
 export function Home(): JSX.Element {
-  const configRepository = useContext(ConfigContext);
+  const configViewModel = useContext(ConfigContext);
   return (
     <>
       <CssBaseline />
-      <ObserveOrUndefined source={configRepository.config$}>
-        {config => (config !== undefined) && (
-          (config.isInMaintenance) ? <Maintenance /> : <OrdinaryHome/>
+      <ObserveOrUndefined source={configViewModel.isInMaintenance$}>
+        {isInMaintenance => (isInMaintenance !== undefined) && (
+          (isInMaintenance) ? <Maintenance /> : <OrdinaryHome/>
         )}
       </ObserveOrUndefined>
     </>

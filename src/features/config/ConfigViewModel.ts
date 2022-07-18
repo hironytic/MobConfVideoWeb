@@ -1,5 +1,5 @@
 //
-// AppConfigProvider.tsx
+// ConfigViewModel.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,17 +22,33 @@
 // THE SOFTWARE.
 //
 
-import { ConfigContext } from "../features/config/ConfigContext";
-import { ProviderProps } from "./ProviderProps";
-import { useMemo } from "react";
-import { FirestoreConfigRepository } from "../features/config/ConfigRepository";
-import { AppConfigViewModel } from "../features/config/ConfigViewModel";
+import { map, NEVER, Observable, retry, shareReplay, tap } from "rxjs";
+import { ConfigRepository } from "./ConfigRepository";
 
-export function AppConfigProvider({ children }: ProviderProps): JSX.Element {
-  const configViewModel = useMemo(() => new AppConfigViewModel(new FirestoreConfigRepository()), []);
-  return (
-    <ConfigContext.Provider value={configViewModel}>
-      {children}
-    </ConfigContext.Provider>
-  );
+export interface ConfigViewModel {
+  isInMaintenance$: Observable<boolean>;
+}
+
+export class NullConfigViewModel implements ConfigViewModel {
+  isInMaintenance$: Observable<boolean>;
+
+  constructor() {
+    this.isInMaintenance$ = NEVER;
+  }
+}
+
+export class AppConfigViewModel implements ConfigViewModel {
+  isInMaintenance$: Observable<boolean>;
+  
+  constructor(configRepository: ConfigRepository) {
+    const config$ = configRepository.config$.pipe(
+      tap({ error(error) { console.error("Error occurred in ConfigRepository.config$", error) }}),
+      retry({ delay: 10_000 }),
+      shareReplay(1),
+    );
+    
+    this.isInMaintenance$ = config$.pipe(
+      map(it => it.isInMaintenance),
+    );
+  }
 }
