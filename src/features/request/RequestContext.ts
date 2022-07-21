@@ -1,5 +1,5 @@
 //
-// EventTabs.tsx
+// RequestContext.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,31 +22,7 @@
 // THE SOFTWARE.
 //
 
-import { Event } from "../../models/Event";
-import { Box, CircularProgress, Tab, Tabs } from "@mui/material";
+import React from "react";
+import { NullRequestViewModel, RequestViewModel } from "./RequestViewModel";
 
-interface EventTabsProps {
-  events: Event[];
-  currentId: string | false;
-  onCurrentIdChanged: (currentId: string | false) => void;
-}
-
-export function EventTabs({ events, currentId, onCurrentIdChanged }: EventTabsProps): JSX.Element {
-  if (events.length === 0) {
-    return (
-      <Box sx={{ textAlign: "center" }}>
-        <CircularProgress size={18} sx={{ m: 2 }} />
-      </Box>
-    );
-  } else {
-    return (
-      <Tabs value={currentId}
-            onChange={(_, value) => onCurrentIdChanged(value)}
-            variant="scrollable">
-        {events.map(event => (
-          <Tab key={event.id} label={event.name} value={event.id}/>
-        ))}
-      </Tabs>
-    );
-  }
-}
+export const RequestContext = React.createContext<RequestViewModel>(new NullRequestViewModel());

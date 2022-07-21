@@ -1,5 +1,5 @@
 //
-// EventTabs.tsx
+// AppRequestProvider.tsx
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,31 +22,16 @@
 // THE SOFTWARE.
 //
 
-import { Event } from "../../models/Event";
-import { Box, CircularProgress, Tab, Tabs } from "@mui/material";
+import { ProviderProps } from "./ProviderProps";
+import { ViewModelProvider } from "../utils/ViewModelProvider";
+import { RequestContext } from "../features/request/RequestContext";
+import { AppRequestViewModel } from "../features/request/RequestViewModel";
+import { FirestoreRequestRepository } from "../features/request/RequestRepository";
 
-interface EventTabsProps {
-  events: Event[];
-  currentId: string | false;
-  onCurrentIdChanged: (currentId: string | false) => void;
-}
-
-export function EventTabs({ events, currentId, onCurrentIdChanged }: EventTabsProps): JSX.Element {
-  if (events.length === 0) {
-    return (
-      <Box sx={{ textAlign: "center" }}>
-        <CircularProgress size={18} sx={{ m: 2 }} />
-      </Box>
-    );
-  } else {
-    return (
-      <Tabs value={currentId}
-            onChange={(_, value) => onCurrentIdChanged(value)}
-            variant="scrollable">
-        {events.map(event => (
-          <Tab key={event.id} label={event.name} value={event.id}/>
-        ))}
-      </Tabs>
-    );
-  }
+export function AppRequestProvider({ children }: ProviderProps): JSX.Element {
+  return (
+    <ViewModelProvider context={RequestContext} creator={() => new AppRequestViewModel(new FirestoreRequestRepository())}>
+      {children}
+    </ViewModelProvider>
+  );
 }

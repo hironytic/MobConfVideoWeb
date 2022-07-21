@@ -22,65 +22,44 @@
 // THE SOFTWARE.
 //
 
-import { Event } from "../../models/Event";
 import { EventTabs } from "./EventTabs";
 import { RequestList } from "./RequestList";
+import { useContext, useEffect } from "react";
+import { RequestContext } from "./RequestContext";
+import { Observe } from "../../utils/Observe";
+import { useNavigate, useParams } from "react-router-dom";
+import { IRDETypes } from "../../utils/IRDE";
 
 export function RequestPage(): JSX.Element {
-  const events: Event[] = [
-    {
-      id: "test",
-      name: "Test",
-      isAccepting: false,
-    },
-    {
-      id: "mobconfvideo12",
-      name: "第12回",
-      isAccepting: false,
-    },
-    {
-      id: "mobconfvideo11",
-      name: "第11回",
-      isAccepting: false,
-    },
-    {
-      id: "mobconfvideo10",
-      name: "第10回",
-      isAccepting: false,
-    },
-    {
-      id: "mobconfvideo9",
-      name: "第9回",
-      isAccepting: false,
-    },
-    {
-      id: "mobconfvideo8",
-      name: "第8回",
-      isAccepting: false,
-    },
-    {
-      id: "mobconfvideo7",
-      name: "第7回",
-      isAccepting: false,
-    },
-    {
-      id: "mobconfvideo6",
-      name: "第6回",
-      isAccepting: false,
-    },
-    {
-      id: "mobconfvideo5",
-      name: "第5回",
-      isAccepting: false,
-    },
-  ];
-  const currentId = "mobconfvideo12";
-  const onCurrentIdChanged = (currentId: string | false) => {};
+  const requestViewModel = useContext(RequestContext);
+  const navigate = useNavigate();
+  const params = useParams();
+  const eventId = params["eventId"];
+  
+  useEffect(() => {
+    if (requestViewModel.currentEventId !== undefined && eventId === undefined) {
+      navigate("/request/" + requestViewModel.currentEventId, { replace: true });
+    } else {
+      requestViewModel.setCurrentEventId(eventId);
+    }
+  }, [requestViewModel, eventId, navigate]);
+  
+  const onCurrentIdChanged = (currentId: string | false) => {
+    navigate("/request/" + ((currentId !== false) ? currentId : ""));
+  };
   
   return (
     <>
-      <EventTabs events={events} currentId={currentId} onCurrentIdChanged={onCurrentIdChanged} />
-      <RequestList/>
+      <Observe source={requestViewModel.allEvents$} initialValue={[]}>
+        {events => (
+          <EventTabs events={events} currentId={eventId ?? false} onCurrentIdChanged={onCurrentIdChanged} />
+        )}
+      </Observe>
+      <Observe source={requestViewModel.requestList$} initialValue={{ type: IRDETypes.Initial }}>
+        {requestListIRDE => (
+          <RequestList requestList={requestListIRDE}/>
+        )}
+      </Observe>
     </>
   );
 }

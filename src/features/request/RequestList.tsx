@@ -28,75 +28,18 @@ import { RequestListIRDE } from "./RequestViewModel";
 import { Box, CircularProgress, Grid, Typography } from "@mui/material";
 import { RequestCard } from "./RequestCard";
 
-export function RequestList(): JSX.Element {
-  const currentEventId = "test";
-  const requestList: RequestListIRDE = {
-    type: IRDETypes.Done,
-    requests: [
-      {
-        id: "r1",
-        sessionId: undefined,
-        title: "リクエストのサンプルについて考える",
-        conference: "サンプルKaigi",
-        minutes: 10,
-        videoUrl: "https://",
-        slideUrl: undefined,
-        memo: undefined,
-        isWatched: true,
-      },
-      {
-        id: "r2",
-        sessionId: undefined,
-        title: "あなたの知らないもうひとつのリクエスト",
-        conference: "MobConfVideo",
-        minutes: 20,
-        videoUrl: "https://",
-        slideUrl: undefined,
-        memo: undefined,
-        isWatched: true,
-      },
-      {
-        id: "r3",
-        sessionId: undefined,
-        title: "リクエストになろう",
-        conference: "サンプルKaigi",
-        minutes: 10,
-        videoUrl: "https://",
-        slideUrl: undefined,
-        memo: undefined,
-        isWatched: false,
-      },
-      {
-        id: "r4",
-        sessionId: undefined,
-        title: "これさえリクエストすれば安心",
-        conference: "サンプルKaigi",
-        minutes: 10,
-        videoUrl: "https://",
-        slideUrl: undefined,
-        memo: undefined,
-        isWatched: false,        
-      },
-    ],
-  };
-  
-  return (
-    <RequestListBody currentEventId={currentEventId} requestList={requestList}/>
-  );
-}
-
-interface RequestListBodyProps {
-  currentEventId: string;
+interface RequestListProps {
   requestList: RequestListIRDE;
 }
-function RequestListBody({ currentEventId, requestList }: RequestListBodyProps): JSX.Element {
+
+export function RequestList({ requestList }: RequestListProps): JSX.Element {
   switch (requestList.type) {
     case IRDETypes.Initial:
       return <RequestListInitialBody/>;
     case IRDETypes.Running:
       return <RequestListRunningBody/>;
     case IRDETypes.Done:
-      return <RequestListDoneBody currentEventId={currentEventId} requests={requestList.requests}/>
+      return <RequestListDoneBody requests={requestList.requests}/>
     case IRDETypes.Error:
       return <RequestListErrorBody message={requestList.message}/>
   }
@@ -115,10 +58,9 @@ function RequestListRunningBody(): JSX.Element {
 }
 
 interface RequestListDoneBodyProps {
-  currentEventId: string;
   requests: Request[]; 
 }
-function RequestListDoneBody({ currentEventId, requests }: RequestListDoneBodyProps): JSX.Element {
+function RequestListDoneBody({ requests }: RequestListDoneBodyProps): JSX.Element {
   if (requests.length === 0) {
     return (
       <Box sx={{ mt: 8, textAlign: "center" }}>
