@@ -1,7 +1,7 @@
 //
-// AppConfigProvider.tsx
+// ViewModelProvider.tsx
 //
-// Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2018-2022 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,16 +22,35 @@
 // THE SOFTWARE.
 //
 
-import { ConfigContext } from "../features/config/ConfigContext";
-import { ProviderProps } from "./ProviderProps";
-import { FirestoreConfigRepository } from "../features/config/ConfigRepository";
-import { AppConfigViewModel } from "../features/config/ConfigViewModel";
-import { ViewModelProvider } from "../utils/ViewModelProvider";
+import React, { useEffect, useState } from "react";
 
-export function AppConfigProvider({ children }: ProviderProps): JSX.Element {
-  return (
-    <ViewModelProvider context={ConfigContext} creator={() => new AppConfigViewModel(new FirestoreConfigRepository())}>
-      {children}
-    </ViewModelProvider>
-  );
+export interface ViewModel {
+  dispose: () => void;
+}
+
+interface ViewModelProviderProps<VM extends ViewModel> {
+  context: React.Context<VM>;
+  creator: () => VM;
+  children: React.ReactNode;
+}
+export function ViewModelProvider<VM extends ViewModel>({ context, creator, children }: ViewModelProviderProps<VM>): JSX.Element {
+  const [viewModel, setViewModel] = useState<VM | undefined>(undefined);
+  useEffect(() => {
+    const viewModel = creator();
+    setViewModel(viewModel);
+    return () => {
+      viewModel.dispose();
+    }
+  }, [creator]);
+  
+  if (viewModel !== undefined) {
+    const Provider = context.Provider;
+    return (
+      <Provider value={viewModel}>
+        {children}
+      </Provider>
+    )
+  } else {
+    return <></>;
+  }
 }

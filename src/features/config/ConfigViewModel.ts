@@ -24,20 +24,21 @@
 
 import { map, NEVER, Observable, retry, shareReplay, tap } from "rxjs";
 import { ConfigRepository } from "./ConfigRepository";
+import { ViewModel } from "../../utils/ViewModelProvider";
 
-export interface ConfigViewModel {
+export interface ConfigViewModel extends ViewModel{
   isInMaintenance$: Observable<boolean>;
 }
 
 export class NullConfigViewModel implements ConfigViewModel {
-  isInMaintenance$: Observable<boolean>;
-
-  constructor() {
-    this.isInMaintenance$ = NEVER;
-  }
+  dispose() {}
+  
+  isInMaintenance$: Observable<boolean> = NEVER;
 }
 
 export class AppConfigViewModel implements ConfigViewModel {
+  dispose() {}
+  
   isInMaintenance$: Observable<boolean>;
   
   constructor(configRepository: ConfigRepository) {
