@@ -1,5 +1,5 @@
 //
-// Index.tsx
+// ConfigRepository.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,21 +22,31 @@
 // THE SOFTWARE.
 //
 
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { App } from './App';
-import reportWebVitals from './reportWebVitals';
+import { map, Observable } from "rxjs";
+import { Config, configConverter } from "../../models/Config";
+import { withFirestore } from "../../Firebase";
+import { collection, doc, DocumentSnapshot, onSnapshot } from 'firebase/firestore';
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+export interface ConfigRepository {
+  config$: Observable<Config>;
+}
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+export class FirestoreConfigRepository implements ConfigRepository {
+  get config$(): Observable<Config> {
+    return withFirestore(firestore => {
+      const collectionRef = collection(firestore, "config");
+      const docRef = doc(collectionRef, "config").withConverter(configConverter);
+      return new Observable<DocumentSnapshot<Config>>(subscriber => {
+        return onSnapshot(docRef, subscriber);
+      }).pipe(
+        map(snapshot => {
+          const config = snapshot.data();
+          if (config === undefined) {
+            throw new Error("Configuration value is not found on Firestore!");
+          }
+          return config;
+        }),
+      );
+    });
+  }
+}

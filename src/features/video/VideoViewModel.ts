@@ -1,5 +1,5 @@
 //
-// Index.tsx
+// VideoViewModel.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,21 +22,18 @@
 // THE SOFTWARE.
 //
 
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { App } from './App';
-import reportWebVitals from './reportWebVitals';
+import { IRDE } from "../../utils/IRDE";
+import { Session } from "../../models/Session";
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+export interface IdAndName {
+  id: string;
+  name: string;
+}
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+export interface SessionItem {
+  session: Session;
+  conferenceName: string;
+  watchedEvents: IdAndName[];
+}
+
+export type SessionListIRDE = IRDE<{}, {}, { sessions: SessionItem[], keywordList: string[] }, { message: string }>;

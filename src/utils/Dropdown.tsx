@@ -1,7 +1,7 @@
 //
-// Index.tsx
+// Dropdown.tsx
 //
-// Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2018-2022 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,21 +22,40 @@
 // THE SOFTWARE.
 //
 
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { App } from './App';
-import reportWebVitals from './reportWebVitals';
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+export interface DropdownState {
+  value: string;
+  items: DropdownStateItem[];
+}
+
+interface DropdownStateItem {
+  value: string;
+  title: string;
+}
+
+interface DropdownProps {
+  labelId: string;
+  label: string;
+  state: DropdownState;
+  minWidth?: number | string;
+  onChange: (value: string) => void;
+}
+
+export function Dropdown({ labelId, label, state, minWidth, onChange }: DropdownProps): JSX.Element {
+  return (
+    <FormControl sx={{ minWidth }}>
+      <InputLabel id={labelId}>{label}</InputLabel>
+      <Select labelId={labelId} label={label} value={state.value} onChange={event => onChange(event.target.value)}>
+        {
+          state.items.map(item => (
+            <MenuItem key={item.value} value={item.value}>
+              {item.title}
+            </MenuItem>
+          ))
+        }
+      </Select>
+    </FormControl>
+  );
+}

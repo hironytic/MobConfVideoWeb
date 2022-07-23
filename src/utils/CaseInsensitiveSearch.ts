@@ -1,7 +1,7 @@
 //
-// Index.tsx
+// CaseInsensitiveSearch.ts
 //
-// Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2019-2022 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,21 +22,35 @@
 // THE SOFTWARE.
 //
 
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { App } from './App';
-import reportWebVitals from './reportWebVitals';
+export interface CaseInsensitiveSearchResult {
+  index: number;
+  length: number;
+}
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+export class CaseInsensitiveSearch {
+  public str: string;
+  private regExp: RegExp;
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+  constructor(str: string) {
+    this.str = str;
+    this.regExp = new RegExp(str.replace(/[-[\]{}()*+?.,\\^$|#\s]/, "\\$&"), "ig");
+  }
+
+  public foundIn(text: string): boolean {
+    this.regExp.lastIndex = 0;
+    return this.regExp.test(text);
+  }
+
+  public searchIn(text: string, position: number): CaseInsensitiveSearchResult | null {
+    this.regExp.lastIndex = position;
+    const match = this.regExp.exec(text);
+    if (match !== null) {
+      return {
+        index: match.index,
+        length: match[0].length,
+      };
+    } else {
+      return null;
+    }
+  }
+}

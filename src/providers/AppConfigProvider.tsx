@@ -1,5 +1,5 @@
 //
-// Index.tsx
+// AppConfigProvider.tsx
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,21 +22,16 @@
 // THE SOFTWARE.
 //
 
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { App } from './App';
-import reportWebVitals from './reportWebVitals';
+import { ConfigContext } from "../features/config/ConfigContext";
+import { ProviderProps } from "./ProviderProps";
+import { FirestoreConfigRepository } from "../features/config/ConfigRepository";
+import { AppConfigViewModel } from "../features/config/ConfigViewModel";
+import { ViewModelProvider } from "../utils/ViewModelProvider";
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+export function AppConfigProvider({ children }: ProviderProps): JSX.Element {
+  return (
+    <ViewModelProvider context={ConfigContext} creator={() => new AppConfigViewModel(new FirestoreConfigRepository())}>
+      {children}
+    </ViewModelProvider>
+  );
+}

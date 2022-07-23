@@ -1,5 +1,5 @@
 //
-// Index.tsx
+// ConfigViewModel.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,21 +22,34 @@
 // THE SOFTWARE.
 //
 
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { App } from './App';
-import reportWebVitals from './reportWebVitals';
+import { map, NEVER, Observable, retry, shareReplay, tap } from "rxjs";
+import { ConfigRepository } from "./ConfigRepository";
+import { ViewModel } from "../../utils/ViewModelProvider";
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+export interface ConfigViewModel extends ViewModel{
+  isInMaintenance$: Observable<boolean>;
+}
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+export class NullConfigViewModel implements ConfigViewModel {
+  dispose() {}
+  
+  isInMaintenance$: Observable<boolean> = NEVER;
+}
+
+export class AppConfigViewModel implements ConfigViewModel {
+  dispose() {}
+  
+  isInMaintenance$: Observable<boolean>;
+  
+  constructor(configRepository: ConfigRepository) {
+    const config$ = configRepository.config$.pipe(
+      tap({ error(error) { console.error("Error occurred in ConfigRepository.config$", error) }}),
+      retry({ delay: 10_000 }),
+      shareReplay(1),
+    );
+    
+    this.isInMaintenance$ = config$.pipe(
+      map(it => it.isInMaintenance),
+    );
+  }
+}

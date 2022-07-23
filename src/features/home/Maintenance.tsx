@@ -1,7 +1,7 @@
 //
-// Index.tsx
+// Maintenance.tsx
 //
-// Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2018-2022 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,21 +22,23 @@
 // THE SOFTWARE.
 //
 
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { App } from './App';
-import reportWebVitals from './reportWebVitals';
+import { HomeAppBar } from "./HomeAppBar";
+import { Typography } from "@mui/material";
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+export function Maintenance(): JSX.Element {
+  return (
+    <>
+      <HomeAppBar title="メンテナンス中" tab={undefined} />
+      <div style={{ padding: 20 }}>
+        <Typography variant="subtitle1">
+          🚧 ただいま メンテナンス中です 🚧
+        </Typography>
+      </div>
+      <div style={{ padding: 20 }}>
+        <Typography variant="body2">
+          ご不便をおかけして申し訳ありません。もうしばらくお待ちください。
+        </Typography>
+      </div>
+    </>
+  );
+}
