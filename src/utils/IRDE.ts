@@ -31,19 +31,19 @@ export const IRDETypes = {
 
 export type IRDEType = typeof IRDETypes[keyof typeof IRDETypes];
 
-type IRDEInitial<Props> = {
+export type IRDEInitial<Props> = {
   type: typeof IRDETypes.Initial;
 } & Props;
 
-type IRDERunning<Props> = {
+export type IRDERunning<Props> = {
   type: typeof IRDETypes.Running;
 } & Props;
 
-type IRDEDone<Props> = {
+export type IRDEDone<Props> = {
   type: typeof IRDETypes.Done;
 } & Props;
 
-type IRDEError<Props> = {
+export type IRDEError<Props> = {
   type: typeof IRDETypes.Error;
 } & Props;
 

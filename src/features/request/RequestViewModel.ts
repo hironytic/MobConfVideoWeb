@@ -29,7 +29,11 @@ import { BehaviorSubject, NEVER, Observable, Subscription } from "rxjs";
 import { ViewModel } from "../../utils/ViewModelProvider";
 import { RequestRepository } from "./RequestRepository";
 
-export type RequestListIRDE = IRDE<{}, {}, { requests: Request[] }, { message: string }>;
+export interface RequestListIProps {}
+export interface RequestListRProps {}
+export interface RequestListDProps { requests: Request[] }
+export interface RequestListEProps { message: string }
+export type RequestListIRDE = IRDE<RequestListIProps, RequestListRProps, RequestListDProps, RequestListEProps>;
 
 export interface RequestViewModel extends ViewModel {
   readonly currentEventId: string | undefined;
