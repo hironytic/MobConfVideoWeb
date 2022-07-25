@@ -24,6 +24,9 @@
 
 import { IRDE } from "../../utils/IRDE";
 import { Session } from "../../models/Session";
+import { ViewModel } from "../../utils/ViewModelProvider";
+import { NEVER, Observable } from "rxjs";
+import { DropdownState } from "../../utils/Dropdown";
 
 export interface IdAndName {
   id: string;
@@ -37,3 +40,34 @@ export interface SessionItem {
 }
 
 export type SessionListIRDE = IRDE<{}, {}, { sessions: SessionItem[], keywordList: string[] }, { message: string }>;
+
+export interface SessionViewModel extends ViewModel {
+  expandFilterPanel(isExpand: boolean): void;
+  filterConferenceChanged(value: string): void;
+  filterSessionTimeChanged(value: string): void;
+  filterKeywordsChanged(value: string): void;
+  executeFilter(): void;
+
+  isFilterPanelExpanded$: Observable<boolean>;
+  filterConference$: Observable<DropdownState>;
+  filterSessionTime$: Observable<DropdownState>;
+  filterKeywords$: Observable<string>;
+  sessionList$: Observable<SessionListIRDE>;
+}
+
+export class NullSessionViewModel implements SessionViewModel {
+  dispose() {}
+  
+  expandFilterPanel(isExpand: boolean) {}
+  filterConferenceChanged(value: string) {}
+  filterSessionTimeChanged(value: string) {}
+  filterKeywordsChanged(value: string) {}
+  executeFilter() {}
+  
+  isFilterPanelExpanded$ = NEVER;
+  filterConference$ = NEVER;
+  filterSessionTime$ = NEVER;
+  filterKeywords$ = NEVER;
+  sessionList$ = NEVER;
+}
+
