@@ -28,7 +28,7 @@ import { Link } from "react-router-dom";
 
 export const HomeTabs = {
   Request: "request",
-  Video: "video",
+  Session: "session",
 } as const;
 
 export type HomeTab = typeof HomeTabs[keyof typeof HomeTabs];
@@ -87,7 +87,7 @@ function AppTabs( { tab }: { tab: HomeTab | undefined }): JSX.Element {
   return (
     <Tabs value={tab ?? false}>
       <Tab value={HomeTabs.Request} label="受付済み" icon={<List/>} to="/request" component={Link} />
-      <Tab value={HomeTabs.Video} label="動画検索" icon={<VideoLabel/>} to="/video" component={Link}/>
+      <Tab value={HomeTabs.Session} label="動画検索" icon={<VideoLabel/>} to="/session" component={Link}/>
     </Tabs>
   );
 }

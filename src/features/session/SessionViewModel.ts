@@ -1,7 +1,7 @@
 //
-// VideoPage.tsx
+// SessionViewModel.ts
 //
-// Copyright (c) 2018-2022 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,15 +22,18 @@
 // THE SOFTWARE.
 //
 
-import { Box } from "@mui/material";
-import { SessionSearchFilter } from "./SessionSearchFilter";
-import { SessionList } from "./SessionList";
+import { IRDE } from "../../utils/IRDE";
+import { Session } from "../../models/Session";
 
-export function VideoPage(): JSX.Element {
-  return (
-    <Box sx={{ p: 2 }}>
-      <SessionSearchFilter isExpanded={true} onExpand={(value) => {}}/>
-      <SessionList />
-    </Box>
-  );
+export interface IdAndName {
+  id: string;
+  name: string;
 }
+
+export interface SessionItem {
+  session: Session;
+  conferenceName: string;
+  watchedEvents: IdAndName[];
+}
+
+export type SessionListIRDE = IRDE<{}, {}, { sessions: SessionItem[], keywordList: string[] }, { message: string }>;

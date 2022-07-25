@@ -23,7 +23,7 @@
 //
 
 import { IRDETypes } from "../../utils/IRDE";
-import { SessionItem, SessionListIRDE } from "./VideoViewModel";
+import { SessionItem, SessionListIRDE } from "./SessionViewModel";
 import { Box, CircularProgress, Grid, Typography } from "@mui/material";
 import { SessionCard } from "./SessionCard";
 import { Session } from "../../models/Session";

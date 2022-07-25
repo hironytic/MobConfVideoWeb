@@ -25,7 +25,7 @@
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { Home } from "../features/home/Home";
 import { RequestPage } from "../features/request/RequestPage";
-import { VideoPage } from "../features/video/VideoPage";
+import { SessionPage } from "../features/session/SessionPage";
 
 export function AppRouter(): JSX.Element {
   return (
@@ -36,8 +36,9 @@ export function AppRouter(): JSX.Element {
             <Route index element={<RequestPage/>}/>
             <Route path=":eventId" element={<RequestPage/>}/>
           </Route>
-          <Route path="video" element={<VideoPage/>}/>
-          
+          <Route path="session" element={<Outlet/>}>
+            <Route index element={<SessionPage/>}/>
+          </Route>
           <Route path="*" element={<></>} />
         </Route>
       </Routes>
