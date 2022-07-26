@@ -29,7 +29,7 @@ import { SessionList } from "./SessionList";
 export function SessionPage(): JSX.Element {
   return (
     <Box sx={{ p: 2 }}>
-      <SessionSearchFilter isExpanded={true} onExpand={(value) => {}}/>
+      <SessionSearchFilter />
       <SessionList />
     </Box>
   );
