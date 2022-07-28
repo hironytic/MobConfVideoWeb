@@ -51,7 +51,7 @@ export interface SessionRepository {
 export class FirestoreSessionRepository implements SessionRepository {
   getAllConferences$(): Observable<Conference[]> {
     return withFirestore(firestore => {
-      const collectionRef = collection(firestore, "conference");
+      const collectionRef = collection(firestore, "conferences");
       const docQuery = query(collectionRef,
         orderBy("starts", "desc"),
       ).withConverter(conferenceConverter);

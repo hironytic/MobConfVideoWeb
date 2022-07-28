@@ -25,6 +25,7 @@
 import React from "react";
 import { AppConfigProvider } from "./AppConfigProvider";
 import { AppRequestProvider } from "./AppRequestProvider";
+import { AppSessionProvider } from "./AppSessionProvider";
 
 interface AppProviderProps {
   children: React.ReactNode;
@@ -34,7 +35,9 @@ export function AppProvider({ children }: AppProviderProps): JSX.Element {
   return (
     <AppConfigProvider>
       <AppRequestProvider>
-        {children}
+        <AppSessionProvider>
+          {children}
+        </AppSessionProvider>
       </AppRequestProvider>
     </AppConfigProvider>
   );

@@ -22,11 +22,12 @@
 // THE SOFTWARE.
 //
 
-import { IRDE } from "../../utils/IRDE";
+import { IRDE, IRDETypes } from "../../utils/IRDE";
 import { Session } from "../../models/Session";
 import { ViewModel } from "../../utils/ViewModelProvider";
-import { NEVER, Observable } from "rxjs";
+import { BehaviorSubject, NEVER, Observable, Subscription } from "rxjs";
 import { DropdownState } from "../../utils/Dropdown";
+import { SessionRepository } from "./SessionRepository";
 
 export interface IdAndName {
   id: string;
@@ -71,3 +72,83 @@ export class NullSessionViewModel implements SessionViewModel {
   sessionList$ = NEVER;
 }
 
+const UNSPECIFIED_STATE: DropdownState = { value: "-", items: [{ value: "-", title: "指定なし" }]};
+const SESSION_TIMES = [5, 10, 15, 20, 30, 40, 45, 50, 60, 70, 120];
+
+export class AppSessionViewModel implements SessionViewModel {
+  private readonly subscription = new Subscription();
+
+  isFilterPanelExpanded$ = new BehaviorSubject(true);
+  filterConference$ = new BehaviorSubject(UNSPECIFIED_STATE);
+  filterSessionTime$ = new BehaviorSubject({
+    value: UNSPECIFIED_STATE.value,
+    items: [
+      ...UNSPECIFIED_STATE.items,
+      ...(SESSION_TIMES.map(it => ({ value: it.toString(), title: `${it}分` }))),
+    ]
+  });
+  filterKeywords$ = new BehaviorSubject("");
+  sessionList$ = new BehaviorSubject({ type: IRDETypes.Initial });
+  
+  constructor(private readonly repository: SessionRepository) {
+    this.subscription.add(
+      repository
+        .getAllConferences$()
+        .subscribe({
+          next: conferences => {
+            const items = [
+              ...UNSPECIFIED_STATE.items,
+              ...(conferences.map(conf => ({ value: conf.id,  title: conf.name })))
+            ];
+            let value = this.filterConference$.value.value;
+            if (items.find(it => it.value === value) === undefined) {
+              value = UNSPECIFIED_STATE.value;
+            }
+            this.filterConference$.next({ value, items });
+          },
+          error: err => {
+            console.log("Error at getAllConferences$ in AppSessionViewModel", err);
+            this.filterConference$.next({
+              value: "_error_",
+              items: [
+                {
+                  value: "_error_",
+                  title: "<<エラー>>",
+                }
+              ]
+            });
+          },
+        })
+    );
+  }
+  
+  dispose() {
+    this.subscription.unsubscribe();
+  }
+  
+  expandFilterPanel(isExpand: boolean) {
+    this.isFilterPanelExpanded$.next(isExpand);
+  }
+  
+  private filterChanged(value: string, state: BehaviorSubject<DropdownState>) {
+    const { items } = state.value;
+    if (items.find(it => it.value === value) !== undefined) {
+      state.next({ value, items });
+    }
+  }
+  
+  filterConferenceChanged(value: string) {
+    this.filterChanged(value, this.filterConference$);
+  }
+  
+  filterSessionTimeChanged(value: string) {
+    this.filterChanged(value, this.filterSessionTime$);
+  }
+  
+  filterKeywordsChanged(value: string) {
+    this.filterKeywords$.next(value);
+  }
+  
+  executeFilter() {
+  }
+}

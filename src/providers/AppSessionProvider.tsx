@@ -1,7 +1,7 @@
 //
-// Dropdown.tsx
+// AppSessionProvider.tsx
 //
-// Copyright (c) 2018-2022 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,42 +22,16 @@
 // THE SOFTWARE.
 //
 
+import { ProviderProps } from "./ProviderProps";
+import { ViewModelProvider } from "../utils/ViewModelProvider";
+import { SessionContext } from "../features/session/SessionContext";
+import { AppSessionViewModel } from "../features/session/SessionViewModel";
+import { FirestoreSessionRepository } from "../features/session/SessionRepository";
 
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-
-export interface DropdownState {
-  value: string;
-  items: DropdownStateItem[];
-}
-
-export interface DropdownStateItem {
-  value: string;
-  title: string;
-}
-
-interface DropdownProps {
-  labelId: string;
-  label: string;
-  state: DropdownState;
-  minWidth?: number | string;
-  onChange: (value: string) => void;
-}
-
-export const EMPTY_DROPDOWN: DropdownState = { value: "", items: [] };
-
-export function Dropdown({ labelId, label, state, minWidth, onChange }: DropdownProps): JSX.Element {
+export function AppSessionProvider({ children }: ProviderProps): JSX.Element {
   return (
-    <FormControl sx={{ minWidth }}>
-      <InputLabel id={labelId}>{label}</InputLabel>
-      <Select labelId={labelId} label={label} value={state.value} onChange={event => onChange(event.target.value)}>
-        {
-          state.items.map(item => (
-            <MenuItem key={item.value} value={item.value}>
-              {item.title}
-            </MenuItem>
-          ))
-        }
-      </Select>
-    </FormControl>
+    <ViewModelProvider context={SessionContext} creator={() => new AppSessionViewModel(new FirestoreSessionRepository())}>
+      {children}
+    </ViewModelProvider>
   );
 }

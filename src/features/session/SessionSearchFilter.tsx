@@ -36,7 +36,7 @@ import {
   Typography
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import { Dropdown } from "../../utils/Dropdown";
+import { Dropdown, EMPTY_DROPDOWN } from "../../utils/Dropdown";
 import { useContext } from "react";
 import { SessionContext } from "./SessionContext";
 import { Observe } from "../../utils/Observe";
@@ -48,7 +48,7 @@ export function SessionSearchFilter(): JSX.Element {
     <Box sx={{ mt: 1, mb: 4, mx: "auto" }}>
       <Observe source={viewModel.isFilterPanelExpanded$} initialValue={true}>
         {isExpanded => (
-          <SessionSearchFilterCard isExpanded={isExpanded} onExpand={viewModel.expandFilterPanel}/>
+          <SessionSearchFilterCard isExpanded={isExpanded} onExpand={(isExpanded) => viewModel.expandFilterPanel(isExpanded)}/>
         )}
       </Observe>
     </Box>
@@ -83,14 +83,14 @@ function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCa
         <CardContent>
           <Stack direction="column" spacing={3}>
             <Stack direction={{ xs: "column", sm: "row" }} spacing={3}>
-              <Observe source={viewModel.filterConference$} initialValue={{value: "", items: []}}>
+              <Observe source={viewModel.filterConference$} initialValue={EMPTY_DROPDOWN}>
                 {conference => (
-                  <Dropdown labelId="conference" label="カンファレンス" state={conference} minWidth={150} onChange={viewModel.filterConferenceChanged}/>  
+                  <Dropdown labelId="conference" label="カンファレンス" state={conference} minWidth={150} onChange={ value => viewModel.filterConferenceChanged(value) }/>  
                 )}
               </Observe>
-              <Observe source={viewModel.filterSessionTime$} initialValue={{value: "", items: []}}>
+              <Observe source={viewModel.filterSessionTime$} initialValue={EMPTY_DROPDOWN}>
                 {sessionTime => (
-                  <Dropdown labelId="minutes" label="セッション時間" state={sessionTime} minWidth={150} onChange={viewModel.filterSessionTimeChanged}/>    
+                  <Dropdown labelId="minutes" label="セッション時間" state={sessionTime} minWidth={150} onChange={ value => viewModel.filterSessionTimeChanged(value) }/>    
                 )}
               </Observe>
             </Stack>
@@ -111,7 +111,7 @@ function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCa
         <CardActions>
           <Grid container={true}>
             <Grid item={true} xs={12} sx={{ textAlign: "end" }}>
-              <Button size="small" color="primary" onClick={() => {}}>実行</Button>
+              <Button size="small" color="primary" onClick={() => { viewModel.executeFilter() }}>実行</Button>
             </Grid>
           </Grid>
         </CardActions>
