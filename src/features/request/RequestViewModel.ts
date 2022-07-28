@@ -62,9 +62,9 @@ export class AppRequestViewModel implements RequestViewModel {
   allEvents$ = new BehaviorSubject<Event[]>([]);
   requestList$ = new BehaviorSubject<RequestListIRDE>({ type: IRDETypes.Initial });
   
-  constructor(private readonly requestRepository: RequestRepository) {
+  constructor(private readonly repository: RequestRepository) {
     this.subscription.add(
-      requestRepository.getAllEvents$().subscribe({
+      repository.getAllEvents$().subscribe({
         next: (value) => {
           this.allEvents$.next(value);
 
@@ -102,7 +102,7 @@ export class AppRequestViewModel implements RequestViewModel {
     } else {
       this.requestList$.next({ type: IRDETypes.Running });
       
-      this.requestsSubscription = this.requestRepository.getAllRequests$(eventId).subscribe({
+      this.requestsSubscription = this.repository.getAllRequests$(eventId).subscribe({
         next: (value) => {
           this.requestList$.next({ type: IRDETypes.Done, requests: value });
         },
