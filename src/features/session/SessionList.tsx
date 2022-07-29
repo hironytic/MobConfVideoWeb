@@ -23,79 +23,23 @@
 //
 
 import { IRDETypes } from "../../utils/IRDE";
-import { SessionItem, SessionListIRDE } from "./VideoViewModel";
+import { SessionItem, SessionListIRDE } from "./SessionViewModel";
 import { Box, CircularProgress, Grid, Typography } from "@mui/material";
 import { SessionCard } from "./SessionCard";
-import { Session } from "../../models/Session";
+import { SessionContext } from "./SessionContext";
+import { useContext } from "react";
+import { Observe } from "../../utils/Observe";
 
 export function SessionList(): JSX.Element {
-  const sessions: Session[] = [
-    {
-      id: "s1",
-      conferenceId: "c1",
-      watched: true,
-      watchedOn: {
-        "e1": 1,
-        "e3": 2
-      },
-      title: "Session 1",
-      description: "これはテストセッションです。これはテストセッションです。これは",
-      starts: new Date(Date.UTC(2018, 7, 30, 11, 0)),
-      minutes: 30,
-      slide: "https://example.com/slide1",
-      video: "https://example.com/video1",
-      speakers: [
-        {
-          name: "Speaker 1",
-          twitter: "speaker1",
-          icon: undefined
-        },
-      ],
-    },
-    {
-      id: "s2",
-      conferenceId: "c2",
-      watched: false,
-      watchedOn: {},
-      title: "Session 2",
-      description: "そうです。テストです。",
-      starts: new Date(Date.UTC(2018, 8, 1, 13, 0)),
-      minutes: 30,
-      slide: undefined,
-      video: "https://example.com/video2",
-      speakers: [
-        {
-          name: "Speaker 2",
-          twitter: "speaker2",
-          icon: "https://example.com/image2",
-        },
-        {
-          name: "Speaker 3",
-          twitter: undefined,
-          icon: "https://example.com/image3",
-        },
-      ],
-    },
-  ];
+  const viewModel = useContext(SessionContext);
   
-  const sessionList: SessionListIRDE = {
-    type: IRDETypes.Done,
-    sessions: [
-      {
-        session: sessions[0],
-        conferenceName: "hoge",
-        watchedEvents: [],
-      },
-      {
-        session: sessions[1],
-        conferenceName: "MobConfVideoDC Next",
-        watchedEvents: [{id: "mobconfvideo-1", name: "第1回"}],
-      },
-    ],
-    keywordList: ["テスト"],
-  };
-  
-  return (<SessionListBody sessionList={sessionList}/>);
+  return (
+    <Observe source={viewModel.sessionList$} initialValue={{type: IRDETypes.Initial}}>
+      {sessionList => (
+        <SessionListBody sessionList={sessionList}/>        
+      )}
+    </Observe>
+  );
 }
 
 interface SessionListBodyProps {

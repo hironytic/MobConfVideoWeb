@@ -1,5 +1,5 @@
 //
-// AppRouter.tsx
+// AppSessionProvider.tsx
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,26 +22,16 @@
 // THE SOFTWARE.
 //
 
-import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
-import { Home } from "../features/home/Home";
-import { RequestPage } from "../features/request/RequestPage";
-import { SessionPage } from "../features/session/SessionPage";
+import { ProviderProps } from "./ProviderProps";
+import { ViewModelProvider } from "../utils/ViewModelProvider";
+import { SessionContext } from "../features/session/SessionContext";
+import { AppSessionViewModel } from "../features/session/SessionViewModel";
+import { FirestoreSessionRepository } from "../features/session/SessionRepository";
 
-export function AppRouter(): JSX.Element {
+export function AppSessionProvider({ children }: ProviderProps): JSX.Element {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home/>}>
-          <Route path="request" element={<Outlet/>}>
-            <Route index element={<RequestPage/>}/>
-            <Route path=":eventId" element={<RequestPage/>}/>
-          </Route>
-          <Route path="session" element={<Outlet/>}>
-            <Route index element={<SessionPage/>}/>
-          </Route>
-          <Route path="*" element={<></>} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  )
+    <ViewModelProvider context={SessionContext} creator={() => new AppSessionViewModel(new FirestoreSessionRepository())}>
+      {children}
+    </ViewModelProvider>
+  );
 }

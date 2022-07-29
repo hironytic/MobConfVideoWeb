@@ -30,7 +30,7 @@ export interface DropdownState {
   items: DropdownStateItem[];
 }
 
-interface DropdownStateItem {
+export interface DropdownStateItem {
   value: string;
   title: string;
 }
@@ -42,6 +42,8 @@ interface DropdownProps {
   minWidth?: number | string;
   onChange: (value: string) => void;
 }
+
+export const EMPTY_DROPDOWN: DropdownState = { value: "", items: [] };
 
 export function Dropdown({ labelId, label, state, minWidth, onChange }: DropdownProps): JSX.Element {
   return (

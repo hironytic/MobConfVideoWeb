@@ -1,7 +1,7 @@
 //
-// VideoViewModel.ts
+// SessionPage.tsx
 //
-// Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2018-2022 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,18 +22,15 @@
 // THE SOFTWARE.
 //
 
-import { IRDE } from "../../utils/IRDE";
-import { Session } from "../../models/Session";
+import { Box } from "@mui/material";
+import { SessionSearchFilter } from "./SessionSearchFilter";
+import { SessionList } from "./SessionList";
 
-export interface IdAndName {
-  id: string;
-  name: string;
+export function SessionPage(): JSX.Element {
+  return (
+    <Box sx={{ p: 2 }}>
+      <SessionSearchFilter />
+      <SessionList />
+    </Box>
+  );
 }
-
-export interface SessionItem {
-  session: Session;
-  conferenceName: string;
-  watchedEvents: IdAndName[];
-}
-
-export type SessionListIRDE = IRDE<{}, {}, { sessions: SessionItem[], keywordList: string[] }, { message: string }>;

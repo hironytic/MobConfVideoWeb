@@ -58,8 +58,8 @@ function OrdinaryHome(): JSX.Element {
 function getTab({ pathname }: Location): HomeTab | undefined {
   if (matchPath({ path: "/request", end: false }, pathname) !== null) {
     return HomeTabs.Request;
-  } else if (matchPath({ path: "/video", end: false }, pathname) !== null) {
-    return HomeTabs.Video;
+  } else if (matchPath({ path: "/session", end: false }, pathname) !== null) {
+    return HomeTabs.Session;
   } else {
     return undefined;
   }
@@ -69,7 +69,7 @@ function pageTitle(navRoute: HomeTab | undefined): string {
   switch (navRoute) {
     case HomeTabs.Request:
         return "リクエスト一覧";
-    case HomeTabs.Video:
+    case HomeTabs.Session:
         return "動画を見つける";
     default:
         return "";

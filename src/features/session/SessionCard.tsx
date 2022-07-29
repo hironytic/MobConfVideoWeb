@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-import { IdAndName, SessionItem } from "./VideoViewModel";
+import { IdAndName, SessionItem } from "./SessionViewModel";
 import { Avatar, Card, CardActionArea, Grid, styled, Typography } from "@mui/material";
 import { Check } from "@mui/icons-material";
 import { CaseInsensitiveSearch } from "../../utils/CaseInsensitiveSearch";
