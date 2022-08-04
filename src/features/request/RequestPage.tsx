@@ -26,16 +26,18 @@ import { EventTabs } from "./EventTabs";
 import { RequestList } from "./RequestList";
 import { useContext, useEffect } from "react";
 import { RequestContext } from "./RequestContext";
-import { Observe } from "../../utils/Observe";
 import { useNavigate, useParams } from "react-router-dom";
 import { IRDETypes } from "../../utils/IRDE";
+import { useObservableState } from "observable-hooks";
 
 export function RequestPage(): JSX.Element {
   const requestViewModel = useContext(RequestContext);
   const navigate = useNavigate();
   const params = useParams();
   const eventId = params["eventId"];
-  
+  const allEvents = useObservableState(requestViewModel.allEvents$, []);
+  const requestListIRDE = useObservableState(requestViewModel.requestList$, { type: IRDETypes.Initial });
+
   useEffect(() => {
     if (requestViewModel.currentEventId !== undefined && eventId === undefined) {
       navigate("/request/" + requestViewModel.currentEventId, { replace: true });
@@ -43,23 +45,15 @@ export function RequestPage(): JSX.Element {
       requestViewModel.setCurrentEventId(eventId);
     }
   }, [requestViewModel, eventId, navigate]);
-  
+
   const onCurrentIdChanged = (currentId: string | false) => {
     navigate("/request/" + ((currentId !== false) ? currentId : ""));
   };
-  
+
   return (
     <>
-      <Observe source={requestViewModel.allEvents$} initialValue={[]}>
-        {events => (
-          <EventTabs events={events} currentId={eventId ?? false} onCurrentIdChanged={onCurrentIdChanged} />
-        )}
-      </Observe>
-      <Observe source={requestViewModel.requestList$} initialValue={{ type: IRDETypes.Initial }}>
-        {requestListIRDE => (
-          <RequestList requestList={requestListIRDE}/>
-        )}
-      </Observe>
+      <EventTabs events={allEvents} currentId={eventId ?? false} onCurrentIdChanged={onCurrentIdChanged} />
+      <RequestList requestList={requestListIRDE}/>
     </>
   );
 }

@@ -39,18 +39,15 @@ import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { Dropdown, EMPTY_DROPDOWN } from "../../utils/Dropdown";
 import { useContext } from "react";
 import { SessionContext } from "./SessionContext";
-import { Observe } from "../../utils/Observe";
+import { useObservableState } from "observable-hooks";
 
 export function SessionSearchFilter(): JSX.Element {
   const viewModel = useContext(SessionContext);
-  
+  const isExpanded = useObservableState(viewModel.isFilterPanelExpanded$, true);
+
   return (
     <Box sx={{ mt: 1, mb: 4, mx: "auto" }}>
-      <Observe source={viewModel.isFilterPanelExpanded$} initialValue={true}>
-        {isExpanded => (
-          <SessionSearchFilterCard isExpanded={isExpanded} onExpand={(isExpanded) => viewModel.expandFilterPanel(isExpanded)}/>
-        )}
-      </Observe>
+      <SessionSearchFilterCard isExpanded={isExpanded} onExpand={(isExpanded) => viewModel.expandFilterPanel(isExpanded)}/>
     </Box>
   );
 }
@@ -61,7 +58,10 @@ interface SessionSearchFilterCardProps {
 }
 function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCardProps): JSX.Element {
   const viewModel = useContext(SessionContext);
-  
+  const conference = useObservableState(viewModel.filterConference$, EMPTY_DROPDOWN);
+  const sessionTime = useObservableState(viewModel.filterSessionTime$, EMPTY_DROPDOWN);
+  const keyword = useObservableState(viewModel.filterKeywords$, "");
+
   return (
     <Card variant="outlined">
       <CardContent>
@@ -83,28 +83,16 @@ function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCa
         <CardContent>
           <Stack direction="column" spacing={3}>
             <Stack direction={{ xs: "column", sm: "row" }} spacing={3}>
-              <Observe source={viewModel.filterConference$} initialValue={EMPTY_DROPDOWN}>
-                {conference => (
-                  <Dropdown labelId="conference" label="カンファレンス" state={conference} minWidth={150} onChange={ value => viewModel.filterConferenceChanged(value) }/>  
-                )}
-              </Observe>
-              <Observe source={viewModel.filterSessionTime$} initialValue={EMPTY_DROPDOWN}>
-                {sessionTime => (
-                  <Dropdown labelId="minutes" label="セッション時間" state={sessionTime} minWidth={150} onChange={ value => viewModel.filterSessionTimeChanged(value) }/>    
-                )}
-              </Observe>
+              <Dropdown labelId="conference" label="カンファレンス" state={conference} minWidth={150} onChange={ value => viewModel.filterConferenceChanged(value) }/>
+              <Dropdown labelId="minutes" label="セッション時間" state={sessionTime} minWidth={150} onChange={ value => viewModel.filterSessionTimeChanged(value) }/>
             </Stack>
-            <Observe source={viewModel.filterKeywords$} initialValue="">
-              {keyword => (
-                <TextField type="text" autoFocus={false}
-                           label="キーワード" placeholder="スペースで区切って指定（AND検索）"
-                           margin="none"
-                           fullWidth={true}
-                           onChange={event => viewModel.filterKeywordsChanged(event.target.value)}
-                           value={keyword}
-                           InputLabelProps={{ shrink: true }}/>
-              )}                
-            </Observe>
+            <TextField type="text" autoFocus={false}
+                       label="キーワード" placeholder="スペースで区切って指定（AND検索）"
+                       margin="none"
+                       fullWidth={true}
+                       onChange={event => viewModel.filterKeywordsChanged(event.target.value)}
+                       value={keyword}
+                       InputLabelProps={{ shrink: true }}/>
           </Stack>
         </CardContent>
 

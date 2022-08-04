@@ -28,18 +28,18 @@ import { CssBaseline } from "@mui/material";
 import { Maintenance } from "./Maintenance";
 import { useContext } from "react";
 import { ConfigContext } from "../config/ConfigContext";
-import { ObserveOrUndefined } from "../../utils/Observe";
+import { useObservableState } from "observable-hooks";
 
 export function Home(): JSX.Element {
   const configViewModel = useContext(ConfigContext);
+  const isInMaintenance = useObservableState(configViewModel.isInMaintenance$);
+
   return (
     <>
       <CssBaseline />
-      <ObserveOrUndefined source={configViewModel.isInMaintenance$}>
-        {isInMaintenance => (isInMaintenance !== undefined) && (
-          (isInMaintenance) ? <Maintenance /> : <OrdinaryHome/>
-        )}
-      </ObserveOrUndefined>
+      {(isInMaintenance !== undefined) && (
+        (isInMaintenance) ? <Maintenance /> : <OrdinaryHome/>
+      )}
     </>
   );
 }
