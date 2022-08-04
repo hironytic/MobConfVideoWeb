@@ -1,5 +1,5 @@
 //
-// RequestViewModel.ts
+// RequestLogic.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -23,10 +23,10 @@
 //
 
 import { IRDE, IRDETypes } from "../../utils/IRDE";
-import { Event } from "../../models/Event";
-import { Request } from "../../models/Request";
+import { Event } from "../../entities/Event";
+import { Request } from "../../entities/Request";
 import { BehaviorSubject, NEVER, Observable, Subscription } from "rxjs";
-import { ViewModel } from "../../utils/ViewModelProvider";
+import { Logic } from "../../utils/LogicProvider";
 import { RequestRepository } from "./RequestRepository";
 
 export interface RequestListIProps {}
@@ -35,7 +35,7 @@ export interface RequestListDProps { requests: Request[] }
 export interface RequestListEProps { message: string }
 export type RequestListIRDE = IRDE<RequestListIProps, RequestListRProps, RequestListDProps, RequestListEProps>;
 
-export interface RequestViewModel extends ViewModel {
+export interface RequestLogic extends Logic {
   readonly currentEventId: string | undefined;
   setCurrentEventId(eventId: string | undefined): void;
   
@@ -43,7 +43,7 @@ export interface RequestViewModel extends ViewModel {
   requestList$: Observable<RequestListIRDE>;
 }
 
-export class NullRequestViewModel implements RequestViewModel {
+export class NullRequestRequestLogic implements RequestLogic {
   dispose() {}
 
   readonly currentEventId: string | undefined = undefined;
@@ -53,7 +53,7 @@ export class NullRequestViewModel implements RequestViewModel {
   requestList$ = NEVER;
 }
 
-export class AppRequestViewModel implements RequestViewModel {
+export class AppRequestLogic implements RequestLogic {
   private readonly subscription = new Subscription();
   private requestsSubscription: Subscription | undefined = undefined;
   private currentEventId_: string | undefined = undefined;
@@ -74,7 +74,7 @@ export class AppRequestViewModel implements RequestViewModel {
           // }
         },
         error: (err) => {
-          console.log("Error at getAllEvents$ in AppRequestViewModel", err);
+          console.log("Error at getAllEvents$ in AppRequestLogic", err);
           this.allEvents$.next([]);
         },
       })
@@ -107,7 +107,7 @@ export class AppRequestViewModel implements RequestViewModel {
           this.requestList$.next({ type: IRDETypes.Done, requests: value });
         },
         error: (err) => {
-          console.log("Error at getAllRequests$ in AppRequestViewModel", err);
+          console.log("Error at getAllRequests$ in AppRequestLogic", err);
           this.requestList$.next({ type: IRDETypes.Error, message: err.toString() });
         }
       });

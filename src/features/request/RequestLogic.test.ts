@@ -1,5 +1,5 @@
 //
-// RequestViewModel.test.ts
+// RequestLogic.test.ts
 //
 // Copyright (c) 2019-2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -24,15 +24,15 @@
 
 import { RequestRepository } from "./RequestRepository";
 import { NEVER, Observable, startWith, Subject, Subscription, throwError } from "rxjs";
-import { Event } from "../../models/Event";
-import { Request } from "../../models/Request";
+import { Event } from "../../entities/Event";
+import { Request } from "../../entities/Request";
 import {
-  AppRequestViewModel,
+  AppRequestLogic,
   RequestListDProps,
   RequestListEProps,
   RequestListIRDE,
-  RequestViewModel
-} from "./RequestViewModel";
+  RequestLogic
+} from "./RequestLogic";
 import { EventuallyObserver } from "../../utils/EventuallyObserver";
 import { IRDEDone, IRDEError, IRDETypes } from "../../utils/IRDE";
 
@@ -114,23 +114,23 @@ const requestData2: Request[] = [
 
 let mockRequestRepository: MockRequestRepository;
 let subscription: Subscription;
-let viewModel: RequestViewModel | undefined;
+let logic: RequestLogic | undefined;
 
-function createViewModel(): RequestViewModel {
-  viewModel = new AppRequestViewModel(mockRequestRepository);
-  return viewModel;
+function createLogic(): RequestLogic {
+  logic = new AppRequestLogic(mockRequestRepository);
+  return logic;
 }
 
 beforeEach(() => {
   mockRequestRepository = new MockRequestRepository();
   subscription = new Subscription();
-  viewModel = undefined;
+  logic = undefined;
 });
 
 afterEach(() => {
   subscription.unsubscribe();
-  if (viewModel !== undefined) {
-    viewModel.dispose();
+  if (logic !== undefined) {
+    logic.dispose();
   }
 });
 
@@ -138,14 +138,14 @@ describe("getAllEvents$", () => {
   it("emits all events", async () => {
     mockRequestRepository.getAllEvents$.mockReturnValue(NEVER.pipe(startWith(eventData1)));
 
-    const viewModel = createViewModel();
+    const logic = createLogic();
 
     const observer = new EventuallyObserver<Event[]>();
     const expectation = observer.expectValue(events => {
       expect(events).toBe(eventData1);
     });
 
-    subscription.add(viewModel.allEvents$.subscribe(observer));
+    subscription.add(logic.allEvents$.subscribe(observer));
 
     await expectation;
   });
@@ -154,13 +154,13 @@ describe("getAllEvents$", () => {
     const mockSubject = new Subject<Event[]>();
     mockRequestRepository.getAllEvents$.mockReturnValue(mockSubject.pipe(startWith(eventData1)));
 
-    const viewModel = createViewModel();
+    const logic = createLogic();
 
     const observer = new EventuallyObserver<Event[]>();
     const expectation1 = observer.expectValue(events => {
       expect(events).toBe(eventData1);
     });
-    subscription.add(viewModel.allEvents$.subscribe(observer));
+    subscription.add(logic.allEvents$.subscribe(observer));
     await expectation1;
 
     const expectation2 = observer.expectValue(events => {
@@ -173,14 +173,14 @@ describe("getAllEvents$", () => {
   it("emits empty event list when failed to load them", async () => {
     mockRequestRepository.getAllEvents$.mockReturnValue(throwError(() => new Error("error")));
 
-    const viewModel = createViewModel();
+    const logic = createLogic();
 
     const observer = new EventuallyObserver<Event[]>();
     const expectation = observer.expectValue(events => {
       expect(events.length).toBe(0);
     });
 
-    subscription.add(viewModel.allEvents$.subscribe(observer));
+    subscription.add(logic.allEvents$.subscribe(observer));
 
     await expectation;
   });
@@ -188,10 +188,10 @@ describe("getAllEvents$", () => {
 
 describe("currentEventId", () => {
   it("holds current event id", () => {
-    const viewModel = createViewModel();
+    const logic = createLogic();
     
-    viewModel.setCurrentEventId("e3");
-    expect(viewModel.currentEventId).toBe("e3");
+    logic.setCurrentEventId("e3");
+    expect(logic.currentEventId).toBe("e3");
   });
 });
 
@@ -200,15 +200,15 @@ describe("getAllRequests$", () => {
     mockRequestRepository.getAllEvents$.mockReturnValue(NEVER.pipe(startWith(eventData1)));
     mockRequestRepository.getAllRequests$.mockReturnValue(NEVER.pipe(startWith(requestData1)));
 
-    const viewModel = createViewModel();
+    const logic = createLogic();
 
     const observer = new EventuallyObserver<RequestListIRDE>();
     const expectation = observer.expectValue(requestList => {
       expect(requestList.type).toBe(IRDETypes.Done);
       expect((requestList as IRDEDone<RequestListDProps>).requests).toBe(requestData1);
     });
-    subscription.add(viewModel.requestList$.subscribe(observer));
-    viewModel.setCurrentEventId("e1");
+    subscription.add(logic.requestList$.subscribe(observer));
+    logic.setCurrentEventId("e1");
     await expectation;
     expect(mockRequestRepository.getAllRequests$.mock.calls[0][0]).toBe("e1");
   });
@@ -218,14 +218,14 @@ describe("getAllRequests$", () => {
     const mockSubject = new Subject<Request[]>();
     mockRequestRepository.getAllRequests$.mockReturnValue(mockSubject);
     
-    const viewModel = createViewModel();
+    const logic = createLogic();
     
     const observer = new EventuallyObserver<RequestListIRDE>();
     const expectationOfRunning = observer.expectValue(requestList => {
       expect(requestList.type).toBe(IRDETypes.Running);
     });
-    subscription.add(viewModel.requestList$.subscribe(observer));
-    viewModel.setCurrentEventId("e1");
+    subscription.add(logic.requestList$.subscribe(observer));
+    logic.setCurrentEventId("e1");
     await expectationOfRunning;
     
     const expectationOfDone = observer.expectValue(requestList => {
@@ -248,15 +248,15 @@ describe("getAllRequests$", () => {
       }
     });
     
-    const viewModel = createViewModel();
+    const logic = createLogic();
     
     const observer = new EventuallyObserver<RequestListIRDE>();
     const expecationOfRequestForEvent1 = observer.expectValue(requestList => {
       expect(requestList.type).toBe(IRDETypes.Done);
       expect((requestList as IRDEDone<RequestListDProps>).requests).toBe(requestData1);
     });
-    subscription.add(viewModel.requestList$.subscribe(observer));
-    viewModel.setCurrentEventId("e1");
+    subscription.add(logic.requestList$.subscribe(observer));
+    logic.setCurrentEventId("e1");
     await expecationOfRequestForEvent1;
     
     const expectationOfLoadingRequestsForEvent2 = observer.expectValue(requestList => {
@@ -267,7 +267,7 @@ describe("getAllRequests$", () => {
       expect(requestList.type).toBe(IRDETypes.Done);
       expect((requestList as IRDEDone<RequestListDProps>).requests).toBe(requestData2);
     });
-    viewModel.setCurrentEventId("e2");
+    logic.setCurrentEventId("e2");
     await expectationOfLoadingRequestsForEvent2;
     await expectationOfLoadedRequestsForEvent2;
   });
@@ -277,15 +277,15 @@ describe("getAllRequests$", () => {
     mockRequestRepository.getAllEvents$.mockReturnValue(NEVER.pipe(startWith(eventData1)));
     mockRequestRepository.getAllRequests$.mockReturnValue(throwError(() => error));
     
-    const viewModel = createViewModel();
+    const logic = createLogic();
     
     const observer = new EventuallyObserver<RequestListIRDE>();
     const expectation = observer.expectValue(requestList => {
       expect(requestList.type).toBe(IRDETypes.Error);
       expect((requestList as IRDEError<RequestListEProps>).message).toBe(error.toString());
     });
-    subscription.add(viewModel.requestList$.subscribe(observer));
-    viewModel.setCurrentEventId("e1");
+    subscription.add(logic.requestList$.subscribe(observer));
+    logic.setCurrentEventId("e1");
     await expectation;
   });
   
@@ -302,21 +302,21 @@ describe("getAllRequests$", () => {
       }
     });
 
-    const viewModel = createViewModel();
+    const logic = createLogic();
     
     const observer = new EventuallyObserver<RequestListIRDE>();
     const expectationOfRequestsForEvent1 = observer.expectValue(requestList => {
       expect(requestList.type).toBe(IRDETypes.Error);
     });
-    subscription.add(viewModel.requestList$.subscribe(observer));
-    viewModel.setCurrentEventId("e1");
+    subscription.add(logic.requestList$.subscribe(observer));
+    logic.setCurrentEventId("e1");
     await expectationOfRequestsForEvent1;
     
     const expectationOfRequestsForEvent2 = observer.expectValue(requestList => {
       expect(requestList.type).toBe(IRDETypes.Done);
       expect((requestList as IRDEDone<RequestListDProps>).requests).toBe(requestData2);
     });
-    viewModel.setCurrentEventId("e2");
+    logic.setCurrentEventId("e2");
     await expectationOfRequestsForEvent2;
   });
 });

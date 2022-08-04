@@ -23,9 +23,9 @@
 //
 
 import { map, Observable } from "rxjs";
-import { Conference, conferenceConverter } from "../../models/Conference";
-import { Session, sessionConverter } from "../../models/Session";
-import { Event, eventConverter } from "../../models/Event";
+import { Conference, conferenceConverter } from "../../entities/Conference";
+import { Session, sessionConverter } from "../../entities/Session";
+import { Event, eventConverter } from "../../entities/Event";
 import { getFirestore, withFirestore } from "../../Firebase";
 import { collection, getDocs, limit, onSnapshot, orderBy, query, startAfter, where } from "firebase/firestore";
 import { Query, QuerySnapshot } from "@firebase/firestore";

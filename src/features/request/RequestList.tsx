@@ -23,8 +23,8 @@
 //
 
 import { IRDETypes } from "../../utils/IRDE";
-import { Request } from "../../models/Request";
-import { RequestListIRDE } from "./RequestViewModel";
+import { Request } from "../../entities/Request";
+import { RequestListIRDE } from "./RequestLogic";
 import { Box, CircularProgress, Grid, Typography } from "@mui/material";
 import { RequestCard } from "./RequestCard";
 

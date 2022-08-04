@@ -22,11 +22,11 @@
 // THE SOFTWARE.
 //
 
-import { IdAndName, SessionItem } from "./SessionViewModel";
+import { IdAndName, SessionItem } from "./SessionLogic";
 import { Avatar, Card, CardActionArea, Grid, styled, Typography } from "@mui/material";
 import { Check } from "@mui/icons-material";
 import { CaseInsensitiveSearch } from "../../utils/CaseInsensitiveSearch";
-import { Speaker } from "../../models/Session";
+import { Speaker } from "../../entities/Session";
 
 export interface SessionCardProps {
   sessionItem: SessionItem;

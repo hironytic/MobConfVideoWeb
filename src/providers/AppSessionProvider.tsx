@@ -23,15 +23,15 @@
 //
 
 import { ProviderProps } from "./ProviderProps";
-import { ViewModelProvider } from "../utils/ViewModelProvider";
+import { LogicProvider } from "../utils/LogicProvider";
 import { SessionContext } from "../features/session/SessionContext";
-import { AppSessionViewModel } from "../features/session/SessionViewModel";
+import { AppSessionLogic } from "../features/session/SessionLogic";
 import { FirestoreSessionRepository } from "../features/session/SessionRepository";
 
 export function AppSessionProvider({ children }: ProviderProps): JSX.Element {
   return (
-    <ViewModelProvider context={SessionContext} creator={() => new AppSessionViewModel(new FirestoreSessionRepository())}>
+    <LogicProvider context={SessionContext} creator={() => new AppSessionLogic(new FirestoreSessionRepository())}>
       {children}
-    </ViewModelProvider>
+    </LogicProvider>
   );
 }

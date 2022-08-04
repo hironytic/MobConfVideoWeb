@@ -1,5 +1,5 @@
 //
-// ConfigViewModel.ts
+// ConfigLogic.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -24,19 +24,19 @@
 
 import { map, NEVER, Observable, retry, shareReplay, tap } from "rxjs";
 import { ConfigRepository } from "./ConfigRepository";
-import { ViewModel } from "../../utils/ViewModelProvider";
+import { Logic } from "../../utils/LogicProvider";
 
-export interface ConfigViewModel extends ViewModel{
+export interface ConfigLogic extends Logic {
   isInMaintenance$: Observable<boolean>;
 }
 
-export class NullConfigViewModel implements ConfigViewModel {
+export class NullConfigLogic implements ConfigLogic {
   dispose() {}
   
   isInMaintenance$: Observable<boolean> = NEVER;
 }
 
-export class AppConfigViewModel implements ConfigViewModel {
+export class AppConfigLogic implements ConfigLogic {
   dispose() {}
   
   isInMaintenance$: Observable<boolean>;

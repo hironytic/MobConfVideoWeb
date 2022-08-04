@@ -1,5 +1,5 @@
 //
-// SessionViewModel.test.ts
+// SessionLogic.test.ts
 //
 // Copyright (c) 2019-2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -24,10 +24,10 @@
 
 import { SessionFilter, SessionRepository } from "./SessionRepository";
 import { NEVER, Observable, startWith, Subscription, throwError } from "rxjs";
-import { Event } from "../../models/Event";
-import { Conference } from "../../models/Conference";
-// import { Session } from "../../models/Session";
-import { AppSessionViewModel, SessionViewModel } from "./SessionViewModel";
+import { Event } from "../../entities/Event";
+import { Conference } from "../../entities/Conference";
+// import { Session } from "../../entities/Session";
+import { AppSessionLogic, SessionLogic } from "./SessionLogic";
 import { EventuallyObserver } from "../../utils/EventuallyObserver";
 import { DropdownState } from "../../utils/Dropdown";
 
@@ -85,58 +85,58 @@ const conferences1: Conference[] = [
 
 let mockSessionRepository: MockSessionRepository;
 let subscription: Subscription;
-let viewModel: SessionViewModel | undefined;
+let logic: SessionLogic | undefined;
 
-function createViewModel(): SessionViewModel {
-  viewModel = new AppSessionViewModel(mockSessionRepository);
-  return viewModel;
+function createLogic(): SessionLogic {
+  logic = new AppSessionLogic(mockSessionRepository);
+  return logic;
 }
 
 beforeEach(() => {
   mockSessionRepository = new MockSessionRepository();
   subscription = new Subscription();
-  viewModel = undefined;
+  logic = undefined;
 });
 
 afterEach(() => {
   subscription.unsubscribe();
-  if (viewModel !== undefined) {
-    viewModel.dispose();
+  if (logic !== undefined) {
+    logic.dispose();
   }
 });
 
 describe("expand filter panel", () => {
   it("initially expands", async () => {
-    const viewModel = createViewModel();
+    const logic = createLogic();
     
     const observer = new EventuallyObserver<boolean>();
     const expectation = observer.expectValue(isExpanded => {
       expect(isExpanded).toBe(true);
     });
-    subscription.add(viewModel.isFilterPanelExpanded$.subscribe(observer));
+    subscription.add(logic.isFilterPanelExpanded$.subscribe(observer));
     await expectation;
   });
   
   it("closes or expands by user's operation", async () => {
-    const viewModel = createViewModel();
+    const logic = createLogic();
     
     const observer = new EventuallyObserver<boolean>();
     const expectation1 = observer.expectValue(isExpanded => {
       expect(isExpanded).toBe(true);
     });
-    subscription.add(viewModel.isFilterPanelExpanded$.subscribe(observer));
+    subscription.add(logic.isFilterPanelExpanded$.subscribe(observer));
     await expectation1;
     
     const expectation2 = observer.expectValue(isExpanded => {
       expect(isExpanded).toBe(false);
     });
-    viewModel.expandFilterPanel(false);
+    logic.expandFilterPanel(false);
     await expectation2;
     
     const expectation3 = observer.expectValue(isExpanded => {
       expect(isExpanded).toBe(true);
     });
-    viewModel.expandFilterPanel(true);
+    logic.expandFilterPanel(true);
     await expectation3;
   });
 });
@@ -146,7 +146,7 @@ describe("conference filter", () => {
     mockSessionRepository.getAllConferences$.mockReturnValue(NEVER.pipe(
       startWith(conferences1),
     ));
-    const viewModel = createViewModel();
+    const logic = createLogic();
     
     const observer = new EventuallyObserver<DropdownState>();
     const expectation = observer.expectValue(filterConference => {
@@ -154,7 +154,7 @@ describe("conference filter", () => {
       expect(unspecifiedItem).not.toBeUndefined();
       expect(filterConference.value).toBe(unspecifiedItem!.value);
     });
-    subscription.add(viewModel.filterConference$.subscribe(observer));
+    subscription.add(logic.filterConference$.subscribe(observer));
     await expectation;
   });
   
@@ -162,7 +162,7 @@ describe("conference filter", () => {
     mockSessionRepository.getAllConferences$.mockReturnValue(NEVER.pipe(
       startWith(conferences1),
     ));
-    const viewModel = createViewModel();
+    const logic = createLogic();
 
     const observer = new EventuallyObserver<DropdownState>();
     const expectation = observer.expectValue(filterConference => {
@@ -170,7 +170,7 @@ describe("conference filter", () => {
       expect(filterConference.items.map(item => item.title)).toContain("Conf 1");
       expect(filterConference.items.map(item => item.value)).toContain("c2");
     });
-    subscription.add(viewModel.filterConference$.subscribe(observer));
+    subscription.add(logic.filterConference$.subscribe(observer));
     await expectation;
   });
   
@@ -178,38 +178,38 @@ describe("conference filter", () => {
     mockSessionRepository.getAllConferences$.mockReturnValue(NEVER.pipe(
       startWith(conferences1),
     ));
-    const viewModel = createViewModel();
+    const logic = createLogic();
 
     const observer = new EventuallyObserver<DropdownState>();
     const expectation1 = observer.expectValue(filterConference => {
       expect(filterConference.items.map(item => item.value)).toContain("c1");
     });
-    subscription.add(viewModel.filterConference$.subscribe(observer));
+    subscription.add(logic.filterConference$.subscribe(observer));
     await expectation1;
 
     const expectation2 = observer.expectValue(filterConference => {
       expect(filterConference.value).toBe("c1");
     });
-    viewModel.filterConferenceChanged("c1");
+    logic.filterConferenceChanged("c1");
     await expectation2;
   });
   
   it("shows '<<error>>'", async () => {
     mockSessionRepository.getAllConferences$.mockReturnValue(throwError(() => new Error("Failed to load conference")));
-    const viewModel = createViewModel();
+    const logic = createLogic();
 
     const observer = new EventuallyObserver<DropdownState>();
     const expectation1 = observer.expectValue(filterConference => {
       expect(filterConference.items.map(item => item.title)).toContain("<<エラー>>");
     });
-    subscription.add(viewModel.filterConference$.subscribe(observer));
+    subscription.add(logic.filterConference$.subscribe(observer));
     await expectation1;
   });
 });
 
 describe("session time filter", () => {
   it("initially selects 'unspecified'", async () => {
-    const viewModel = createViewModel();
+    const logic = createLogic();
 
     const observer = new EventuallyObserver<DropdownState>();
     const expectation = observer.expectValue(filterSessionTime => {
@@ -217,12 +217,12 @@ describe("session time filter", () => {
       expect(unspecifiedItem).not.toBeUndefined();
       expect(filterSessionTime.value).toBe(unspecifiedItem!.value);
     });
-    subscription.add(viewModel.filterSessionTime$.subscribe(observer));
+    subscription.add(logic.filterSessionTime$.subscribe(observer));
     await expectation;
   });
   
   it("changes selection by user's operation", async () => {
-    const viewModel = createViewModel();
+    const logic = createLogic();
 
     let candidate: string = "";
     const observer = new EventuallyObserver<DropdownState>();
@@ -231,44 +231,44 @@ describe("session time filter", () => {
       expect(otherValue).not.toBeUndefined();
       candidate = otherValue!.value;
     });
-    subscription.add(viewModel.filterSessionTime$.subscribe(observer));
+    subscription.add(logic.filterSessionTime$.subscribe(observer));
     await expectation1;
     
     const expectation2 = observer.expectValue(filterSessionTime => {
       expect(filterSessionTime.value).toBe(candidate);
     });
-    viewModel.filterSessionTimeChanged(candidate);
+    logic.filterSessionTimeChanged(candidate);
     await expectation2;
   });
 });
 
 describe("keywords filter", () => {
   it("initially shows empty", async () => {
-    const viewModel = createViewModel();
+    const logic = createLogic();
     
     const observer = new EventuallyObserver<string>();
     const expectation = observer.expectValue(filterKeywords => {
       expect(filterKeywords).toBe("");
     });
-    subscription.add(viewModel.filterKeywords$.subscribe(observer));
+    subscription.add(logic.filterKeywords$.subscribe(observer));
     await expectation;
   });
   
   it("changes the keywords by user's input", async () => {
-    const viewModel = createViewModel();
+    const logic = createLogic();
 
     const observer = new EventuallyObserver<string>();
     const expectation1 = observer.expectValue(filterKeywords => {
       expect(filterKeywords).toBe("foo");
     });
-    subscription.add(viewModel.filterKeywords$.subscribe(observer));
-    viewModel.filterKeywordsChanged("foo");
+    subscription.add(logic.filterKeywords$.subscribe(observer));
+    logic.filterKeywordsChanged("foo");
     await expectation1;
 
     const expectation2 = observer.expectValue(filterKeywords => {
       expect(filterKeywords).toBe("foo bar");
     });
-    viewModel.filterKeywordsChanged("foo bar");
+    logic.filterKeywordsChanged("foo bar");
     await expectation2;
   });
 });

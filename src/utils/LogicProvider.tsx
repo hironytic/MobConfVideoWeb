@@ -1,5 +1,5 @@
 //
-// ViewModelProvider.tsx
+// LogicProvider.tsx
 //
 // Copyright (c) 2018-2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -24,29 +24,29 @@
 
 import React, { useEffect, useState } from "react";
 
-export interface ViewModel {
+export interface Logic {
   dispose: () => void;
 }
 
-interface ViewModelProviderProps<VM extends ViewModel> {
+interface LogicProviderProps<VM extends Logic> {
   context: React.Context<VM>;
   creator: () => VM;
   children: React.ReactNode;
 }
-export function ViewModelProvider<VM extends ViewModel>({ context, creator, children }: ViewModelProviderProps<VM>): JSX.Element {
-  const [viewModel, setViewModel] = useState<VM | undefined>(undefined);
+export function LogicProvider<VM extends Logic>({ context, creator, children }: LogicProviderProps<VM>): JSX.Element {
+  const [logic, setLogic] = useState<VM | undefined>(undefined);
   useEffect(() => {
-    const viewModel = creator();
-    setViewModel(viewModel);
+    const logic = creator();
+    setLogic(logic);
     return () => {
-      viewModel.dispose();
+      logic.dispose();
     }
   }, [creator]);
   
-  if (viewModel !== undefined) {
+  if (logic !== undefined) {
     const Provider = context.Provider;
     return (
-      <Provider value={viewModel}>
+      <Provider value={logic}>
         {children}
       </Provider>
     )

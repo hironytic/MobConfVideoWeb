@@ -23,15 +23,15 @@
 //
 
 import { ProviderProps } from "./ProviderProps";
-import { ViewModelProvider } from "../utils/ViewModelProvider";
+import { LogicProvider } from "../utils/LogicProvider";
 import { RequestContext } from "../features/request/RequestContext";
-import { AppRequestViewModel } from "../features/request/RequestViewModel";
+import { AppRequestLogic } from "../features/request/RequestLogic";
 import { FirestoreRequestRepository } from "../features/request/RequestRepository";
 
 export function AppRequestProvider({ children }: ProviderProps): JSX.Element {
   return (
-    <ViewModelProvider context={RequestContext} creator={() => new AppRequestViewModel(new FirestoreRequestRepository())}>
+    <LogicProvider context={RequestContext} creator={() => new AppRequestLogic(new FirestoreRequestRepository())}>
       {children}
-    </ViewModelProvider>
+    </LogicProvider>
   );
 }

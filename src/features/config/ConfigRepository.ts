@@ -23,7 +23,7 @@
 //
 
 import { map, Observable } from "rxjs";
-import { Config, configConverter } from "../../models/Config";
+import { Config, configConverter } from "../../entities/Config";
 import { withFirestore } from "../../Firebase";
 import { collection, doc, DocumentSnapshot, onSnapshot } from 'firebase/firestore';
 

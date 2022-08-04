@@ -22,8 +22,8 @@
 // THE SOFTWARE.
 //
 
-import { Event, eventConverter } from "../../models/Event";
-import { Request, requestConverter } from "../../models/Request";
+import { Event, eventConverter } from "../../entities/Event";
+import { Request, requestConverter } from "../../entities/Request";
 import { map, Observable } from "rxjs";
 import { withFirestore } from "../../Firebase";
 import { collection, onSnapshot, orderBy, query, where } from "firebase/firestore";

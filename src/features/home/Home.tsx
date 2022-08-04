@@ -31,8 +31,8 @@ import { ConfigContext } from "../config/ConfigContext";
 import { useObservableState } from "observable-hooks";
 
 export function Home(): JSX.Element {
-  const configViewModel = useContext(ConfigContext);
-  const isInMaintenance = useObservableState(configViewModel.isInMaintenance$);
+  const configLogic = useContext(ConfigContext);
+  const isInMaintenance = useObservableState(configLogic.isInMaintenance$);
 
   return (
     <>

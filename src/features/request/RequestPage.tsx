@@ -31,20 +31,20 @@ import { IRDETypes } from "../../utils/IRDE";
 import { useObservableState } from "observable-hooks";
 
 export function RequestPage(): JSX.Element {
-  const requestViewModel = useContext(RequestContext);
+  const requestLogic = useContext(RequestContext);
   const navigate = useNavigate();
   const params = useParams();
   const eventId = params["eventId"];
-  const allEvents = useObservableState(requestViewModel.allEvents$, []);
-  const requestListIRDE = useObservableState(requestViewModel.requestList$, { type: IRDETypes.Initial });
+  const allEvents = useObservableState(requestLogic.allEvents$, []);
+  const requestListIRDE = useObservableState(requestLogic.requestList$, { type: IRDETypes.Initial });
 
   useEffect(() => {
-    if (requestViewModel.currentEventId !== undefined && eventId === undefined) {
-      navigate("/request/" + requestViewModel.currentEventId, { replace: true });
+    if (requestLogic.currentEventId !== undefined && eventId === undefined) {
+      navigate("/request/" + requestLogic.currentEventId, { replace: true });
     } else {
-      requestViewModel.setCurrentEventId(eventId);
+      requestLogic.setCurrentEventId(eventId);
     }
-  }, [requestViewModel, eventId, navigate]);
+  }, [requestLogic, eventId, navigate]);
 
   const onCurrentIdChanged = (currentId: string | false) => {
     navigate("/request/" + ((currentId !== false) ? currentId : ""));
