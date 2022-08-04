@@ -25,13 +25,13 @@
 import { ConfigContext } from "../features/config/ConfigContext";
 import { ProviderProps } from "./ProviderProps";
 import { FirestoreConfigRepository } from "../features/config/ConfigRepository";
-import { AppConfigViewModel } from "../features/config/ConfigViewModel";
-import { ViewModelProvider } from "../utils/ViewModelProvider";
+import { AppConfigLogic } from "../features/config/ConfigLogic";
+import { LogicProvider } from "../utils/LogicProvider";
 
 export function AppConfigProvider({ children }: ProviderProps): JSX.Element {
   return (
-    <ViewModelProvider context={ConfigContext} creator={() => new AppConfigViewModel(new FirestoreConfigRepository())}>
+    <LogicProvider context={ConfigContext} creator={() => new AppConfigLogic(new FirestoreConfigRepository())}>
       {children}
-    </ViewModelProvider>
+    </LogicProvider>
   );
 }

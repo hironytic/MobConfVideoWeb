@@ -42,12 +42,12 @@ import { SessionContext } from "./SessionContext";
 import { useObservableState } from "observable-hooks";
 
 export function SessionSearchFilter(): JSX.Element {
-  const viewModel = useContext(SessionContext);
-  const isExpanded = useObservableState(viewModel.isFilterPanelExpanded$, true);
+  const sessionLogic = useContext(SessionContext);
+  const isExpanded = useObservableState(sessionLogic.isFilterPanelExpanded$, true);
 
   return (
     <Box sx={{ mt: 1, mb: 4, mx: "auto" }}>
-      <SessionSearchFilterCard isExpanded={isExpanded} onExpand={(isExpanded) => viewModel.expandFilterPanel(isExpanded)}/>
+      <SessionSearchFilterCard isExpanded={isExpanded} onExpand={(isExpanded) => sessionLogic.expandFilterPanel(isExpanded)}/>
     </Box>
   );
 }
@@ -57,10 +57,10 @@ interface SessionSearchFilterCardProps {
   onExpand: (isExpanded: boolean) => void;
 }
 function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCardProps): JSX.Element {
-  const viewModel = useContext(SessionContext);
-  const conference = useObservableState(viewModel.filterConference$, EMPTY_DROPDOWN);
-  const sessionTime = useObservableState(viewModel.filterSessionTime$, EMPTY_DROPDOWN);
-  const keyword = useObservableState(viewModel.filterKeywords$, "");
+  const sessionLogic = useContext(SessionContext);
+  const conference = useObservableState(sessionLogic.filterConference$, EMPTY_DROPDOWN);
+  const sessionTime = useObservableState(sessionLogic.filterSessionTime$, EMPTY_DROPDOWN);
+  const keyword = useObservableState(sessionLogic.filterKeywords$, "");
 
   return (
     <Card variant="outlined">
@@ -83,14 +83,14 @@ function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCa
         <CardContent>
           <Stack direction="column" spacing={3}>
             <Stack direction={{ xs: "column", sm: "row" }} spacing={3}>
-              <Dropdown labelId="conference" label="カンファレンス" state={conference} minWidth={150} onChange={ value => viewModel.filterConferenceChanged(value) }/>
-              <Dropdown labelId="minutes" label="セッション時間" state={sessionTime} minWidth={150} onChange={ value => viewModel.filterSessionTimeChanged(value) }/>
+              <Dropdown labelId="conference" label="カンファレンス" state={conference} minWidth={150} onChange={ value => sessionLogic.filterConferenceChanged(value) }/>
+              <Dropdown labelId="minutes" label="セッション時間" state={sessionTime} minWidth={150} onChange={ value => sessionLogic.filterSessionTimeChanged(value) }/>
             </Stack>
             <TextField type="text" autoFocus={false}
                        label="キーワード" placeholder="スペースで区切って指定（AND検索）"
                        margin="none"
                        fullWidth={true}
-                       onChange={event => viewModel.filterKeywordsChanged(event.target.value)}
+                       onChange={event => sessionLogic.filterKeywordsChanged(event.target.value)}
                        value={keyword}
                        InputLabelProps={{ shrink: true }}/>
           </Stack>
@@ -99,7 +99,7 @@ function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCa
         <CardActions>
           <Grid container={true}>
             <Grid item={true} xs={12} sx={{ textAlign: "end" }}>
-              <Button size="small" color="primary" onClick={() => { viewModel.executeFilter() }}>実行</Button>
+              <Button size="small" color="primary" onClick={() => { sessionLogic.executeFilter() }}>実行</Button>
             </Grid>
           </Grid>
         </CardActions>

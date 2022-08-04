@@ -1,5 +1,5 @@
 //
-// SessionViewModel.ts
+// SessionLogic.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -24,7 +24,7 @@
 
 import { IRDE, IRDETypes } from "../../utils/IRDE";
 import { Session } from "../../entities/Session";
-import { ViewModel } from "../../utils/ViewModelProvider";
+import { Logic } from "../../utils/LogicProvider";
 import { BehaviorSubject, NEVER, Observable, Subscription } from "rxjs";
 import { DropdownState } from "../../utils/Dropdown";
 import { SessionRepository } from "./SessionRepository";
@@ -42,7 +42,7 @@ export interface SessionItem {
 
 export type SessionListIRDE = IRDE<{}, {}, { sessions: SessionItem[], keywordList: string[] }, { message: string }>;
 
-export interface SessionViewModel extends ViewModel {
+export interface SessionLogic extends Logic {
   expandFilterPanel(isExpand: boolean): void;
   filterConferenceChanged(value: string): void;
   filterSessionTimeChanged(value: string): void;
@@ -56,7 +56,7 @@ export interface SessionViewModel extends ViewModel {
   sessionList$: Observable<SessionListIRDE>;
 }
 
-export class NullSessionViewModel implements SessionViewModel {
+export class NullSessionLogic implements SessionLogic {
   dispose() {}
   
   expandFilterPanel(isExpand: boolean) {}
@@ -75,7 +75,7 @@ export class NullSessionViewModel implements SessionViewModel {
 const UNSPECIFIED_STATE: DropdownState = { value: "-", items: [{ value: "-", title: "指定なし" }]};
 const SESSION_TIMES = [5, 10, 15, 20, 30, 40, 45, 50, 60, 70, 120];
 
-export class AppSessionViewModel implements SessionViewModel {
+export class AppSessionLogic implements SessionLogic {
   private readonly subscription = new Subscription();
 
   isFilterPanelExpanded$ = new BehaviorSubject(true);
@@ -107,7 +107,7 @@ export class AppSessionViewModel implements SessionViewModel {
             this.filterConference$.next({ value, items });
           },
           error: err => {
-            console.log("Error at getAllConferences$ in AppSessionViewModel", err);
+            console.log("Error at getAllConferences$ in AppSessionLogic", err);
             this.filterConference$.next({
               value: "_error_",
               items: [

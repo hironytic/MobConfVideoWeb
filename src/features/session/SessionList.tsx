@@ -23,7 +23,7 @@
 //
 
 import { IRDETypes } from "../../utils/IRDE";
-import { SessionItem } from "./SessionViewModel";
+import { SessionItem } from "./SessionLogic";
 import { Box, CircularProgress, Grid, Typography } from "@mui/material";
 import { SessionCard } from "./SessionCard";
 import { SessionContext } from "./SessionContext";
@@ -31,8 +31,8 @@ import { useContext } from "react";
 import { useObservableState } from "observable-hooks";
 
 export function SessionList(): JSX.Element {
-  const viewModel = useContext(SessionContext);
-  const sessionList = useObservableState(viewModel.sessionList$, { type: IRDETypes.Initial });
+  const sessionLogic = useContext(SessionContext);
+  const sessionList = useObservableState(sessionLogic.sessionList$, { type: IRDETypes.Initial });
 
   switch (sessionList.type) {
     case IRDETypes.Initial:

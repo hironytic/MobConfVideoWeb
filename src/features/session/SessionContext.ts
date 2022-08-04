@@ -23,6 +23,6 @@
 //
 
 import React from "react";
-import { NullSessionViewModel, SessionViewModel } from "./SessionViewModel";
+import { NullSessionLogic, SessionLogic } from "./SessionLogic";
 
-export const SessionContext = React.createContext<SessionViewModel>(new NullSessionViewModel());
+export const SessionContext = React.createContext<SessionLogic>(new NullSessionLogic());

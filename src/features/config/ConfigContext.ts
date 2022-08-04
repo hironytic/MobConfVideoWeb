@@ -23,6 +23,6 @@
 //
 
 import React from "react";
-import { ConfigViewModel, NullConfigViewModel } from "./ConfigViewModel";
+import { ConfigLogic, NullConfigLogic } from "./ConfigLogic";
 
-export const ConfigContext = React.createContext<ConfigViewModel>(new NullConfigViewModel());
+export const ConfigContext = React.createContext<ConfigLogic>(new NullConfigLogic());
