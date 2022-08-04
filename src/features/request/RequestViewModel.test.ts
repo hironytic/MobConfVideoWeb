@@ -24,8 +24,8 @@
 
 import { RequestRepository } from "./RequestRepository";
 import { NEVER, Observable, startWith, Subject, Subscription, throwError } from "rxjs";
-import { Event } from "../../models/Event";
-import { Request } from "../../models/Request";
+import { Event } from "../../entities/Event";
+import { Request } from "../../entities/Request";
 import {
   AppRequestViewModel,
   RequestListDProps,

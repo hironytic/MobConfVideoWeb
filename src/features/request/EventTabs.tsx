@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-import { Event } from "../../models/Event";
+import { Event } from "../../entities/Event";
 import { Box, CircularProgress, Tab, Tabs } from "@mui/material";
 
 interface EventTabsProps {

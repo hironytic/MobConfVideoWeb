@@ -23,8 +23,8 @@
 //
 
 import { IRDE, IRDETypes } from "../../utils/IRDE";
-import { Event } from "../../models/Event";
-import { Request } from "../../models/Request";
+import { Event } from "../../entities/Event";
+import { Request } from "../../entities/Request";
 import { BehaviorSubject, NEVER, Observable, Subscription } from "rxjs";
 import { ViewModel } from "../../utils/ViewModelProvider";
 import { RequestRepository } from "./RequestRepository";

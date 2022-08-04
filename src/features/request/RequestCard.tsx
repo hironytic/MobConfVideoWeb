@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-import { Request } from "../../models/Request";
+import { Request } from "../../entities/Request";
 import { Card, CardActionArea, Grid, SxProps, Typography } from "@mui/material";
 import { lime, yellow } from "@mui/material/colors";
 import { Check } from "@mui/icons-material";

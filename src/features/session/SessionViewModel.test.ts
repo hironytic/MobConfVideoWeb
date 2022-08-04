@@ -24,9 +24,9 @@
 
 import { SessionFilter, SessionRepository } from "./SessionRepository";
 import { NEVER, Observable, startWith, Subscription, throwError } from "rxjs";
-import { Event } from "../../models/Event";
-import { Conference } from "../../models/Conference";
-// import { Session } from "../../models/Session";
+import { Event } from "../../entities/Event";
+import { Conference } from "../../entities/Conference";
+// import { Session } from "../../entities/Session";
 import { AppSessionViewModel, SessionViewModel } from "./SessionViewModel";
 import { EventuallyObserver } from "../../utils/EventuallyObserver";
 import { DropdownState } from "../../utils/Dropdown";

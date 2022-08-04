@@ -23,7 +23,7 @@
 //
 
 import { IRDE, IRDETypes } from "../../utils/IRDE";
-import { Session } from "../../models/Session";
+import { Session } from "../../entities/Session";
 import { ViewModel } from "../../utils/ViewModelProvider";
 import { BehaviorSubject, NEVER, Observable, Subscription } from "rxjs";
 import { DropdownState } from "../../utils/Dropdown";
