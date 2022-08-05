@@ -60,6 +60,7 @@ export interface SessionLogic extends Logic {
   filterSessionTime$: Observable<DropdownState>;
   filterKeywords$: Observable<string>;
   sessionList$: Observable<SessionListIRDE>;
+  currentFilterParams: FilterParams | undefined;
 }
 
 export class NullSessionLogic implements SessionLogic {
@@ -76,6 +77,7 @@ export class NullSessionLogic implements SessionLogic {
   filterSessionTime$ = NEVER;
   filterKeywords$ = NEVER;
   sessionList$ = NEVER;
+  currentFilterParams = undefined;
 }
 
 const UNSPECIFIED_STATE: DropdownState = { value: "-", items: [{ value: "-", title: "指定なし" }]};
@@ -95,7 +97,7 @@ export class AppSessionLogic implements SessionLogic {
   });
   filterKeywords$ = new BehaviorSubject("");
   sessionList$ = new BehaviorSubject({ type: IRDETypes.Initial });
-  private currentFilterParams: FilterParams | undefined = undefined;
+  currentFilterParams: FilterParams | undefined = undefined;
   
   constructor(private readonly repository: SessionRepository) {
     this.subscription.add(

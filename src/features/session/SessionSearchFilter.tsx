@@ -66,9 +66,24 @@ function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCa
 
   useEffect(() => {
     const keywords = searchParams.get("q");
-    if (keywords === null) {
-      sessionLogic.executeFilter(undefined);
-    } else {
+    if (keywords === null) { // When filter is not specified
+      if (sessionLogic.currentFilterParams !== undefined) { // When logic has filter, i.e. it has search result
+        // Reflect the logic's filter to search params.
+        const params: { [key: string]: string } = {};
+        const currentFilterToParams = (name: string, value: string | undefined) => {
+          if (value !== undefined) {
+            params[name] = value;
+          }
+        }
+        
+        currentFilterToParams("q", sessionLogic.currentFilterParams.keywords);
+        currentFilterToParams("c", sessionLogic.currentFilterParams.conference);
+        currentFilterToParams("t", sessionLogic.currentFilterParams.sessionTime);
+        
+        setSearchParams(params);
+      }
+    } else { // When filter is specified
+      // Execute specified filter.
       sessionLogic.executeFilter({
         conference: searchParams.get("c") ?? undefined,
         sessionTime: searchParams.get("t") ?? undefined,
@@ -80,6 +95,7 @@ function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCa
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     
+    // Convert form data to search params.
     const formData = new FormData(event.currentTarget);
     const params: { [key: string]: string } = {};
     const formDataToParams = (name: string, except: string | undefined, none: string | undefined) => {
