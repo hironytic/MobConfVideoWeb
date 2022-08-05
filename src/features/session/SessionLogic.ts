@@ -42,12 +42,18 @@ export interface SessionItem {
 
 export type SessionListIRDE = IRDE<{}, {}, { sessions: SessionItem[], keywordList: string[] }, { message: string }>;
 
+export interface FilterParams {
+  conference: string | undefined;
+  sessionTime: string | undefined;
+  keywords: string;
+}
+
 export interface SessionLogic extends Logic {
   expandFilterPanel(isExpand: boolean): void;
   filterConferenceChanged(value: string): void;
   filterSessionTimeChanged(value: string): void;
   filterKeywordsChanged(value: string): void;
-  executeFilter(): void;
+  executeFilter(params: FilterParams | undefined): void;
 
   isFilterPanelExpanded$: Observable<boolean>;
   filterConference$: Observable<DropdownState>;
@@ -63,7 +69,7 @@ export class NullSessionLogic implements SessionLogic {
   filterConferenceChanged(value: string) {}
   filterSessionTimeChanged(value: string) {}
   filterKeywordsChanged(value: string) {}
-  executeFilter() {}
+  executeFilter(params: FilterParams | undefined) {}
   
   isFilterPanelExpanded$ = NEVER;
   filterConference$ = NEVER;
@@ -89,6 +95,7 @@ export class AppSessionLogic implements SessionLogic {
   });
   filterKeywords$ = new BehaviorSubject("");
   sessionList$ = new BehaviorSubject({ type: IRDETypes.Initial });
+  private currentFilterParams: FilterParams | undefined = undefined;
   
   constructor(private readonly repository: SessionRepository) {
     this.subscription.add(
@@ -148,7 +155,21 @@ export class AppSessionLogic implements SessionLogic {
   filterKeywordsChanged(value: string) {
     this.filterKeywords$.next(value);
   }
-  
-  executeFilter() {
+
+  executeFilter(filterParams: FilterParams | undefined) {
+    if (this.currentFilterParams?.conference === filterParams?.conference &&
+        this.currentFilterParams?.sessionTime === filterParams?.sessionTime &&
+        this.currentFilterParams?.keywords === filterParams?.keywords) {
+      return;
+    }
+    
+    this.currentFilterParams = filterParams;
+    
+    this.filterChanged(this.currentFilterParams?.conference ?? "-", this.filterConference$);
+    this.filterChanged(this.currentFilterParams?.sessionTime ?? "-", this.filterSessionTime$);
+    this.filterKeywords$.next(this.currentFilterParams?.keywords ?? "");
+    
+    // TODO:
+    console.log("filter", this.currentFilterParams);
   }
 }
