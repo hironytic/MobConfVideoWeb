@@ -23,11 +23,12 @@
 //
 
 import { IRDE, IRDETypes } from "../../utils/IRDE";
-import { Session } from "../../entities/Session";
+import { Session, WatchedOn } from "../../entities/Session";
 import { Logic } from "../../utils/LogicProvider";
 import { BehaviorSubject, NEVER, Observable, Subscription } from "rxjs";
 import { DropdownState } from "../../utils/Dropdown";
-import { SessionRepository } from "./SessionRepository";
+import { SessionFilter, SessionRepository } from "./SessionRepository";
+import { runDetached } from "../../utils/RunDetached";
 
 export interface IdAndName {
   id: string;
@@ -96,7 +97,7 @@ export class AppSessionLogic implements SessionLogic {
     ]
   });
   filterKeywords$ = new BehaviorSubject("");
-  sessionList$ = new BehaviorSubject({ type: IRDETypes.Initial });
+  sessionList$ = new BehaviorSubject<SessionListIRDE>({ type: IRDETypes.Initial });
   currentFilterParams: FilterParams | undefined = undefined;
   
   constructor(private readonly repository: SessionRepository) {
@@ -164,14 +165,68 @@ export class AppSessionLogic implements SessionLogic {
         this.currentFilterParams?.keywords === filterParams?.keywords) {
       return;
     }
-    
     this.currentFilterParams = filterParams;
     
-    this.filterChanged(this.currentFilterParams?.conference ?? "-", this.filterConference$);
-    this.filterChanged(this.currentFilterParams?.sessionTime ?? "-", this.filterSessionTime$);
-    this.filterKeywords$.next(this.currentFilterParams?.keywords ?? "");
+    // Apply filter params to UI controls.
+    this.filterChanged(filterParams?.conference ?? "-", this.filterConference$);
+    this.filterChanged(filterParams?.sessionTime ?? "-", this.filterSessionTime$);
+    this.filterKeywords$.next(filterParams?.keywords ?? "");
     
-    // TODO:
-    console.log("filter", this.currentFilterParams);
+    if (filterParams === undefined) {
+      // Open filter panel.
+      this.isFilterPanelExpanded$.next(true);
+    } else {
+      // Close filter panel.
+      this.isFilterPanelExpanded$.next(false);
+
+      // Search sessions.
+      runDetached(() => this.searchSessions());
+    }
+  }
+  
+  private async searchSessions() {
+    const filterParams = this.currentFilterParams;
+    if (filterParams === undefined) {
+      return;
+    }
+    
+    const keywords = filterParams.keywords.trim();
+    const keywordList = (keywords === "") ? [] : keywords.trim().split(/\s+/); 
+    const sessionFilter: SessionFilter = {};
+    if (filterParams.conference !== undefined) {
+      sessionFilter.conferenceId = filterParams.conference;
+    }
+    if (filterParams.sessionTime !== undefined) {
+      sessionFilter.minutes = Number(filterParams.sessionTime);
+    }
+    sessionFilter.keywords = keywordList;
+
+    // Make loading.
+    this.sessionList$.next({ type: IRDETypes.Running });
+    
+    // Retrieve sessions.
+    const { sessions } = await this.repository.getSessions(sessionFilter);
+    const conferenceNameMap = this.filterConference$.value.items.reduce((acc, item) => {
+      if (item.value !== UNSPECIFIED_STATE.items[0].value) {
+        acc.set(item.value, item.title);
+      }
+      return acc;
+    }, new Map<string, string>());
+    const events = await this.repository.getAllEvents();
+    const getWatchedEvents = (watchedOn: WatchedOn): IdAndName[] => {
+      return events
+        .filter(event => watchedOn[event.id] !== undefined)
+        .map(event => ({ id: event.id, name: event.name }))
+    };
+    const sessionItems: SessionItem[] = sessions.map(session => {
+      const conferenceName = conferenceNameMap.get(session.conferenceId) ?? "";
+      const watchedEvents = getWatchedEvents(session.watchedOn);
+      return { session, conferenceName, watchedEvents };
+    });
+    this.sessionList$.next({
+      type: IRDETypes.Done,
+      sessions: sessionItems,
+      keywordList,
+    });
   }
 }

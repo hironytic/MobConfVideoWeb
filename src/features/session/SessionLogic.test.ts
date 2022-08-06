@@ -24,7 +24,7 @@
 
 import { SessionFilter, SessionRepository } from "./SessionRepository";
 import { NEVER, Observable, startWith, Subscription, throwError } from "rxjs";
-import { Event } from "../../entities/Event";
+// import { Event } from "../../entities/Event";
 import { Conference } from "../../entities/Conference";
 // import { Session } from "../../entities/Session";
 import { AppSessionLogic, SessionLogic } from "./SessionLogic";
@@ -33,7 +33,7 @@ import { DropdownState } from "../../utils/Dropdown";
 
 class MockSessionRepository implements SessionRepository {
   getAllConferences$ = jest.fn(() => NEVER as Observable<Conference[]>);
-  getAllEvents$ = jest.fn(() => NEVER as Observable<Event[]>);
+  getAllEvents = jest.fn(async () => []);
   getSessions = jest.fn(async (_: SessionFilter) => ({ sessions: [], more: undefined }));
 }
 
