@@ -90,7 +90,7 @@ function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCa
         keywords,
       });
     }
-  }, [sessionLogic, searchParams]);
+  }, [sessionLogic, searchParams, setSearchParams]);
   
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -111,6 +111,12 @@ function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCa
     formDataToParams("c", "-", undefined);
     formDataToParams("t", "-", undefined);
     
+    sessionLogic.clearFilter();
+    sessionLogic.executeFilter({
+      conference: params["c"] ?? undefined,
+      sessionTime: params["t"] ?? undefined,
+      keywords: params["q"] ?? "",
+    });
     setSearchParams(params);
   }
   

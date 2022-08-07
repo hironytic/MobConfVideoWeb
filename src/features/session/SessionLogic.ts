@@ -73,7 +73,8 @@ export interface SessionLogic extends Logic {
   filterConferenceChanged(value: string): void;
   filterSessionTimeChanged(value: string): void;
   filterKeywordsChanged(value: string): void;
-  executeFilter(params: FilterParams | undefined): void;
+  executeFilter(params: FilterParams): void;
+  clearFilter(): void;
 
   isFilterPanelExpanded$: Observable<boolean>;
   filterConference$: Observable<DropdownState>;
@@ -90,7 +91,8 @@ export class NullSessionLogic implements SessionLogic {
   filterConferenceChanged(value: string) {}
   filterSessionTimeChanged(value: string) {}
   filterKeywordsChanged(value: string) {}
-  executeFilter(params: FilterParams | undefined) {}
+  executeFilter(params: FilterParams) {}
+  clearFilter() {}
 
   isFilterPanelExpanded$ = NEVER;
   filterConference$ = NEVER;
@@ -118,8 +120,6 @@ export class AppSessionLogic implements SessionLogic {
   filterKeywords$ = new BehaviorSubject("");
   sessionList$ = new BehaviorSubject<SessionListIRDE>({ type: IRDETypes.Initial });
   currentFilterParams: FilterParams | undefined = undefined;
-  
-  private nextMore: (() => Promise<void>) | undefined = undefined;
   
   constructor(private readonly repository: SessionRepository) {
     this.subscription.add(
@@ -180,29 +180,24 @@ export class AppSessionLogic implements SessionLogic {
     this.filterKeywords$.next(value);
   }
 
-  executeFilter(filterParams: FilterParams | undefined) {
-    if (this.currentFilterParams?.conference === filterParams?.conference &&
-        this.currentFilterParams?.sessionTime === filterParams?.sessionTime &&
-        this.currentFilterParams?.keywords === filterParams?.keywords) {
+  executeFilter(filterParams: FilterParams) {
+    if (this.currentFilterParams?.conference === filterParams.conference &&
+        this.currentFilterParams?.sessionTime === filterParams.sessionTime &&
+        this.currentFilterParams?.keywords === filterParams.keywords) {
       return;
     }
     this.currentFilterParams = filterParams;
     
     // Apply filter params to UI controls.
-    this.filterChanged(filterParams?.conference ?? "-", this.filterConference$);
-    this.filterChanged(filterParams?.sessionTime ?? "-", this.filterSessionTime$);
+    this.filterChanged(filterParams.conference ?? "-", this.filterConference$);
+    this.filterChanged(filterParams.sessionTime ?? "-", this.filterSessionTime$);
     this.filterKeywords$.next(filterParams?.keywords ?? "");
     
-    if (filterParams === undefined) {
-      // Open filter panel.
-      this.isFilterPanelExpanded$.next(true);
-    } else {
-      // Close filter panel.
-      this.isFilterPanelExpanded$.next(false);
+    // Close filter panel.
+    this.isFilterPanelExpanded$.next(false);
 
-      // Search sessions.
-      runDetached(() => this.searchSessions());
-    }
+    // Search sessions.
+    runDetached(() => this.searchSessions());
   }
   
   private async searchSessions() {
@@ -279,5 +274,10 @@ export class AppSessionLogic implements SessionLogic {
     };
     const filteredSessions = await this.repository.getSessions(sessionFilter);
     updateSessionList(filteredSessions);
+  }
+  
+  clearFilter() {
+    this.currentFilterParams = undefined;
+    this.sessionList$.next({ type: IRDETypes.Initial });
   }
 }
