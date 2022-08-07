@@ -67,28 +67,14 @@ function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCa
   useEffect(() => {
     const keywords = searchParams.get("q");
     if (keywords === null) { // When filter is not specified
-      if (sessionLogic.currentFilterParams !== undefined) { // When logic has filter, i.e. it has search result
-        // Reflect the logic's filter to search params.
-        const params: { [key: string]: string } = {};
-        const currentFilterToParams = (name: string, value: string | undefined) => {
-          if (value !== undefined) {
-            params[name] = value;
-          }
-        }
-        
-        currentFilterToParams("q", sessionLogic.currentFilterParams.keywords);
-        currentFilterToParams("c", sessionLogic.currentFilterParams.conference);
-        currentFilterToParams("t", sessionLogic.currentFilterParams.sessionTime);
-        
-        setSearchParams(params);
-      }
+      sessionLogic.clearFilter();
     } else { // When filter is specified
       // Execute specified filter.
       sessionLogic.executeFilter({
         conference: searchParams.get("c") ?? undefined,
         sessionTime: searchParams.get("t") ?? undefined,
         keywords,
-      });
+      }, false);
     }
   }, [sessionLogic, searchParams, setSearchParams]);
   
@@ -111,12 +97,11 @@ function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCa
     formDataToParams("c", "-", undefined);
     formDataToParams("t", "-", undefined);
     
-    sessionLogic.clearFilter();
     sessionLogic.executeFilter({
       conference: params["c"] ?? undefined,
       sessionTime: params["t"] ?? undefined,
       keywords: params["q"] ?? "",
-    });
+    }, true);
     setSearchParams(params);
   }
   

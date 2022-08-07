@@ -73,7 +73,7 @@ export interface SessionLogic extends Logic {
   filterConferenceChanged(value: string): void;
   filterSessionTimeChanged(value: string): void;
   filterKeywordsChanged(value: string): void;
-  executeFilter(params: FilterParams): void;
+  executeFilter(params: FilterParams, force: boolean): void;
   clearFilter(): void;
 
   isFilterPanelExpanded$: Observable<boolean>;
@@ -81,7 +81,6 @@ export interface SessionLogic extends Logic {
   filterSessionTime$: Observable<DropdownState>;
   filterKeywords$: Observable<string>;
   sessionList$: Observable<SessionListIRDE>;
-  currentFilterParams: FilterParams | undefined;
 }
 
 export class NullSessionLogic implements SessionLogic {
@@ -91,7 +90,7 @@ export class NullSessionLogic implements SessionLogic {
   filterConferenceChanged(value: string) {}
   filterSessionTimeChanged(value: string) {}
   filterKeywordsChanged(value: string) {}
-  executeFilter(params: FilterParams) {}
+  executeFilter(params: FilterParams, force: boolean) {}
   clearFilter() {}
 
   isFilterPanelExpanded$ = NEVER;
@@ -99,7 +98,6 @@ export class NullSessionLogic implements SessionLogic {
   filterSessionTime$ = NEVER;
   filterKeywords$ = NEVER;
   sessionList$ = NEVER;
-  currentFilterParams = undefined;
 }
 
 const UNSPECIFIED_STATE: DropdownState = { value: "-", items: [{ value: "-", title: "指定なし" }]};
@@ -119,7 +117,7 @@ export class AppSessionLogic implements SessionLogic {
   });
   filterKeywords$ = new BehaviorSubject("");
   sessionList$ = new BehaviorSubject<SessionListIRDE>({ type: IRDETypes.Initial });
-  currentFilterParams: FilterParams | undefined = undefined;
+  private currentFilterParams: FilterParams | undefined = undefined;
   
   constructor(private readonly repository: SessionRepository) {
     this.subscription.add(
@@ -180,8 +178,9 @@ export class AppSessionLogic implements SessionLogic {
     this.filterKeywords$.next(value);
   }
 
-  executeFilter(filterParams: FilterParams) {
-    if (this.currentFilterParams?.conference === filterParams.conference &&
+  executeFilter(filterParams: FilterParams, force: boolean) {
+    if (!force &&
+        this.currentFilterParams?.conference === filterParams.conference &&
         this.currentFilterParams?.sessionTime === filterParams.sessionTime &&
         this.currentFilterParams?.keywords === filterParams.keywords) {
       return;
@@ -277,6 +276,7 @@ export class AppSessionLogic implements SessionLogic {
   }
   
   clearFilter() {
+    this.isFilterPanelExpanded$.next(true);
     this.currentFilterParams = undefined;
     this.sessionList$.next({ type: IRDETypes.Initial });
   }
