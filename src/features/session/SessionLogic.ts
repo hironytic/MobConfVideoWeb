@@ -23,12 +23,13 @@
 //
 
 import { IRDE, IRDETypes } from "../../utils/IRDE";
-import { Session, WatchedOn } from "../../entities/Session";
+import { Session } from "../../entities/Session";
 import { Logic } from "../../utils/LogicProvider";
 import { BehaviorSubject, NEVER, Observable, Subscription } from "rxjs";
 import { DropdownState } from "../../utils/Dropdown";
-import { SessionFilter, SessionRepository } from "./SessionRepository";
+import { FilteredSessions, SessionFilter, SessionRepository } from "./SessionRepository";
 import { runDetached } from "../../utils/RunDetached";
+import { executeOnce } from "../../utils/ExecuteOnce";
 
 export interface IdAndName {
   id: string;
@@ -41,7 +42,25 @@ export interface SessionItem {
   watchedEvents: IdAndName[];
 }
 
-export type SessionListIRDE = IRDE<{}, {}, { sessions: SessionItem[], keywordList: string[] }, { message: string }>;
+export const MoreRequestTypes = {
+  Requestable: "Requestable",
+  Unrequestable: "Unrequestable",
+  Requesting: "Requesting",
+} as const;
+export type MoreType = typeof MoreRequestTypes[keyof typeof MoreRequestTypes];
+export interface MoreRequestRequestable {
+  type: typeof MoreRequestTypes.Requestable,
+  request: (() => void),
+}
+export interface MoreRequestUnrequestable {
+  type: typeof MoreRequestTypes.Unrequestable,
+}
+export interface MoreRequestRequesting {
+  type: typeof MoreRequestTypes.Requesting,
+}
+export type MoreRequest = MoreRequestRequestable | MoreRequestUnrequestable | MoreRequestRequesting;
+
+export type SessionListIRDE = IRDE<{}, {}, { sessions: SessionItem[], keywordList: string[], moreRequest: MoreRequest }, { message: string }>;
 
 export interface FilterParams {
   conference: string | undefined;
@@ -72,7 +91,7 @@ export class NullSessionLogic implements SessionLogic {
   filterSessionTimeChanged(value: string) {}
   filterKeywordsChanged(value: string) {}
   executeFilter(params: FilterParams | undefined) {}
-  
+
   isFilterPanelExpanded$ = NEVER;
   filterConference$ = NEVER;
   filterSessionTime$ = NEVER;
@@ -99,6 +118,8 @@ export class AppSessionLogic implements SessionLogic {
   filterKeywords$ = new BehaviorSubject("");
   sessionList$ = new BehaviorSubject<SessionListIRDE>({ type: IRDETypes.Initial });
   currentFilterParams: FilterParams | undefined = undefined;
+  
+  private nextMore: (() => Promise<void>) | undefined = undefined;
   
   constructor(private readonly repository: SessionRepository) {
     this.subscription.add(
@@ -203,9 +224,8 @@ export class AppSessionLogic implements SessionLogic {
 
     // Make loading.
     this.sessionList$.next({ type: IRDETypes.Running });
-    
-    // Retrieve sessions.
-    const { sessions } = await this.repository.getSessions(sessionFilter);
+
+    // Ready conference name and event name.
     const conferenceNameMap = this.filterConference$.value.items.reduce((acc, item) => {
       if (item.value !== UNSPECIFIED_STATE.items[0].value) {
         acc.set(item.value, item.title);
@@ -213,20 +233,51 @@ export class AppSessionLogic implements SessionLogic {
       return acc;
     }, new Map<string, string>());
     const events = await this.repository.getAllEvents();
-    const getWatchedEvents = (watchedOn: WatchedOn): IdAndName[] => {
-      return events
-        .filter(event => watchedOn[event.id] !== undefined)
-        .map(event => ({ id: event.id, name: event.name }))
+    const convertSessions = (sessions: Session[]): SessionItem[] => {
+      return sessions.map(session => {
+        const conferenceName = conferenceNameMap.get(session.conferenceId) ?? "";
+        const watchedEvents = events
+          .filter(event => session.watchedOn[event.id] !== undefined)
+          .map(event => ({ id: event.id, name: event.name }));
+        return { session, conferenceName, watchedEvents };
+      });
+    }
+    
+    // Retrieve sessions.
+    let sessionItems: SessionItem[] = [];
+    const updateSessionList = ({ sessions, more }: FilteredSessions) => {
+      sessionItems = [...sessionItems, ...convertSessions(sessions)];
+      
+      let moreRequest: MoreRequest = { type: MoreRequestTypes.Unrequestable };
+      if (more !== undefined) {
+        moreRequest = {
+          type: MoreRequestTypes.Requestable,
+          request: executeOnce(() => {
+            // Make it loading
+            this.sessionList$.next({
+              type: IRDETypes.Done,
+              sessions: sessionItems,
+              keywordList,
+              moreRequest: { type: MoreRequestTypes.Requesting },
+            });
+            
+            // Do search more
+            runDetached(async () => {
+              const filteredSessions = await more();
+              updateSessionList(filteredSessions);
+            });
+          }),
+        };
+      }
+
+      this.sessionList$.next({
+        type: IRDETypes.Done,
+        sessions: sessionItems,
+        keywordList,
+        moreRequest,
+      });
     };
-    const sessionItems: SessionItem[] = sessions.map(session => {
-      const conferenceName = conferenceNameMap.get(session.conferenceId) ?? "";
-      const watchedEvents = getWatchedEvents(session.watchedOn);
-      return { session, conferenceName, watchedEvents };
-    });
-    this.sessionList$.next({
-      type: IRDETypes.Done,
-      sessions: sessionItems,
-      keywordList,
-    });
+    const filteredSessions = await this.repository.getSessions(sessionFilter);
+    updateSessionList(filteredSessions);
   }
 }
