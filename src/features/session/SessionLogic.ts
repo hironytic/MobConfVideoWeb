@@ -30,6 +30,7 @@ import { DropdownState } from "../../utils/Dropdown";
 import { FilteredSessions, SessionFilter, SessionRepository } from "./SessionRepository";
 import { runDetached } from "../../utils/RunDetached";
 import { executeOnce } from "../../utils/ExecuteOnce";
+import { errorMessage } from "../../utils/ErrorMessage";
 
 export interface IdAndName {
   id: string;
@@ -47,7 +48,6 @@ export const MoreRequestTypes = {
   Unrequestable: "Unrequestable",
   Requesting: "Requesting",
 } as const;
-export type MoreType = typeof MoreRequestTypes[keyof typeof MoreRequestTypes];
 export interface MoreRequestRequestable {
   type: typeof MoreRequestTypes.Requestable,
   request: (() => void),
@@ -60,7 +60,15 @@ export interface MoreRequestRequesting {
 }
 export type MoreRequest = MoreRequestRequestable | MoreRequestUnrequestable | MoreRequestRequesting;
 
-export type SessionListIRDE = IRDE<{}, {}, { sessions: SessionItem[], keywordList: string[], moreRequest: MoreRequest }, { message: string }>;
+export interface SessionListDoneProp {
+  sessions: SessionItem[];
+  keywordList: string[];
+  moreRequest: MoreRequest;
+}
+export interface SessionListErrorProp {
+  message: string;
+}
+export type SessionListIRDE = IRDE<{}, {}, SessionListDoneProp, SessionListErrorProp>;
 
 export interface FilterParams {
   conference: string | undefined;
@@ -205,74 +213,90 @@ export class AppSessionLogic implements SessionLogic {
       return;
     }
     
-    const keywords = filterParams.keywords.trim();
-    const keywordList = (keywords === "") ? [] : keywords.trim().split(/\s+/); 
-    const sessionFilter: SessionFilter = {};
-    if (filterParams.conference !== undefined) {
-      sessionFilter.conferenceId = filterParams.conference;
-    }
-    if (filterParams.sessionTime !== undefined) {
-      sessionFilter.minutes = Number(filterParams.sessionTime);
-    }
-    sessionFilter.keywords = keywordList;
-
-    // Make loading.
-    this.sessionList$.next({ type: IRDETypes.Running });
-
-    // Ready conference name and event name.
-    const conferenceNameMap = this.filterConference$.value.items.reduce((acc, item) => {
-      if (item.value !== UNSPECIFIED_STATE.items[0].value) {
-        acc.set(item.value, item.title);
+    try {
+      const keywords = filterParams.keywords.trim();
+      const keywordList = (keywords === "") ? [] : keywords.trim().split(/\s+/);
+      const sessionFilter: SessionFilter = {};
+      if (filterParams.conference !== undefined) {
+        sessionFilter.conferenceId = filterParams.conference;
       }
-      return acc;
-    }, new Map<string, string>());
-    const events = await this.repository.getAllEvents();
-    const convertSessions = (sessions: Session[]): SessionItem[] => {
-      return sessions.map(session => {
-        const conferenceName = conferenceNameMap.get(session.conferenceId) ?? "";
-        const watchedEvents = events
-          .filter(event => session.watchedOn[event.id] !== undefined)
-          .map(event => ({ id: event.id, name: event.name }));
-        return { session, conferenceName, watchedEvents };
-      });
-    }
-    
-    // Retrieve sessions.
-    let sessionItems: SessionItem[] = [];
-    const updateSessionList = ({ sessions, more }: FilteredSessions) => {
-      sessionItems = [...sessionItems, ...convertSessions(sessions)];
-      
-      let moreRequest: MoreRequest = { type: MoreRequestTypes.Unrequestable };
-      if (more !== undefined) {
-        moreRequest = {
-          type: MoreRequestTypes.Requestable,
-          request: executeOnce(() => {
-            // Make it loading
-            this.sessionList$.next({
-              type: IRDETypes.Done,
-              sessions: sessionItems,
-              keywordList,
-              moreRequest: { type: MoreRequestTypes.Requesting },
-            });
-            
-            // Do search more
-            runDetached(async () => {
-              const filteredSessions = await more();
-              updateSessionList(filteredSessions);
-            });
-          }),
-        };
+      if (filterParams.sessionTime !== undefined) {
+        sessionFilter.minutes = Number(filterParams.sessionTime);
+      }
+      sessionFilter.keywords = keywordList;
+
+      // Make loading.
+      this.sessionList$.next({type: IRDETypes.Running});
+
+      // Ready conference name and event name.
+      const conferenceNameMap = this.filterConference$.value.items.reduce((acc, item) => {
+        if (item.value !== UNSPECIFIED_STATE.items[0].value) {
+          acc.set(item.value, item.title);
+        }
+        return acc;
+      }, new Map<string, string>());
+      const events = await this.repository.getAllEvents();
+      const convertSessions = (sessions: Session[]): SessionItem[] => {
+        return sessions.map(session => {
+          const conferenceName = conferenceNameMap.get(session.conferenceId) ?? "";
+          const watchedEvents = events
+            .filter(event => session.watchedOn[event.id] !== undefined)
+            .map(event => ({id: event.id, name: event.name}));
+          return {session, conferenceName, watchedEvents};
+        });
       }
 
+      // Retrieve sessions.
+      let sessionItems: SessionItem[] = [];
+      const updateSessionList = ({sessions, more}: FilteredSessions) => {
+        sessionItems = [...sessionItems, ...convertSessions(sessions)];
+
+        let moreRequest: MoreRequest = {type: MoreRequestTypes.Unrequestable};
+        if (more !== undefined) {
+          moreRequest = {
+            type: MoreRequestTypes.Requestable,
+            request: executeOnce(() => {
+              // Make it loading
+              this.sessionList$.next({
+                type: IRDETypes.Done,
+                sessions: sessionItems,
+                keywordList,
+                moreRequest: {type: MoreRequestTypes.Requesting},
+              });
+
+              // Do search more
+              runDetached(async () => {
+                try {
+                  const filteredSessions = await more();
+                  updateSessionList(filteredSessions);
+                } catch (err) {
+                  console.log("Error at searchSessions (more)", err);
+                  this.sessionList$.next({
+                    type: IRDETypes.Error,
+                    message: errorMessage(err),
+                  });
+                }
+              });
+            }),
+          };
+        }
+
+        this.sessionList$.next({
+          type: IRDETypes.Done,
+          sessions: sessionItems,
+          keywordList,
+          moreRequest,
+        });
+      };
+      const filteredSessions = await this.repository.getSessions(sessionFilter);
+      updateSessionList(filteredSessions);
+    } catch (err) {
+      console.log("Error at searchSessions", err);
       this.sessionList$.next({
-        type: IRDETypes.Done,
-        sessions: sessionItems,
-        keywordList,
-        moreRequest,
+        type: IRDETypes.Error,
+        message: errorMessage(err),
       });
-    };
-    const filteredSessions = await this.repository.getSessions(sessionFilter);
-    updateSessionList(filteredSessions);
+    }
   }
   
   clearFilter() {
