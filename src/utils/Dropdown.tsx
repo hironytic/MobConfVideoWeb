@@ -36,6 +36,7 @@ export interface DropdownStateItem {
 }
 
 interface DropdownProps {
+  name?: string;
   labelId: string;
   label: string;
   state: DropdownState;
@@ -45,11 +46,11 @@ interface DropdownProps {
 
 export const EMPTY_DROPDOWN: DropdownState = { value: "", items: [] };
 
-export function Dropdown({ labelId, label, state, minWidth, onChange }: DropdownProps): JSX.Element {
+export function Dropdown({ name, labelId, label, state, minWidth, onChange }: DropdownProps): JSX.Element {
   return (
     <FormControl sx={{ minWidth }}>
       <InputLabel id={labelId}>{label}</InputLabel>
-      <Select labelId={labelId} label={label} value={state.value} onChange={event => onChange(event.target.value)}>
+      <Select name={name} labelId={labelId} label={label} value={state.value} onChange={event => onChange(event.target.value)}>
         {
           state.items.map(item => (
             <MenuItem key={item.value} value={item.value}>

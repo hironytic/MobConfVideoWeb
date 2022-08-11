@@ -44,7 +44,7 @@ export interface FilteredSessions {
 
 export interface SessionRepository {
   getAllConferences$(): Observable<Conference[]>;
-  getAllEvents$(): Observable<Event[]>;
+  getAllEvents(): Promise<Event[]>;
   getSessions(filter: SessionFilter): Promise<FilteredSessions>;
 }
 
@@ -67,23 +67,15 @@ export class FirestoreSessionRepository implements SessionRepository {
     });
   }
 
-  getAllEvents$(): Observable<Event[]> {
-    return withFirestore(firestore => {
-      const collectionRef = collection(firestore, "events");
-      const docQuery = query(collectionRef,
-        where("hidden", "==", false),
-        orderBy("starts", "desc"),
-      ).withConverter(eventConverter);
-      return new Observable<QuerySnapshot<Event>>(subscriber => {
-        return onSnapshot(docQuery, subscriber);
-      }).pipe(
-        map(snapshot => {
-          return snapshot
-            .docs
-            .map(it => it.data())
-        }),
-      );
-    });
+  async getAllEvents(): Promise<Event[]> {
+    const firestore = await getFirestore();
+    const collectionRef = collection(firestore, "events");
+    const docQuery = query(collectionRef,
+      where("hidden", "==", false),
+      orderBy("starts", "desc"),
+    ).withConverter(eventConverter);
+    const snapshot = await getDocs(docQuery);
+    return snapshot.docs.map(doc => doc.data());
   }
 
   async getSessions(filter: SessionFilter): Promise<FilteredSessions> {

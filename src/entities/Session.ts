@@ -44,7 +44,7 @@ export interface Speaker {
   icon: string | undefined;
 }
 
-interface WatchedOn {
+export interface WatchedOn {
   [eventId: string]: number;
 }
 

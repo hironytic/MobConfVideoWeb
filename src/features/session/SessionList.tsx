@@ -23,12 +23,13 @@
 //
 
 import { IRDETypes } from "../../utils/IRDE";
-import { SessionItem } from "./SessionLogic";
-import { Box, CircularProgress, Grid, Typography } from "@mui/material";
+import { MoreRequest, MoreRequestTypes, SessionItem } from "./SessionLogic";
+import { Box, Button, CircularProgress, Grid, Stack, Typography } from "@mui/material";
 import { SessionCard } from "./SessionCard";
 import { SessionContext } from "./SessionContext";
 import { useContext } from "react";
 import { useObservableState } from "observable-hooks";
+import { TipsAndUpdatesOutlined } from "@mui/icons-material";
 
 export function SessionList(): JSX.Element {
   const sessionLogic = useContext(SessionContext);
@@ -40,7 +41,7 @@ export function SessionList(): JSX.Element {
     case IRDETypes.Running:
       return <SessionListRunningBody/>;
     case IRDETypes.Done:
-      return <SessionListDoneBody sessions={sessionList.sessions} keywordList={sessionList.keywordList}/>
+      return <SessionListDoneBody sessions={sessionList.sessions} keywordList={sessionList.keywordList} moreRequest={sessionList.moreRequest} />
     case IRDETypes.Error:
       return <SessionListErrorBody message={sessionList.message}/>
   }
@@ -61,9 +62,10 @@ function SessionListRunningBody(): JSX.Element {
 interface SessionListDoneBodyProps {
   sessions: SessionItem[];
   keywordList: string[];
+  moreRequest: MoreRequest;
 }
-function SessionListDoneBody({ sessions, keywordList }: SessionListDoneBodyProps): JSX.Element {
-  if (sessions.length === 0) {
+function SessionListDoneBody({ sessions, keywordList, moreRequest }: SessionListDoneBodyProps): JSX.Element {
+  if (sessions.length === 0 && moreRequest.type === MoreRequestTypes.Unrequestable) {
     return (
       <Box sx={{ mt: 8, textAlign: "center" }}>
         <Typography variant="body2" color="textSecondary">
@@ -84,7 +86,45 @@ function SessionListDoneBody({ sessions, keywordList }: SessionListDoneBodyProps
                        onClick={() => {}}/>
         </Grid>
       ))}
+      {(moreRequest.type === MoreRequestTypes.Requestable || moreRequest.type === MoreRequestTypes.Requesting) && (
+        <Grid key="_more" item={true} xs={12}>
+          <SearchMore moreRequest={moreRequest} hasKeywords={keywordList.length > 0}/>
+        </Grid>
+      )}
     </Grid>
+  );
+}
+
+interface SearchMoreProps {
+  moreRequest: MoreRequest;
+  hasKeywords: boolean;
+}
+function SearchMore({ moreRequest, hasKeywords }: SearchMoreProps): JSX.Element {
+  if (moreRequest.type === MoreRequestTypes.Unrequestable) {
+    return <></>;
+  }
+
+  return (
+    <Stack direction="column" alignItems="center" spacing={1}>
+      <TipsAndUpdatesOutlined fontSize="small" />
+      {(hasKeywords) ? (
+        <Typography variant="body2" color="textSecondary">
+          もっと探せば、キーワードにヒットする動画セッションがまだ見つかる可能性があります。<br/>
+          キーワード以外の条件も追加して検索対象を絞り込めば、より見つかりやすくなります。
+        </Typography>
+      ) : (
+        <Typography variant="body2" color="textSecondary">
+          もっと探せば、動画セッションがまだ見つかる可能性があります。<br/>
+          検索条件を追加して検索対象を絞り込めば、より見つかりやすくなります。
+        </Typography>
+      )}
+      {moreRequest.type === MoreRequestTypes.Requestable && (
+        <Button onClick={() => moreRequest.request()}>もっと探す</Button>
+      )}
+      {moreRequest.type === MoreRequestTypes.Requesting && (
+        <CircularProgress />
+      )}
+    </Stack>
   );
 }
 

@@ -37,9 +37,10 @@ import {
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { Dropdown, EMPTY_DROPDOWN } from "../../utils/Dropdown";
-import { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { SessionContext } from "./SessionContext";
 import { useObservableState } from "observable-hooks";
+import { useSearchParams } from "react-router-dom";
 
 export function SessionSearchFilter(): JSX.Element {
   const sessionLogic = useContext(SessionContext);
@@ -61,7 +62,49 @@ function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCa
   const conference = useObservableState(sessionLogic.filterConference$, EMPTY_DROPDOWN);
   const sessionTime = useObservableState(sessionLogic.filterSessionTime$, EMPTY_DROPDOWN);
   const keyword = useObservableState(sessionLogic.filterKeywords$, "");
+  const [searchParams, setSearchParams] = useSearchParams();
 
+  useEffect(() => {
+    const keywords = searchParams.get("q");
+    if (keywords === null) { // When filter is not specified
+      sessionLogic.clearFilter();
+    } else { // When filter is specified
+      // Execute specified filter.
+      sessionLogic.executeFilter({
+        conference: searchParams.get("c") ?? undefined,
+        sessionTime: searchParams.get("t") ?? undefined,
+        keywords,
+      }, false);
+    }
+  }, [sessionLogic, searchParams, setSearchParams]);
+  
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    
+    // Convert form data to search params.
+    const formData = new FormData(event.currentTarget);
+    const params: { [key: string]: string } = {};
+    const formDataToParams = (name: string, except: string | undefined, none: string | undefined) => {
+      const data = formData.get(name);
+      if (data != null && typeof data === "string" && data !== except) {
+        params[name] = data;
+      } else if (none !== undefined) {
+        params[name] = none;
+      }
+    }
+
+    formDataToParams("q", undefined, "");
+    formDataToParams("c", "-", undefined);
+    formDataToParams("t", "-", undefined);
+    
+    sessionLogic.executeFilter({
+      conference: params["c"] ?? undefined,
+      sessionTime: params["t"] ?? undefined,
+      keywords: params["q"] ?? "",
+    }, true);
+    setSearchParams(params);
+  }
+  
   return (
     <Card variant="outlined">
       <CardContent>
@@ -80,29 +123,31 @@ function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCa
       </CardContent>
 
       <Collapse in={isExpanded}>
-        <CardContent>
-          <Stack direction="column" spacing={3}>
-            <Stack direction={{ xs: "column", sm: "row" }} spacing={3}>
-              <Dropdown labelId="conference" label="カンファレンス" state={conference} minWidth={150} onChange={ value => sessionLogic.filterConferenceChanged(value) }/>
-              <Dropdown labelId="minutes" label="セッション時間" state={sessionTime} minWidth={150} onChange={ value => sessionLogic.filterSessionTimeChanged(value) }/>
+        <form onSubmit={handleSubmit}>
+          <CardContent>
+            <Stack direction="column" spacing={3}>
+              <TextField type="text" name="q" autoFocus={false}
+                         label="キーワード" placeholder="スペースで区切って指定（AND検索）"
+                         margin="none"
+                         fullWidth={true}
+                         onChange={event => sessionLogic.filterKeywordsChanged(event.target.value)}
+                         value={keyword}
+                         InputLabelProps={{ shrink: true }}/>
+              <Stack direction={{ xs: "column", sm: "row" }} spacing={3}>
+                <Dropdown name="c" labelId="conference" label="カンファレンス" state={conference} minWidth={150} onChange={ value => sessionLogic.filterConferenceChanged(value) }/>
+                <Dropdown name="t" labelId="minutes" label="セッション時間" state={sessionTime} minWidth={150} onChange={ value => sessionLogic.filterSessionTimeChanged(value) }/>
+              </Stack>
             </Stack>
-            <TextField type="text" autoFocus={false}
-                       label="キーワード" placeholder="スペースで区切って指定（AND検索）"
-                       margin="none"
-                       fullWidth={true}
-                       onChange={event => sessionLogic.filterKeywordsChanged(event.target.value)}
-                       value={keyword}
-                       InputLabelProps={{ shrink: true }}/>
-          </Stack>
-        </CardContent>
-
-        <CardActions>
-          <Grid container={true}>
-            <Grid item={true} xs={12} sx={{ textAlign: "end" }}>
-              <Button size="small" color="primary" onClick={() => { sessionLogic.executeFilter() }}>実行</Button>
+          </CardContent>
+  
+          <CardActions>
+            <Grid container={true}>
+              <Grid item={true} xs={12} sx={{ textAlign: "end" }}>
+                <Button size="small" color="primary" type="submit">実行</Button>
+              </Grid>
             </Grid>
-          </Grid>
-        </CardActions>
+          </CardActions>
+        </form>
       </Collapse>
     </Card>
   );
