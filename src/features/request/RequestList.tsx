@@ -27,6 +27,7 @@ import { Request } from "../../entities/Request";
 import { RequestListIRDE } from "./RequestLogic";
 import { Box, CircularProgress, Grid, Typography } from "@mui/material";
 import { RequestCard } from "./RequestCard";
+import { useNavigate } from "react-router-dom";
 
 interface RequestListProps {
   requestList: RequestListIRDE;
@@ -61,6 +62,12 @@ interface RequestListDoneBodyProps {
   requests: Request[]; 
 }
 function RequestListDoneBody({ requests }: RequestListDoneBodyProps): JSX.Element {
+  const navigate = useNavigate();
+
+  function onCardClick(request: Request) {
+    navigate(request.id);
+  }
+  
   if (requests.length === 0) {
     return (
       <Box sx={{ mt: 8, textAlign: "center" }}>
@@ -77,7 +84,7 @@ function RequestListDoneBody({ requests }: RequestListDoneBodyProps): JSX.Elemen
         {
           requests.map(request => (
             <Grid key={request.id} item={true} xs={12} md={6} lg={4}>
-              <RequestCard request={request} onClick={() => {}}/>
+              <RequestCard request={request} onClick={() => onCardClick(request)}/>
             </Grid>
           ))
         }

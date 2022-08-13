@@ -1,5 +1,5 @@
 //
-// AppRouter.tsx
+// RequestDetailLogic.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,29 +22,11 @@
 // THE SOFTWARE.
 //
 
-import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
-import { Home } from "../features/home/Home";
-import { RequestPage } from "../features/request/RequestPage";
-import { SessionPage } from "../features/session/SessionPage";
-import { RequestDetailDialog } from "../features/request_detail/RequestDetailDialog";
+import { Request } from "../../entities/Request";
+import { IRDE } from "../../utils/IRDE";
 
-export function AppRouter(): JSX.Element {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home/>}>
-          <Route path="request" element={<Outlet/>}>
-            <Route index element={<RequestPage/>}/>
-            <Route path=":eventId" element={<RequestPage/>}>
-              <Route path=":requestId" element={<RequestDetailDialog/>}/>
-            </Route>
-          </Route>
-          <Route path="session" element={<Outlet/>}>
-            <Route index element={<SessionPage/>}/>
-          </Route>
-          <Route path="*" element={<></>} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  )
-}
+export interface RequestDetailIProps {}
+export interface RequestDetailRProps {}
+export interface RequestDetailDProps { request: Request }
+export interface RequestDetailEProps { message: string }
+export type RequestDetailIRDE = IRDE<RequestDetailIProps, RequestDetailRProps, RequestDetailDProps, RequestDetailEProps>;
