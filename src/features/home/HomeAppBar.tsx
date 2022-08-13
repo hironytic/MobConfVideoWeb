@@ -22,9 +22,10 @@
 // THE SOFTWARE.
 //
 
-import { AppBar, createTheme, Tab, Tabs, ThemeProvider, Toolbar, Typography } from "@mui/material";
+import { Tab, Tabs, Toolbar, Typography } from "@mui/material";
 import { List, VideoLabel } from "@mui/icons-material";
 import { Link } from "react-router-dom";
+import { AppBar } from "../../utils/AppBar";
 
 export const HomeTabs = {
   Request: "request",
@@ -39,46 +40,14 @@ interface HomeAppBarProps {
 }
 
 export function HomeAppBar({ title, tab }: HomeAppBarProps): JSX.Element {
-  const appBarTheme = createTheme({
-    palette: {
-      primary: {
-        main: "#f5c300",
-        contrastText: "#fff",
-      },
-    },
-    components: {
-      MuiAppBar: {
-        styleOverrides: {
-          root: {
-            backgroundColor: "#11509a",
-          },
-        },
-      },
-      MuiTab: {
-        styleOverrides: {
-          root: {
-            color: "white",
-            opacity: 0.7,
-            "&.Mui-selected": {
-              color: "white",
-              opacity: 1.0,
-            },
-          },
-        },
-      },
-    },
-  });
-  
   return (
-    <ThemeProvider theme={appBarTheme}>
-      <AppBar position="sticky">
-        <Toolbar>
-          <Typography variant="h6">{title}</Typography>
-          <div style={{ flexGrow: 1 }} />
-          <AppTabs tab={tab}/>
-        </Toolbar>
-      </AppBar>
-    </ThemeProvider>
+    <AppBar position="sticky">
+      <Toolbar>
+        <Typography variant="h6">{title}</Typography>
+        <div style={{ flexGrow: 1 }} />
+        <AppTabs tab={tab}/>
+      </Toolbar>
+    </AppBar>
   );
 }
 

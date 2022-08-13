@@ -23,12 +23,14 @@
 //
 
 import {
-  AppBar, Button,
+  Button,
   CircularProgress,
   Dialog,
-  DialogContent, Grid,
+  DialogContent,
+  Grid,
   IconButton,
-  Toolbar, Typography,
+  Toolbar,
+  Typography,
   useMediaQuery,
   useTheme
 } from "@mui/material";
@@ -37,6 +39,7 @@ import { IRDETypes } from "../../utils/IRDE";
 import { Request } from "../../entities/Request";
 import { RequestDetailIRDE } from "./RequestDetailLogic";
 import { useNavigate } from "react-router-dom";
+import { AppBar } from "../../utils/AppBar";
 
 export function RequestDetailDialog(): JSX.Element {
   const theme = useTheme();
