@@ -22,9 +22,15 @@
 // THE SOFTWARE.
 //
 
-import { IRDE } from "../../utils/IRDE";
-import { Speaker } from "../../entities/Session";
+import { IRDE, IRDETypes } from "../../utils/IRDE";
+import { Session, Speaker } from "../../entities/Session";
 import { IdAndName } from "../session_detail/WatchedEvents";
+import { BehaviorSubject, NEVER, Observable, Subscription } from "rxjs";
+import { Logic } from "../../utils/LogicProvider";
+import { RequestDetailRepository } from "./RequestDetailRepository";
+import { Event } from "../../entities/Event";
+import { Request } from "../../entities/Request";
+import { errorMessage } from "../../utils/ErrorMessage";
 
 export interface RequestDetail {
   conference: string;
@@ -42,3 +48,209 @@ export interface RequestDetailRProps {}
 export interface RequestDetailDProps { requestDetail: RequestDetail }
 export interface RequestDetailEProps { message: string }
 export type RequestDetailIRDE = IRDE<RequestDetailIProps, RequestDetailRProps, RequestDetailDProps, RequestDetailEProps>;
+
+export interface RequestDetailLogic extends Logic {
+  setCurrentRequest(eventId: string, requestId: string): void;
+  
+  requestDetail$: Observable<RequestDetailIRDE>;
+}
+
+export class NullRequestDetailLogic implements RequestDetailLogic {
+  dispose() {}
+  setCurrentRequest(eventId: string, requestId: string): void {}
+
+  requestDetail$ = NEVER;
+}
+
+export class AppRequestDetailLogic implements RequestDetailLogic {
+  requestDetail$ = new BehaviorSubject<RequestDetailIRDE>({ type: IRDETypes.Initial });
+  
+  constructor(private readonly repository: RequestDetailRepository) {
+    this.subscribeAllEvents();
+  }
+
+  setCurrentRequest(eventId: string, requestId: string) {
+    if (this.latestEventId !== eventId || this.latestRequestId !== requestId) {
+      this.subscribeRequest(eventId, requestId);
+    }
+  }
+  
+  private allEvents: Event[] = [];
+  private eventsSubscription: Subscription | undefined = undefined;
+  
+  private subscribeAllEvents() {
+    this.eventsSubscription?.unsubscribe();
+    this.eventsSubscription = undefined;
+    
+    this.allEvents = [];
+    this.eventsSubscription = this.repository.getAllEvents$().subscribe(
+      {
+        next: (events) => {
+          this.allEvents = events;
+          this.updateRequestDetail();
+        },
+        error: (err) => {
+          console.log("Error at getAllEvents$ in AppRequestDetailLogic", err);
+          this.allEvents = [];
+          this.updateRequestDetail();
+        },
+      }
+    );
+  }
+  
+  private latestEventId: string | undefined = undefined;
+  private latestRequestId: string | undefined = undefined;
+  private latestRequest: Request | undefined = undefined;
+  private requestSubscription: Subscription | undefined = undefined;
+  
+  private subscribeRequest(eventId: string, requestId: string) {
+    this.requestSubscription?.unsubscribe();
+    this.requestSubscription = undefined;
+
+    this.latestEventId = eventId;
+    this.latestRequestId = requestId;
+    this.latestRequest = undefined;
+
+    // Make it loading
+    this.requestDetail$.next({ type: IRDETypes.Running });
+
+    this.requestSubscription = this.repository.getRequest$(eventId, requestId).subscribe(
+      {
+        next: (request) => {
+          this.latestRequest = request;
+          if (request.sessionId !== this.latestSessionId) {
+            this.subscribeSession(request.sessionId);
+          } else {
+            this.updateRequestDetail();
+          }
+        },
+        error: (err) => {
+          console.log("Error at getRequest$ in AppRequestDetailLogic", err);
+          this.latestEventId = undefined;
+          this.latestRequestId = undefined;
+          this.latestRequest = undefined;
+          this.requestDetail$.next({ type: IRDETypes.Error, message: errorMessage(err) })
+        }
+      }
+    );
+  }
+
+  private latestSessionId: string | undefined = undefined;
+  private latestSession: Session | undefined = undefined;
+  private sessionSubscription: Subscription | undefined = undefined;
+  
+  private subscribeSession(sessionId: string | undefined) {
+    this.sessionSubscription?.unsubscribe();
+    this.sessionSubscription = undefined;
+    
+    this.latestSessionId = sessionId;
+    this.latestSession = undefined;
+    
+    if (sessionId !== undefined) {
+      // Make it loading
+      this.requestDetail$.next({type: IRDETypes.Running});
+
+      this.sessionSubscription = this.repository.getSession$(sessionId).subscribe(
+        {
+          next: (session: Session) => {
+            this.latestSession = session;
+            if (this.latestConferenceId !== session.conferenceId) {
+              this.subscribeConference(session.conferenceId);
+            } else {
+              this.updateRequestDetail();
+            }
+          },
+          error: (err) => {
+            console.log("Error at getSession$ in AppRequestDetailLogic", err);
+            this.latestSessionId = undefined;
+            this.latestSession = undefined;
+            this.requestDetail$.next({ type: IRDETypes.Error, message: errorMessage(err) })
+          }
+        }
+      );
+    } else {
+      this.updateRequestDetail();
+    }
+  }
+  
+  private latestConferenceId: string | undefined = undefined;
+  private latestConferenceName: string | undefined = undefined;
+  private conferenceSubscription: Subscription | undefined = undefined;
+  
+  private subscribeConference(conferenceId: string | undefined) {
+    this.conferenceSubscription?.unsubscribe();
+    this.conferenceSubscription = undefined;
+    
+    this.latestConferenceId = conferenceId;
+    this.latestConferenceName = undefined;
+    
+    if (conferenceId !== undefined) {
+      this.conferenceSubscription = this.repository.getConferenceName$(conferenceId).subscribe(
+        {
+          next: (conferenceName: string) => {
+            this.latestConferenceName = conferenceName;
+            this.updateRequestDetail();
+          },
+          error: (err) => {
+            console.log("Error at getConferenceName$ in AppRequestDetailLogic", err);
+            this.latestConferenceId = undefined;
+            this.latestConferenceName = undefined;
+            this.updateRequestDetail();
+          }
+        }
+      )
+    } else {
+      this.updateRequestDetail();
+    }
+  }
+  
+  private updateRequestDetail() {
+    if (this.latestRequest === undefined) {
+      // Still loading request.
+      return;
+    }
+    if (this.latestRequest.sessionId !== undefined && this.latestSession === undefined) {
+      // Still loading linked session.
+      return;
+    }
+
+    const requestDetail = ((): RequestDetail => {
+      if (this.latestSession === undefined) {
+        const request = this.latestRequest;
+        return {
+          conference: request.conference,
+          minutes: request.minutes,
+          title: request.title,
+          watchedEvents: undefined,
+          description: undefined,
+          speakers: undefined,
+          slideUrl: request.slideUrl,
+          videoUrl: request.videoUrl,
+        };
+      } else {
+        const session = this.latestSession;
+        const watchedEvents = this.allEvents
+          .filter(event => session.watchedOn[event.id] !== undefined)
+          .map((event): IdAndName => ({id: event.id, name: event.name}));
+        return {
+          conference: this.latestConferenceName ?? "",
+          minutes: session.minutes,
+          title: session.title,
+          watchedEvents: watchedEvents,
+          description: session.description,
+          speakers: session.speakers,
+          slideUrl: session.slide,
+          videoUrl: session.video,
+        };
+      }
+    })();
+    this.requestDetail$.next({ type: IRDETypes.Done, requestDetail });
+  }
+
+  dispose() {
+    this.eventsSubscription?.unsubscribe();
+    this.requestSubscription?.unsubscribe();
+    this.sessionSubscription?.unsubscribe();
+    this.conferenceSubscription?.unsubscribe();
+  }
+}
