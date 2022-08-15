@@ -22,11 +22,11 @@
 // THE SOFTWARE.
 //
 
-import { IdAndName, SessionItem } from "./SessionLogic";
-import { Avatar, Card, CardActionArea, Grid, styled, Typography } from "@mui/material";
-import { Check } from "@mui/icons-material";
+import { SessionItem } from "./SessionLogic";
+import { Avatar, Card, CardActionArea, Grid, Typography } from "@mui/material";
 import { CaseInsensitiveSearch } from "../../utils/CaseInsensitiveSearch";
 import { Speaker } from "../../entities/Session";
+import { WatchedEvents } from "../session_detail/WatchedEvents";
 
 export interface SessionCardProps {
   sessionItem: SessionItem;
@@ -54,7 +54,11 @@ export function SessionCard({ sessionItem, keywordList, onClick }: SessionCardPr
               </Grid>
             </Grid>
           </Grid>
-          <WatchedEvents events={sessionItem.watchedEvents}/>
+          {(sessionItem.watchedEvents.length > 0) && (
+            <Grid item={true} xs={12}>
+              <WatchedEvents events={sessionItem.watchedEvents}/>
+            </Grid>
+          )}
           <Grid item={true} xs={12}>
             <Typography variant="h5" color="textPrimary">
               <BoldableLine lwbr={sessionTitleLwbr}/>
@@ -69,38 +73,6 @@ export function SessionCard({ sessionItem, keywordList, onClick }: SessionCardPr
         </Grid>
       </CardActionArea>
     </Card>
-  );
-}
-
-const WatchedTypography = styled(Typography)(({ theme }) => ({
-  borderStyle: "solid",
-  borderWidth: 1,
-  borderRadius: theme.shape.borderRadius,
-  padding: theme.shape.borderRadius,
-  borderColor: theme.palette.text.secondary,
-}));
-
-const WatchedCheck = styled(Check)(({ theme }) => ({
-  fontSize: theme.typography.body1.fontSize,
-  verticalAlign: "middle",
-}));
-
-interface WatchedEventsProps {
-  events: IdAndName[];
-}
-function WatchedEvents({ events }: WatchedEventsProps): JSX.Element {
-  return events.length === 0 ? <></> : (
-    <Grid item={true} xs={12}>
-      <Grid container={true} spacing={2} justifyContent="flex-start">
-        {events.map(event => (
-          <Grid key={event.id} item={true}>
-            <WatchedTypography variant="body2" color="textSecondary">
-              <WatchedCheck/>{event.name}
-            </WatchedTypography>
-          </Grid>
-        ))}
-      </Grid>
-    </Grid>
   );
 }
 
