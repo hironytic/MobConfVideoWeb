@@ -68,7 +68,7 @@ export function SessionCard({ sessionItem, keywordList, onClick }: SessionCardPr
             <Description description={sessionItem.session.description} keywordList={keywordList}/>
           </Grid>
           <Grid item={true} xs={12}>
-            {sessionItem.session.speakers.map((speaker, index) => <SpeakerArea key={index} speaker={speaker} keywordList={keywordList}/>)}
+            {sessionItem.session.speakers.map((speaker, index) => <OneSpeaker key={index} speaker={speaker} keywordList={keywordList}/>)}
           </Grid>
         </Grid>
       </CardActionArea>
@@ -156,11 +156,11 @@ function Description({ description, keywordList }: DescriptionProps): JSX.Elemen
   );
 }
 
-interface SpeakerAreaProps {
+interface OneSpeakerProps {
   speaker: Speaker;
   keywordList: string[];
 }
-function SpeakerArea({ speaker, keywordList }: SpeakerAreaProps): JSX.Element {
+function OneSpeaker({ speaker, keywordList }: OneSpeakerProps): JSX.Element {
   const lwbr = detectBoldRange(speaker.name, keywordList);
   return (
     <Grid container={true} spacing={1} alignItems="center" justifyItems="flex-start">
