@@ -22,11 +22,23 @@
 // THE SOFTWARE.
 //
 
-import { Request } from "../../entities/Request";
 import { IRDE } from "../../utils/IRDE";
+import { Speaker } from "../../entities/Session";
+import { IdAndName } from "../session_detail/WatchedEvents";
+
+export interface RequestDetail {
+  conference: string;
+  minutes: number | undefined;
+  title: string;
+  watchedEvents: IdAndName[] | undefined;
+  description: string | undefined;
+  speakers: Speaker[] | undefined;
+  slideUrl: string | undefined;
+  videoUrl: string | undefined;
+}
 
 export interface RequestDetailIProps {}
 export interface RequestDetailRProps {}
-export interface RequestDetailDProps { request: Request }
+export interface RequestDetailDProps { requestDetail: RequestDetail }
 export interface RequestDetailEProps { message: string }
 export type RequestDetailIRDE = IRDE<RequestDetailIProps, RequestDetailRProps, RequestDetailDProps, RequestDetailEProps>;

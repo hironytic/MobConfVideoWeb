@@ -36,10 +36,12 @@ import {
 } from "@mui/material";
 import { Close, Note, OndemandVideo } from "@mui/icons-material";
 import { IRDETypes } from "../../utils/IRDE";
-import { Request } from "../../entities/Request";
-import { RequestDetailIRDE } from "./RequestDetailLogic";
+import { RequestDetail, RequestDetailIRDE } from "./RequestDetailLogic";
 import { useNavigate } from "react-router-dom";
 import { AppBar } from "../../utils/AppBar";
+import { WatchedEvents } from "../session_detail/WatchedEvents";
+import { Description } from "../session_detail/Description";
+import { Speakers } from "../session_detail/Speakers";
 
 export function RequestDetailDialog(): JSX.Element {
   const theme = useTheme();
@@ -80,18 +82,17 @@ export function RequestDetailDialog(): JSX.Element {
 }
 
 function RequestDetailBody(): JSX.Element {
-  const request = {
-      id: "r2",
-      sessionId: undefined,
-      title: "Request 2",
-      conference: "Conference X",
-      minutes: 15,
-      videoUrl: "https://example.com/video2",
-      slideUrl: undefined,
-      memo: "memo",
-      isWatched: false,
-  } as Request;
-  const irde = { type: IRDETypes.Done, request: request } as RequestDetailIRDE;
+  const requestDetail = {
+    conference: "Conference X",
+    minutes: 15,
+    title: "Request 2",
+    watchedEvents: [{ id: "e1", name: "第1回" }, { id: "e3", name: "第3回" }],
+    description: "説明の文章です。\nかなり説明しています。これだけ説明すればいいでしょう。\nまだまだ説明します？\nもっとですか？\nこれでどうでしょうか。もういいですか？\nこれが最後の説明です。丁寧に説明しました。最後にまとめると、いろいろと説明しているということです。非常に多くの説明が必要でしたが、それらを完遂することができました。",
+    speakers: [{ name: "hoge", twitter: undefined, icon: undefined }],
+    slideUrl: undefined,
+    videoUrl: "https://example.com/video2",
+  } as RequestDetail;
+  const irde = { type: IRDETypes.Done, requestDetail: requestDetail } as RequestDetailIRDE;
 
   switch (irde.type) {
     case IRDETypes.Initial:
@@ -99,7 +100,7 @@ function RequestDetailBody(): JSX.Element {
     case IRDETypes.Running:
       return <RequestDetailRunningBody/>;
     case IRDETypes.Done:
-      return <RequestDetailDoneBody request={irde.request} />
+      return <RequestDetailDoneBody requestDetail={irde.requestDetail} />
     case IRDETypes.Error:
       return <RequestDetailErrorBody message={irde.message}/>
   }
@@ -118,45 +119,66 @@ function RequestDetailRunningBody(): JSX.Element {
 }
 
 interface RequestDetailDoneBodyProps {
-  request: Request
+  requestDetail: RequestDetail
 }
-function RequestDetailDoneBody({ request }: RequestDetailDoneBodyProps): JSX.Element {
+function RequestDetailDoneBody({ requestDetail }: RequestDetailDoneBodyProps): JSX.Element {
   return (
-    <Grid container={true} direction="column" spacing={2} justifyContent="space-between">
+    <Grid container={true} spacing={2} justifyContent="space-between">
       <Grid item={true} xs={12}>
-        <Grid container={true} direction="row" spacing={2} justifyContent="space-between">
+        <Grid container={true} spacing={2} justifyContent="space-between">
           <Grid item={true}>
             <Typography variant="body2" color="textSecondary">
-              {request.conference}
+              {requestDetail.conference}
             </Typography>
           </Grid>
           <Grid item={true} style={{textAlign: "end"}}>
-            {(request.minutes) && (
+            {(requestDetail.minutes) && (
               <Typography variant="body2" color="textSecondary">
-                {request.minutes}分
+                {requestDetail.minutes}分
               </Typography>
             )}
           </Grid>
         </Grid>
       </Grid>
+      {(requestDetail.watchedEvents !== undefined && requestDetail.watchedEvents.length > 0) && (
+        <Grid item={true} xs={12}>
+          <WatchedEvents events={requestDetail.watchedEvents}/>
+        </Grid>
+      )}
       <Grid item={true} xs={12}>
         <Typography variant="h5" color="textPrimary">
-          {request.title}
+          {requestDetail.title}
         </Typography>
       </Grid>
+      {(requestDetail.description !== undefined) && (
+        <Grid item={true} xs={12}>
+          <Description description={requestDetail.description}/>
+        </Grid>
+      )}
       <Grid item={true} xs={12}>
-        <Grid container={true} spacing={0} alignItems="center" justifyContent="flex-end">
-          <Grid item={true}>
-            {request.slideUrl !== undefined && (
-              <Button href={request.slideUrl} target="_blank" color="primary">
-                <Note /> スライド
-              </Button>
-            )}
-          </Grid>
-          <Grid item={true}>
-            <Button href={request.videoUrl} target="_blank" color="primary">
-              <OndemandVideo/> ビデオ
-            </Button>
+        <Grid container={true} spacing={0} alignItems="flex-end" justifyContent="space-between">
+          {(requestDetail.speakers !== undefined) && ( 
+            <Grid item={true}>
+              <Speakers speakers={requestDetail.speakers}/>
+            </Grid>
+          )}
+          <Grid item={true} style={{flexGrow: 1}}>
+            <Grid container={true} spacing={0} alignItems="center" justifyContent="flex-end">
+              <Grid item={true}>
+                {requestDetail.slideUrl !== undefined && (
+                  <Button href={requestDetail.slideUrl} target="_blank" color="primary">
+                    <Note /> スライド
+                  </Button>
+                )}
+              </Grid>
+              <Grid item={true}>
+                {requestDetail.videoUrl !== undefined && (
+                  <Button href={requestDetail.videoUrl} target="_blank" color="primary">
+                    <OndemandVideo/> ビデオ
+                  </Button>
+                )}
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
