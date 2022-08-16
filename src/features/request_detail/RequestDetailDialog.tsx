@@ -36,17 +36,30 @@ import {
 } from "@mui/material";
 import { Close, Note, OndemandVideo } from "@mui/icons-material";
 import { IRDETypes } from "../../utils/IRDE";
-import { RequestDetail, RequestDetailIRDE } from "./RequestDetailLogic";
-import { useNavigate } from "react-router-dom";
+import { RequestDetail } from "./RequestDetailLogic";
+import { useNavigate, useParams } from "react-router-dom";
 import { AppBar } from "../../utils/AppBar";
 import { WatchedEvents } from "../session_detail/WatchedEvents";
 import { Description } from "../session_detail/Description";
 import { Speakers } from "../session_detail/Speakers";
+import { useContext, useEffect } from "react";
+import { RequestDetailContext } from "./RequestDetailContext";
+import { useObservableState } from "observable-hooks";
 
 export function RequestDetailDialog(): JSX.Element {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const params = useParams();
+  const logic = useContext(RequestDetailContext);
+
+  useEffect(() => {
+    const eventId = params["eventId"];
+    const requestId = params["requestId"];
+    if (eventId !== undefined && requestId !== undefined) {
+      logic.setCurrentRequest(eventId, requestId);
+    }
+  }, [params, logic]);
   
   function onClose() {
     navigate("..");
@@ -82,17 +95,8 @@ export function RequestDetailDialog(): JSX.Element {
 }
 
 function RequestDetailBody(): JSX.Element {
-  const requestDetail = {
-    conference: "Conference X",
-    minutes: 15,
-    title: "Request 2",
-    watchedEvents: [{ id: "e1", name: "第1回" }, { id: "e3", name: "第3回" }],
-    description: "説明の文章です。\nかなり説明しています。これだけ説明すればいいでしょう。\nまだまだ説明します？\nもっとですか？\nこれでどうでしょうか。もういいですか？\nこれが最後の説明です。丁寧に説明しました。最後にまとめると、いろいろと説明しているということです。非常に多くの説明が必要でしたが、それらを完遂することができました。",
-    speakers: [{ name: "hoge", twitter: undefined, icon: undefined }],
-    slideUrl: undefined,
-    videoUrl: "https://example.com/video2",
-  } as RequestDetail;
-  const irde = { type: IRDETypes.Done, requestDetail: requestDetail } as RequestDetailIRDE;
+  const logic = useContext(RequestDetailContext);
+  const irde = useObservableState(logic.requestDetail$, { type: IRDETypes.Initial });
 
   switch (irde.type) {
     case IRDETypes.Initial:
