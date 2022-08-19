@@ -49,7 +49,7 @@ export class FirestoreRequestDetailRepository implements RequestDetailRepository
         map(snapshot => {
           const request = snapshot.data();
           if (request === undefined) {
-            throw new Error(`Request ${eventId} / ${requestId} is not found on Firestore!`);
+            throw new Error(`Request is not found.`);
           }
           return request;
         }),
@@ -67,7 +67,7 @@ export class FirestoreRequestDetailRepository implements RequestDetailRepository
         map(snapshot => {
           const session = snapshot.data();
           if (session === undefined) {
-            throw new Error(`Session ${sessionId} is not found on Firestore!`);
+            throw new Error(`Session is not found.`);
           }
           return session;
         }),
@@ -104,7 +104,7 @@ export class FirestoreRequestDetailRepository implements RequestDetailRepository
         map(snapshot => {
           const conference = snapshot.data();
           if (conference === undefined) {
-            throw new Error(`Conference ${conferenceId} is not found on Firestore!`);
+            throw new Error(`Conference is not found.`);
           }
           return conference.name;
         }),
