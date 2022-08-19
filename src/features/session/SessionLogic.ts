@@ -31,11 +31,7 @@ import { FilteredSessions, SessionFilter, SessionRepository } from "./SessionRep
 import { runDetached } from "../../utils/RunDetached";
 import { executeOnce } from "../../utils/ExecuteOnce";
 import { errorMessage } from "../../utils/ErrorMessage";
-
-export interface IdAndName {
-  id: string;
-  name: string;
-}
+import { IdAndName } from "../session_detail/WatchedEvents";
 
 export interface SessionItem {
   session: Session;

@@ -1,5 +1,5 @@
 //
-// AppProvider.tsx
+// RequestDetailContext.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -23,25 +23,6 @@
 //
 
 import React from "react";
-import { AppConfigProvider } from "./AppConfigProvider";
-import { AppRequestProvider } from "./AppRequestProvider";
-import { AppSessionProvider } from "./AppSessionProvider";
-import { AppRequestDetailProvider } from "./AppRequestDetailProvider";
+import { NullRequestDetailLogic, RequestDetailLogic } from "./RequestDetailLogic";
 
-interface AppProviderProps {
-  children: React.ReactNode;
-}
-
-export function AppProvider({ children }: AppProviderProps): JSX.Element {
-  return (
-    <AppConfigProvider>
-      <AppRequestProvider>
-        <AppRequestDetailProvider>
-          <AppSessionProvider>
-            {children}
-          </AppSessionProvider>
-        </AppRequestDetailProvider>          
-      </AppRequestProvider>
-    </AppConfigProvider>
-  );
-}
+export const RequestDetailContext = React.createContext<RequestDetailLogic>(new NullRequestDetailLogic());

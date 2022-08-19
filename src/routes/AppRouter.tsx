@@ -26,6 +26,7 @@ import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { Home } from "../features/home/Home";
 import { RequestPage } from "../features/request/RequestPage";
 import { SessionPage } from "../features/session/SessionPage";
+import { RequestDetailDialog } from "../features/request_detail/RequestDetailDialog";
 
 export function AppRouter(): JSX.Element {
   return (
@@ -34,7 +35,9 @@ export function AppRouter(): JSX.Element {
         <Route path="/" element={<Home/>}>
           <Route path="request" element={<Outlet/>}>
             <Route index element={<RequestPage/>}/>
-            <Route path=":eventId" element={<RequestPage/>}/>
+            <Route path=":eventId" element={<RequestPage/>}>
+              <Route path=":requestId" element={<RequestDetailDialog/>}/>
+            </Route>
           </Route>
           <Route path="session" element={<Outlet/>}>
             <Route index element={<SessionPage/>}/>

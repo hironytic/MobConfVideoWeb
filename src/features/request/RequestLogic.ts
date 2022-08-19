@@ -43,7 +43,7 @@ export interface RequestLogic extends Logic {
   requestList$: Observable<RequestListIRDE>;
 }
 
-export class NullRequestRequestLogic implements RequestLogic {
+export class NullRequestLogic implements RequestLogic {
   dispose() {}
 
   readonly currentEventId: string | undefined = undefined;

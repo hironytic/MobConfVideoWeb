@@ -1,5 +1,5 @@
 //
-// HomeAppBar.tsx
+// WatchedEvents.tsx
 //
 // Copyright (c) 2018-2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,41 +22,40 @@
 // THE SOFTWARE.
 //
 
-import { Tab, Tabs, Toolbar, Typography } from "@mui/material";
-import { List, VideoLabel } from "@mui/icons-material";
-import { Link } from "react-router-dom";
-import { AppBar } from "../../utils/AppBar";
+import { Grid, styled, Typography } from "@mui/material";
+import { Check } from "@mui/icons-material";
 
-export const HomeTabs = {
-  Request: "request",
-  Session: "session",
-} as const;
+const WatchedTypography = styled(Typography)(({ theme }) => ({
+  borderStyle: "solid",
+  borderWidth: 1,
+  borderRadius: theme.shape.borderRadius,
+  padding: theme.shape.borderRadius,
+  borderColor: theme.palette.text.secondary,
+}));
 
-export type HomeTab = typeof HomeTabs[keyof typeof HomeTabs];
+const WatchedCheck = styled(Check)(({ theme }) => ({
+  fontSize: theme.typography.body1.fontSize,
+  verticalAlign: "middle",
+}));
 
-interface HomeAppBarProps {
-  title: string;
-  tab: HomeTab | undefined;
+export interface IdAndName {
+  id: string;
+  name: string;
 }
 
-export function HomeAppBar({ title, tab }: HomeAppBarProps): JSX.Element {
-  return (
-    <AppBar position="sticky">
-      <Toolbar>
-        <Typography variant="h6">{title}</Typography>
-        <div style={{ flexGrow: 1 }} />
-        <AppTabs tab={tab}/>
-      </Toolbar>
-    </AppBar>
-  );
+interface WatchedEventsProps {
+  events: IdAndName[];
 }
-
-
-function AppTabs( { tab }: { tab: HomeTab | undefined }): JSX.Element {
+export function WatchedEvents({ events }: WatchedEventsProps): JSX.Element {
   return (
-    <Tabs value={tab ?? false}>
-      <Tab value={HomeTabs.Request} label="受付済み" icon={<List/>} to="/request" component={Link} />
-      <Tab value={HomeTabs.Session} label="動画検索" icon={<VideoLabel/>} to="/session" component={Link}/>
-    </Tabs>
+    <Grid container={true} spacing={2} justifyContent="flex-start">
+      {events.map(event => (
+        <Grid key={event.id} item={true}>
+          <WatchedTypography variant="body2" color="textSecondary">
+            <WatchedCheck/>{event.name}
+          </WatchedTypography>
+        </Grid>
+      ))}
+    </Grid>
   );
 }

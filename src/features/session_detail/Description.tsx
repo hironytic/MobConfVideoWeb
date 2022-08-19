@@ -1,7 +1,7 @@
 //
-// AppProvider.tsx
+// Description.tsx
 //
-// Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2019-2022 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,26 +22,33 @@
 // THE SOFTWARE.
 //
 
-import React from "react";
-import { AppConfigProvider } from "./AppConfigProvider";
-import { AppRequestProvider } from "./AppRequestProvider";
-import { AppSessionProvider } from "./AppSessionProvider";
-import { AppRequestDetailProvider } from "./AppRequestDetailProvider";
+import { Typography } from "@mui/material";
 
-interface AppProviderProps {
-  children: React.ReactNode;
+interface DescriptionProps {
+  description: string;
+}
+export function Description({ description }: DescriptionProps): JSX.Element {
+  const lines = description.split(/\r\n|\r|\n/);
+  return (
+    <>
+      {lines.map((line, index) => (
+        <Typography key={index} variant="body2" color="textPrimary">
+          {line.length > 0 ? preserveBeginningSpace(line) : (<br/>)}
+        </Typography>
+      ))}
+    </>
+  );
 }
 
-export function AppProvider({ children }: AppProviderProps): JSX.Element {
-  return (
-    <AppConfigProvider>
-      <AppRequestProvider>
-        <AppRequestDetailProvider>
-          <AppSessionProvider>
-            {children}
-          </AppSessionProvider>
-        </AppRequestDetailProvider>          
-      </AppRequestProvider>
-    </AppConfigProvider>
-  );
+function preserveBeginningSpace(line: string): string {
+  let prefix = "";
+  while (line.charAt(0) === " ") {
+    prefix = prefix + "\u00a0";
+    line = line.substring(1);
+  }
+  if (prefix.length > 0) {
+    return prefix + line;
+  } else {
+    return line;
+  }
 }

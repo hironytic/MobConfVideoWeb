@@ -1,5 +1,5 @@
 //
-// AppProvider.tsx
+// AppBar.tsx
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,26 +22,45 @@
 // THE SOFTWARE.
 //
 
+import { AppBar as MUIAppBar, AppBarProps, createTheme, ThemeProvider } from "@mui/material";
 import React from "react";
-import { AppConfigProvider } from "./AppConfigProvider";
-import { AppRequestProvider } from "./AppRequestProvider";
-import { AppSessionProvider } from "./AppSessionProvider";
-import { AppRequestDetailProvider } from "./AppRequestDetailProvider";
 
-interface AppProviderProps {
-  children: React.ReactNode;
-}
+const appBarTheme = createTheme({
+  palette: {
+    primary: {
+      main: "#f5c300",
+      contrastText: "#fff",
+    },
+  },
+  components: {
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#11509a",
+        },
+      },
+    },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          color: "white",
+          opacity: 0.7,
+          "&.Mui-selected": {
+            color: "white",
+            opacity: 1.0,
+          },
+        },
+      },
+    },
+  },
+});
 
-export function AppProvider({ children }: AppProviderProps): JSX.Element {
+export function AppBar({ position, children }: AppBarProps): JSX.Element {
   return (
-    <AppConfigProvider>
-      <AppRequestProvider>
-        <AppRequestDetailProvider>
-          <AppSessionProvider>
-            {children}
-          </AppSessionProvider>
-        </AppRequestDetailProvider>          
-      </AppRequestProvider>
-    </AppConfigProvider>
-  );
+    <ThemeProvider theme={appBarTheme}>
+      <MUIAppBar position={position}>
+        {children}
+      </MUIAppBar>
+    </ThemeProvider>
+  )
 }

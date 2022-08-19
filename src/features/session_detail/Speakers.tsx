@@ -1,7 +1,7 @@
 //
-// HomeAppBar.tsx
+// Speakers.tsx
 //
-// Copyright (c) 2018-2022 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2019-2022 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,41 +22,34 @@
 // THE SOFTWARE.
 //
 
-import { Tab, Tabs, Toolbar, Typography } from "@mui/material";
-import { List, VideoLabel } from "@mui/icons-material";
-import { Link } from "react-router-dom";
-import { AppBar } from "../../utils/AppBar";
+import { Speaker } from "../../entities/Session";
+import { Avatar, Grid, Typography } from "@mui/material";
 
-export const HomeTabs = {
-  Request: "request",
-  Session: "session",
-} as const;
-
-export type HomeTab = typeof HomeTabs[keyof typeof HomeTabs];
-
-interface HomeAppBarProps {
-  title: string;
-  tab: HomeTab | undefined;
+interface SpeakersProps {
+  speakers: Speaker[];
 }
-
-export function HomeAppBar({ title, tab }: HomeAppBarProps): JSX.Element {
+export function Speakers({ speakers }: SpeakersProps): JSX.Element {
   return (
-    <AppBar position="sticky">
-      <Toolbar>
-        <Typography variant="h6">{title}</Typography>
-        <div style={{ flexGrow: 1 }} />
-        <AppTabs tab={tab}/>
-      </Toolbar>
-    </AppBar>
+    <>
+      {speakers.map((speaker, index) => <OneSpeaker key={index} speaker={speaker}/>)}
+    </>
   );
 }
 
-
-function AppTabs( { tab }: { tab: HomeTab | undefined }): JSX.Element {
+interface OneSpeakerProps {
+  speaker: Speaker;
+}
+function OneSpeaker({ speaker }: OneSpeakerProps): JSX.Element {
   return (
-    <Tabs value={tab ?? false}>
-      <Tab value={HomeTabs.Request} label="受付済み" icon={<List/>} to="/request" component={Link} />
-      <Tab value={HomeTabs.Session} label="動画検索" icon={<VideoLabel/>} to="/session" component={Link}/>
-    </Tabs>
+    <Grid container={true} spacing={1} alignItems="center" justifyItems="flex-start">
+      <Grid item={true}>
+        <Avatar src={speaker.icon}/>
+      </Grid>
+      <Grid item={true}>
+        <Typography variant="body2" color="textPrimary">
+          {speaker.name}
+        </Typography>
+      </Grid>
+    </Grid>
   );
 }

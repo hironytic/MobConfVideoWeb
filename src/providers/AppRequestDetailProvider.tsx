@@ -1,5 +1,5 @@
 //
-// AppProvider.tsx
+// AppRequestDetailProvider.tsx
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,26 +22,16 @@
 // THE SOFTWARE.
 //
 
-import React from "react";
-import { AppConfigProvider } from "./AppConfigProvider";
-import { AppRequestProvider } from "./AppRequestProvider";
-import { AppSessionProvider } from "./AppSessionProvider";
-import { AppRequestDetailProvider } from "./AppRequestDetailProvider";
+import { ProviderProps } from "./ProviderProps";
+import { LogicProvider } from "../utils/LogicProvider";
+import { AppRequestDetailLogic } from "../features/request_detail/RequestDetailLogic";
+import { RequestDetailContext } from "../features/request_detail/RequestDetailContext";
+import { FirestoreRequestDetailRepository } from "../features/request_detail/RequestDetailRepository";
 
-interface AppProviderProps {
-  children: React.ReactNode;
-}
-
-export function AppProvider({ children }: AppProviderProps): JSX.Element {
+export function AppRequestDetailProvider({ children }: ProviderProps): JSX.Element {
   return (
-    <AppConfigProvider>
-      <AppRequestProvider>
-        <AppRequestDetailProvider>
-          <AppSessionProvider>
-            {children}
-          </AppSessionProvider>
-        </AppRequestDetailProvider>          
-      </AppRequestProvider>
-    </AppConfigProvider>
+    <LogicProvider context={RequestDetailContext} creator={() => new AppRequestDetailLogic(new FirestoreRequestDetailRepository())}>
+      {children}
+    </LogicProvider>
   );
 }

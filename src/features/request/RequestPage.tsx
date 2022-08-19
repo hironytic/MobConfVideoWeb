@@ -26,7 +26,7 @@ import { EventTabs } from "./EventTabs";
 import { RequestList } from "./RequestList";
 import { useContext, useEffect } from "react";
 import { RequestContext } from "./RequestContext";
-import { useNavigate, useParams } from "react-router-dom";
+import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { IRDETypes } from "../../utils/IRDE";
 import { useObservableState } from "observable-hooks";
 
@@ -54,6 +54,7 @@ export function RequestPage(): JSX.Element {
     <>
       <EventTabs events={allEvents} currentId={eventId ?? false} onCurrentIdChanged={onCurrentIdChanged} />
       <RequestList requestList={requestListIRDE}/>
+      <Outlet/>
     </>
   );
 }

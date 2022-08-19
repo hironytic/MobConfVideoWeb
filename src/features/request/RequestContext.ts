@@ -23,6 +23,6 @@
 //
 
 import React from "react";
-import { NullRequestRequestLogic, RequestLogic } from "./RequestLogic";
+import { NullRequestLogic, RequestLogic } from "./RequestLogic";
 
-export const RequestContext = React.createContext<RequestLogic>(new NullRequestRequestLogic());
+export const RequestContext = React.createContext<RequestLogic>(new NullRequestLogic());
