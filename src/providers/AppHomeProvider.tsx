@@ -1,5 +1,5 @@
 //
-// AppConfigProvider.tsx
+// AppHomeProvider.tsx
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,15 +22,15 @@
 // THE SOFTWARE.
 //
 
-import { ConfigContext } from "../features/config/ConfigContext";
+import { HomeContext } from "../features/home/HomeContext";
 import { ProviderProps } from "./ProviderProps";
-import { FirestoreConfigRepository } from "../features/config/ConfigRepository";
-import { AppConfigLogic } from "../features/config/ConfigLogic";
+import { FirestoreHomeRepository } from "../features/home/HomeRepository";
+import { AppHomeLogic } from "../features/home/HomeLogic";
 import { LogicProvider } from "../utils/LogicProvider";
 
-export function AppConfigProvider({ children }: ProviderProps): JSX.Element {
+export function AppHomeProvider({ children }: ProviderProps): JSX.Element {
   return (
-    <LogicProvider context={ConfigContext} creator={() => new AppConfigLogic(new FirestoreConfigRepository())}>
+    <LogicProvider context={HomeContext} creator={() => new AppHomeLogic(new FirestoreHomeRepository())}>
       {children}
     </LogicProvider>
   );

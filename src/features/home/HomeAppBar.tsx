@@ -26,35 +26,32 @@ import { Tab, Tabs, Toolbar, Typography } from "@mui/material";
 import { List, VideoLabel } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { AppBar } from "../../utils/AppBar";
+import { HomeTab, HomeTabs } from "./HomeLogic";
+import { useContext } from "react";
+import { HomeContext } from "./HomeContext";
+import { useObservableState } from "observable-hooks";
 
-export const HomeTabs = {
-  Request: "request",
-  Session: "session",
-} as const;
-
-export type HomeTab = typeof HomeTabs[keyof typeof HomeTabs];
-
-interface HomeAppBarProps {
-  title: string;
-  tab: HomeTab | undefined;
-}
-
-export function HomeAppBar({ title, tab }: HomeAppBarProps): JSX.Element {
+export function HomeAppBar(): JSX.Element {
+  const homeLogic = useContext(HomeContext);
+  const isInMaintenance = useObservableState(homeLogic.isInMaintenance$, false);
+  const title = useObservableState(homeLogic.title$, "");
+  const tab = useObservableState(homeLogic.homeTab$, false);
+  
   return (
     <AppBar position="sticky">
       <Toolbar>
-        <Typography variant="h6">{title}</Typography>
+        <Typography variant="h6">{isInMaintenance ? "メンテナンス中" : title}</Typography>
         <div style={{ flexGrow: 1 }} />
-        <AppTabs tab={tab}/>
+        <AppTabs tab={isInMaintenance ? false : tab}/>
       </Toolbar>
     </AppBar>
   );
 }
 
 
-function AppTabs( { tab }: { tab: HomeTab | undefined }): JSX.Element {
+function AppTabs( { tab }: { tab: HomeTab }): JSX.Element {
   return (
-    <Tabs value={tab ?? false}>
+    <Tabs value={tab}>
       <Tab value={HomeTabs.Request} label="受付済み" icon={<List/>} to="/request" component={Link} />
       <Tab value={HomeTabs.Session} label="動画検索" icon={<VideoLabel/>} to="/session" component={Link}/>
     </Tabs>

@@ -41,6 +41,7 @@ export function AppRouter(): JSX.Element {
           </Route>
           <Route path="session" element={<Outlet/>}>
             <Route index element={<SessionPage/>}/>
+            <Route path=":sessionId" element={<></>}/>
           </Route>
           <Route path="*" element={<></>} />
         </Route>

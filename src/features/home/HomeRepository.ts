@@ -1,5 +1,5 @@
 //
-// ConfigRepository.ts
+// HomeRepository.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -27,11 +27,11 @@ import { Config, configConverter } from "../../entities/Config";
 import { withFirestore } from "../../Firebase";
 import { collection, doc, DocumentSnapshot, onSnapshot } from 'firebase/firestore';
 
-export interface ConfigRepository {
+export interface HomeRepository {
   config$: Observable<Config>;
 }
 
-export class FirestoreConfigRepository implements ConfigRepository {
+export class FirestoreHomeRepository implements HomeRepository {
   get config$(): Observable<Config> {
     return withFirestore(firestore => {
       const collectionRef = collection(firestore, "config");
