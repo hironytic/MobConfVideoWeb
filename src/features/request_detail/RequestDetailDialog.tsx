@@ -34,7 +34,7 @@ import {
   useMediaQuery,
   useTheme
 } from "@mui/material";
-import { Close, Note, OndemandVideo } from "@mui/icons-material";
+import { ArrowBack, Note, OndemandVideo } from "@mui/icons-material";
 import { IRDETypes } from "../../utils/IRDE";
 import { RequestDetail } from "./RequestDetailLogic";
 import { useNavigate, useParams } from "react-router-dom";
@@ -77,7 +77,7 @@ export function RequestDetailDialog(): JSX.Element {
           <AppBar>
             <Toolbar>
               <IconButton color="inherit" onClick={onClose} aria-label="Close">
-                <Close/>
+                <ArrowBack/>
               </IconButton>
             </Toolbar>
           </AppBar>
