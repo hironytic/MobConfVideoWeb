@@ -28,11 +28,11 @@ import { withFirestore } from "../../Firebase";
 import { collection, doc, DocumentSnapshot, onSnapshot } from 'firebase/firestore';
 
 export interface HomeRepository {
-  config$: Observable<Config>;
+  getConfig$(): Observable<Config>;
 }
 
 export class FirestoreHomeRepository implements HomeRepository {
-  get config$(): Observable<Config> {
+  getConfig$(): Observable<Config> {
     return withFirestore(firestore => {
       const collectionRef = collection(firestore, "config");
       const docRef = doc(collectionRef, "config").withConverter(configConverter);

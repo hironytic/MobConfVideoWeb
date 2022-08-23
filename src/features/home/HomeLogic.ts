@@ -63,7 +63,7 @@ export class AppHomeLogic implements HomeLogic {
   title$: Observable<string>;
   
   constructor(configRepository: HomeRepository) {
-    const config$ = configRepository.config$.pipe(
+    const config$ = configRepository.getConfig$().pipe(
       tap({ error(error) { console.error("Error occurred in HomeRepository.config$", error) }}),
       retry({ delay: 10_000 }),
     );
