@@ -23,7 +23,7 @@
 //
 
 import React from "react";
-import { AppConfigProvider } from "./AppConfigProvider";
+import { AppHomeProvider } from "./AppHomeProvider";
 import { AppRequestProvider } from "./AppRequestProvider";
 import { AppSessionProvider } from "./AppSessionProvider";
 import { AppRequestDetailProvider } from "./AppRequestDetailProvider";
@@ -34,7 +34,7 @@ interface AppProviderProps {
 
 export function AppProvider({ children }: AppProviderProps): JSX.Element {
   return (
-    <AppConfigProvider>
+    <AppHomeProvider>
       <AppRequestProvider>
         <AppRequestDetailProvider>
           <AppSessionProvider>
@@ -42,6 +42,6 @@ export function AppProvider({ children }: AppProviderProps): JSX.Element {
           </AppSessionProvider>
         </AppRequestDetailProvider>          
       </AppRequestProvider>
-    </AppConfigProvider>
+    </AppHomeProvider>
   );
 }

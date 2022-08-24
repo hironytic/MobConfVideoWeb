@@ -22,17 +22,17 @@
 // THE SOFTWARE.
 //
 
-import { HomeAppBar, HomeTab, HomeTabs } from "./HomeAppBar";
-import { Location, matchPath, Outlet, useLocation } from "react-router-dom";
+import { HomeAppBar } from "./HomeAppBar";
+import { Outlet, useLocation } from "react-router-dom";
 import { CssBaseline } from "@mui/material";
 import { Maintenance } from "./Maintenance";
-import { useContext } from "react";
-import { ConfigContext } from "../config/ConfigContext";
+import { useContext, useEffect } from "react";
+import { HomeContext } from "./HomeContext";
 import { useObservableState } from "observable-hooks";
 
 export function Home(): JSX.Element {
-  const configLogic = useContext(ConfigContext);
-  const isInMaintenance = useObservableState(configLogic.isInMaintenance$);
+  const homeLogic = useContext(HomeContext);
+  const isInMaintenance = useObservableState(homeLogic.isInMaintenance$);
 
   return (
     <>
@@ -46,32 +46,16 @@ export function Home(): JSX.Element {
 
 function OrdinaryHome(): JSX.Element {
   const location = useLocation();
-  const tab = getTab(location);
+  const homeLogic = useContext(HomeContext);
+
+  useEffect(() => {
+    homeLogic.setLocation(location);
+  }, [location, homeLogic])
+  
   return (
     <>
-      <HomeAppBar title={pageTitle(tab)} tab={tab} />
+      <HomeAppBar />
       <Outlet/>
     </>
   );
-}
-
-function getTab({ pathname }: Location): HomeTab | undefined {
-  if (matchPath({ path: "/request", end: false }, pathname) !== null) {
-    return HomeTabs.Request;
-  } else if (matchPath({ path: "/session", end: false }, pathname) !== null) {
-    return HomeTabs.Session;
-  } else {
-    return undefined;
-  }
-}
-
-function pageTitle(navRoute: HomeTab | undefined): string {
-  switch (navRoute) {
-    case HomeTabs.Request:
-        return "リクエスト一覧";
-    case HomeTabs.Session:
-        return "動画を見つける";
-    default:
-        return "";
-  }
 }

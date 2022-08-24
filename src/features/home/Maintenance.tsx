@@ -28,7 +28,7 @@ import { Typography } from "@mui/material";
 export function Maintenance(): JSX.Element {
   return (
     <>
-      <HomeAppBar title="メンテナンス中" tab={undefined} />
+      <HomeAppBar />
       <div style={{ padding: 20 }}>
         <Typography variant="subtitle1">
           🚧 ただいま メンテナンス中です 🚧

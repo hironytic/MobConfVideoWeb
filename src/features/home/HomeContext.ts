@@ -1,5 +1,5 @@
 //
-// ConfigLogic.ts
+// HomeContext.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,34 +22,7 @@
 // THE SOFTWARE.
 //
 
-import { map, NEVER, Observable, retry, shareReplay, tap } from "rxjs";
-import { ConfigRepository } from "./ConfigRepository";
-import { Logic } from "../../utils/LogicProvider";
+import React from "react";
+import { HomeLogic, NullHomeLogic } from "./HomeLogic";
 
-export interface ConfigLogic extends Logic {
-  isInMaintenance$: Observable<boolean>;
-}
-
-export class NullConfigLogic implements ConfigLogic {
-  dispose() {}
-  
-  isInMaintenance$: Observable<boolean> = NEVER;
-}
-
-export class AppConfigLogic implements ConfigLogic {
-  dispose() {}
-  
-  isInMaintenance$: Observable<boolean>;
-  
-  constructor(configRepository: ConfigRepository) {
-    const config$ = configRepository.config$.pipe(
-      tap({ error(error) { console.error("Error occurred in ConfigRepository.config$", error) }}),
-      retry({ delay: 10_000 }),
-      shareReplay(1),
-    );
-    
-    this.isInMaintenance$ = config$.pipe(
-      map(it => it.isInMaintenance),
-    );
-  }
-}
+export const HomeContext = React.createContext<HomeLogic>(new NullHomeLogic());
