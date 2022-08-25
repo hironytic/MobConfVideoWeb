@@ -1,5 +1,5 @@
 //
-// AppRouter.tsx
+// SessionDetailLogic.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,31 +22,19 @@
 // THE SOFTWARE.
 //
 
-import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
-import { Home } from "../features/home/Home";
-import { RequestPage } from "../features/request/RequestPage";
-import { SessionPage } from "../features/session/SessionPage";
-import { RequestDetailDialog } from "../features/request_detail/RequestDetailDialog";
-import { SessionDetailPage } from "../features/session_detail/SessionDetailPage";
+import { IRDE } from "../../utils/IRDE";
+import { Session } from "../../entities/Session";
+import { IdAndName } from "./WatchedEvents";
 
-export function AppRouter(): JSX.Element {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home/>}>
-          <Route path="request" element={<Outlet/>}>
-            <Route index element={<RequestPage/>}/>
-            <Route path=":eventId" element={<RequestPage/>}>
-              <Route path=":requestId" element={<RequestDetailDialog/>}/>
-            </Route>
-          </Route>
-          <Route path="session" element={<Outlet/>}>
-            <Route index element={<SessionPage/>}/>
-            <Route path=":sessionId" element={<SessionDetailPage/>}/>
-          </Route>
-          <Route path="*" element={<></>} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  )
+export interface SessionItem {
+  session: Session;
+  conferenceName: string;
+  watchedEvents: IdAndName[];
+  canRequest: boolean;
 }
+
+export interface SessionDetailIProps {}
+export interface SessionDetailRProps {}
+export interface SessionDetailDProps { sessionItem: SessionItem }
+export interface SessionDetailEProps { message: string }
+export type SessionDetailIRDE = IRDE<SessionDetailIProps, SessionDetailRProps, SessionDetailDProps, SessionDetailEProps>;
