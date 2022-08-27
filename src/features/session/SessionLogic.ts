@@ -27,11 +27,12 @@ import { Session } from "../../entities/Session";
 import { Logic } from "../../utils/LogicProvider";
 import { BehaviorSubject, NEVER, Observable, Subscription } from "rxjs";
 import { DropdownState } from "../../utils/Dropdown";
-import { FilteredSessions, SessionFilter, SessionRepository } from "./SessionRepository";
+import { SessionRepository } from "./SessionRepository";
 import { runDetached } from "../../utils/RunDetached";
 import { executeOnce } from "../../utils/ExecuteOnce";
 import { errorMessage } from "../../utils/ErrorMessage";
 import { IdAndName } from "../session_detail/WatchedEvents";
+import { FilteredSessions, SessionFilter } from "../../Firestore";
 
 export interface SessionItem {
   session: Session;
