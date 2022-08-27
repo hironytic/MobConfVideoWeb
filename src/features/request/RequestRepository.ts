@@ -22,12 +22,10 @@
 // THE SOFTWARE.
 //
 
-import { Event, eventConverter } from "../../entities/Event";
-import { Request, requestConverter } from "../../entities/Request";
-import { map, Observable } from "rxjs";
-import { withFirestore } from "../../Firebase";
-import { collection, onSnapshot, orderBy, query, where } from "firebase/firestore";
-import { QuerySnapshot } from "@firebase/firestore";
+import { Event } from "../../entities/Event";
+import { Request } from "../../entities/Request";
+import { Observable } from "rxjs";
+import { Firestore } from "../../Firestore";
 
 export interface RequestRepository {
   getAllEvents$(): Observable<Event[]>;
@@ -36,39 +34,10 @@ export interface RequestRepository {
 
 export class FirestoreRequestRepository implements RequestRepository {
   getAllEvents$(): Observable<Event[]> {
-    return withFirestore(firestore => {
-      const collectionRef = collection(firestore, "events");
-      const docQuery = query(collectionRef,
-        where("hidden", "==", false),
-        orderBy("starts", "desc"),
-      ).withConverter(eventConverter);
-      return new Observable<QuerySnapshot<Event>>(subscriber => {
-        return onSnapshot(docQuery, subscriber);
-      }).pipe(
-        map(snapshot => {
-          return snapshot
-            .docs
-            .map(it => it.data())
-        }),
-      );
-    });
+    return Firestore.getAllEvents$();
   }
   
   getAllRequests$(eventId: string): Observable<Request[]> {
-    return withFirestore(firestore => {
-      const collectionRef = collection(firestore, "events", eventId, "requests");
-      const docQuery = query(collectionRef,
-        orderBy("requestedAt", "asc"),
-      ).withConverter(requestConverter);
-      return new Observable<QuerySnapshot<Request>>(subscriber => {
-        return onSnapshot(docQuery, subscriber);
-      }).pipe(
-        map(snapshot => {
-          return snapshot
-            .docs
-            .map(it => it.data())
-        }),
-      );
-    });
+    return Firestore.getAllRequests$(eventId);
   }
 }

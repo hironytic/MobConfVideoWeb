@@ -22,10 +22,9 @@
 // THE SOFTWARE.
 //
 
-import { map, Observable } from "rxjs";
-import { Config, configConverter } from "../../entities/Config";
-import { withFirestore } from "../../Firebase";
-import { collection, doc, DocumentSnapshot, onSnapshot } from 'firebase/firestore';
+import { Observable } from "rxjs";
+import { Config } from "../../entities/Config";
+import { Firestore } from "../../Firestore";
 
 export interface HomeRepository {
   getConfig$(): Observable<Config>;
@@ -33,20 +32,6 @@ export interface HomeRepository {
 
 export class FirestoreHomeRepository implements HomeRepository {
   getConfig$(): Observable<Config> {
-    return withFirestore(firestore => {
-      const collectionRef = collection(firestore, "config");
-      const docRef = doc(collectionRef, "config").withConverter(configConverter);
-      return new Observable<DocumentSnapshot<Config>>(subscriber => {
-        return onSnapshot(docRef, subscriber);
-      }).pipe(
-        map(snapshot => {
-          const config = snapshot.data();
-          if (config === undefined) {
-            throw new Error("Configuration value is not found on Firestore!");
-          }
-          return config;
-        }),
-      );
-    });
+    return Firestore.getConfig$();
   }
 }

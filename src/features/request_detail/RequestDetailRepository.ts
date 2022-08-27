@@ -22,14 +22,11 @@
 // THE SOFTWARE.
 //
 
-import { map, Observable } from "rxjs";
-import { Request, requestConverter } from "../../entities/Request";
-import { Session, sessionConverter } from "../../entities/Session";
-import { Event, eventConverter } from "../../entities/Event";
-import { withFirestore } from "../../Firebase";
-import { collection, doc, DocumentSnapshot, onSnapshot, orderBy, query, where } from "firebase/firestore";
-import { QuerySnapshot } from "@firebase/firestore";
-import { Conference, conferenceConverter } from "../../entities/Conference";
+import { Observable } from "rxjs";
+import { Request } from "../../entities/Request";
+import { Session } from "../../entities/Session";
+import { Event } from "../../entities/Event";
+import { Firestore } from "../../Firestore";
 
 export interface RequestDetailRepository {
   getRequest$(eventId: string, requestId: string): Observable<Request>;
@@ -40,75 +37,18 @@ export interface RequestDetailRepository {
 
 export class FirestoreRequestDetailRepository implements RequestDetailRepository {
   getRequest$(eventId: string, requestId: string): Observable<Request> {
-    return withFirestore(firestore => {
-      const collectionRef = collection(firestore, "events", eventId, "requests");
-      const docRef = doc(collectionRef, requestId).withConverter(requestConverter);
-      return new Observable<DocumentSnapshot<Request>>(subscriber => {
-        return onSnapshot(docRef, subscriber);
-      }).pipe(
-        map(snapshot => {
-          const request = snapshot.data();
-          if (request === undefined) {
-            throw new Error(`Request is not found.`);
-          }
-          return request;
-        }),
-      );
-    });    
+    return Firestore.getRequest$(eventId, requestId);
   }
   
   getSession$(sessionId: string): Observable<Session> {
-    return withFirestore(firestore => {
-      const collectionRef = collection(firestore, "sessions");
-      const docRef = doc(collectionRef, sessionId).withConverter(sessionConverter);
-      return new Observable<DocumentSnapshot<Session>>(subscriber => {
-        return onSnapshot(docRef, subscriber);
-      }).pipe(
-        map(snapshot => {
-          const session = snapshot.data();
-          if (session === undefined) {
-            throw new Error(`Session is not found.`);
-          }
-          return session;
-        }),
-      );
-    });
+    return Firestore.getSession$(sessionId);
   }
   
   getAllEvents$(): Observable<Event[]> {
-    return withFirestore(firestore => {
-      const collectionRef = collection(firestore, "events");
-      const docQuery = query(collectionRef,
-        where("hidden", "==", false),
-        orderBy("starts", "desc"),
-      ).withConverter(eventConverter);
-      return new Observable<QuerySnapshot<Event>>(subscriber => {
-        return onSnapshot(docQuery, subscriber);
-      }).pipe(
-        map(snapshot => {
-          return snapshot
-            .docs
-            .map(it => it.data())
-        }),
-      );
-    });
+    return Firestore.getAllEvents$();
   }
   
   getConferenceName$(conferenceId: string): Observable<string> {
-    return withFirestore(firestore => {
-      const collectionRef = collection(firestore, "conferences");
-      const docRef = doc(collectionRef, conferenceId).withConverter(conferenceConverter);
-      return new Observable<DocumentSnapshot<Conference>>(subscriber => {
-        return onSnapshot(docRef, subscriber);
-      }).pipe(
-        map(snapshot => {
-          const conference = snapshot.data();
-          if (conference === undefined) {
-            throw new Error(`Conference is not found.`);
-          }
-          return conference.name;
-        }),
-      );
-    });
+    return Firestore.getConferenceName$(conferenceId);
   }
 }

@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-import { FilteredSessions, SessionFilter, SessionRepository } from "./SessionRepository";
+import { SessionRepository } from "./SessionRepository";
 import { NEVER, startWith, Subscription, throwError } from "rxjs";
 import { Event } from "../../entities/Event";
 import { Conference } from "../../entities/Conference";
@@ -42,6 +42,7 @@ import { DropdownState } from "../../utils/Dropdown";
 import { IRDEDone, IRDEError, IRDETypes } from "../../utils/IRDE";
 import { errorMessage } from "../../utils/ErrorMessage";
 import { delay } from "../../utils/Delay";
+import { FilteredSessions, SessionFilter } from "../../Firestore";
 
 class MockSessionRepository implements SessionRepository {
   getAllConferences$ = jest.fn(() => NEVER.pipe(startWith(conferences1)));
