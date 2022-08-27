@@ -22,50 +22,40 @@
 // THE SOFTWARE.
 //
 
-import { SessionDetailIRDE, SessionItem } from "./SessionDetailLogic";
+import { SessionItem } from "./SessionDetailLogic";
 import { IRDETypes } from "../../utils/IRDE";
 import { Box, Button, CircularProgress, Grid, Typography } from "@mui/material";
 import { WatchedEvents } from "./WatchedEvents";
 import { Description } from "./Description";
 import { Speakers } from "./Speakers";
 import { Note, OndemandVideo } from "@mui/icons-material";
+import { AppSessionDetailProvider } from "../../providers/AppSessionDetailProvider";
+import { useContext, useEffect } from "react";
+import { SessionDetailContext } from "./SessionDetailContext";
+import { useObservableState } from "observable-hooks";
+import { useParams } from "react-router-dom";
 
 export function SessionDetailPage(): JSX.Element {
   return (
-    <Box sx={{ p: 4 }}>
-      <SessionDetailBody/>
-    </Box>  
+    <AppSessionDetailProvider>
+      <Box sx={{ p: 4 }}>
+        <SessionDetailBody/>
+      </Box>
+    </AppSessionDetailProvider>      
   );
 }
 
 function SessionDetailBody(): JSX.Element {
-  // const irdeRunning = { type: IRDETypes.Running } as SessionDetailIRDE;
-  const irdeDone = {
-    type: IRDETypes.Done,
-    sessionItem: {
-      session: {
-        id: "s1",
-        conferenceId: "c1",
-        watched: true,
-        watchedOn: {"e1": 1, "e3": 2},
-        title: "Session 1",
-        description: "いっけなーい💦トークトーク🗣私、ひろん。今年もiOSDCのLTに応募したの✨でもiOSDCは競技LT🏅オーディエンスもいっぱいいるから緊張してしゃべれないよー🙀\nあ、そうだ💡AVSpeechSynthesizerちゃんとPDF Kitくんに頼めば、代わりに発表してくれるんじゃない？💕私あったまいいー…って本当に採択されたらどうしよう🆘次回「全部iOSにしゃべらせちゃえ！」お楽しみに",
-        starts: new Date(Date.UTC(2018, 7, 30, 11, 0)),
-        minutes: 30,
-        slide: "https://example.com/slide1",
-        video: "https://example.com/video1",
-        speakers: [
-          {name: "Speaker 1", twitter: "speaker1", icon: undefined}
-        ]
-      },
-      conferenceName: "Conference X",
-      watchedEvents: [{ id: "e1", name: "Event 1" }, { id: "e2", name: "Event 2" }],
-      canRequest: true
-    },
-  } as SessionDetailIRDE;
-  // const irdeError = { type: IRDETypes.Error, message: "Unknown error occurred!!" } as SessionDetailIRDE;
-
-  const irde = irdeDone;
+  const logic = useContext(SessionDetailContext);
+  const params = useParams();
+  const sessionId = params["sessionId"];
+  const irde = useObservableState(logic.sessionDetail$, { type: IRDETypes.Initial });
+  
+  useEffect(() => {
+    if (sessionId !== undefined) {
+      logic.setCurrentSession(sessionId);
+    }
+  }, [logic, sessionId]);
 
   switch (irde.type) {
     case IRDETypes.Initial:
@@ -149,15 +139,13 @@ function SessionDetailDoneBody({ sessionItem }: SessionDetailDoneBodyProps): JSX
           </Grid>
         </Grid>
       </Grid>
-      {sessionItem.canRequest && (
-        <Grid item={true} xs={12}>
-          <Grid container={true} spacing={0} justifyContent="center">
-            <Grid item={true}>
-              <Button variant="contained" color="primary" onClick={() => {}}>この動画をリクエスト</Button>
-            </Grid>
+      <Grid item={true} xs={12}>
+        <Grid container={true} spacing={0} justifyContent="center">
+          <Grid item={true}>
+            <Button variant="contained" color="primary" onClick={() => {}}>この動画をリクエスト</Button>
           </Grid>
         </Grid>
-      )}
+      </Grid>
     </Grid>
   );
 }
