@@ -30,8 +30,6 @@ import { SessionContext } from "./SessionContext";
 import { useContext } from "react";
 import { useObservableState } from "observable-hooks";
 import { TipsAndUpdatesOutlined } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
-import { Session } from "../../entities/Session";
 
 export function SessionList(): JSX.Element {
   const sessionLogic = useContext(SessionContext);
@@ -67,12 +65,6 @@ interface SessionListDoneBodyProps {
   moreRequest: MoreRequest;
 }
 function SessionListDoneBody({ sessions, keywordList, moreRequest }: SessionListDoneBodyProps): JSX.Element {
-  const navigate = useNavigate();
-
-  function onCardClick(session: Session) {
-    navigate(session.id);
-  }
-  
   if (sessions.length === 0 && moreRequest.type === MoreRequestTypes.Unrequestable) {
     return (
       <Box sx={{ mt: 8, textAlign: "center" }}>
@@ -91,7 +83,7 @@ function SessionListDoneBody({ sessions, keywordList, moreRequest }: SessionList
         <Grid key={sessionItem.session.id} item={true} xs={12}>
           <SessionCard sessionItem={sessionItem}
                        keywordList={sortedKeywordList}
-                       onClick={() => onCardClick(sessionItem.session)}/>
+                       linkTo={sessionItem.session.id}/>
         </Grid>
       ))}
       {(moreRequest.type === MoreRequestTypes.Requestable || moreRequest.type === MoreRequestTypes.Requesting) && (
