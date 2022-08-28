@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-import React from "react";
-import { NullRequestDetailLogic, RequestDetailLogic } from "./RequestDetailLogic";
+import React from "react"
+import { NullRequestDetailLogic, RequestDetailLogic } from "./RequestDetailLogic"
 
-export const RequestDetailContext = React.createContext<RequestDetailLogic>(new NullRequestDetailLogic());
+export const RequestDetailContext = React.createContext<RequestDetailLogic>(new NullRequestDetailLogic())

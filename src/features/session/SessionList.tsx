@@ -22,24 +22,24 @@
 // THE SOFTWARE.
 //
 
-import { IRDETypes } from "../../utils/IRDE";
-import { MoreRequest, MoreRequestTypes, SessionItem } from "./SessionLogic";
-import { Box, Button, CircularProgress, Grid, Stack, Typography } from "@mui/material";
-import { SessionCard } from "./SessionCard";
-import { SessionContext } from "./SessionContext";
-import { useContext } from "react";
-import { useObservableState } from "observable-hooks";
-import { TipsAndUpdatesOutlined } from "@mui/icons-material";
+import { IRDETypes } from "../../utils/IRDE"
+import { MoreRequest, MoreRequestTypes, SessionItem } from "./SessionLogic"
+import { Box, Button, CircularProgress, Grid, Stack, Typography } from "@mui/material"
+import { SessionCard } from "./SessionCard"
+import { SessionContext } from "./SessionContext"
+import { useContext } from "react"
+import { useObservableState } from "observable-hooks"
+import { TipsAndUpdatesOutlined } from "@mui/icons-material"
 
 export function SessionList(): JSX.Element {
-  const sessionLogic = useContext(SessionContext);
-  const sessionList = useObservableState(sessionLogic.sessionList$, { type: IRDETypes.Initial });
+  const sessionLogic = useContext(SessionContext)
+  const sessionList = useObservableState(sessionLogic.sessionList$, { type: IRDETypes.Initial })
 
   switch (sessionList.type) {
     case IRDETypes.Initial:
-      return <SessionListInitialBody/>;
+      return <SessionListInitialBody/>
     case IRDETypes.Running:
-      return <SessionListRunningBody/>;
+      return <SessionListRunningBody/>
     case IRDETypes.Done:
       return <SessionListDoneBody sessions={sessionList.sessions} keywordList={sessionList.keywordList} moreRequest={sessionList.moreRequest} />
     case IRDETypes.Error:
@@ -48,7 +48,7 @@ export function SessionList(): JSX.Element {
 }
 
 function SessionListInitialBody(): JSX.Element {
-  return <></>;
+  return <></>
 }
 
 function SessionListRunningBody(): JSX.Element {
@@ -56,13 +56,13 @@ function SessionListRunningBody(): JSX.Element {
     <Box sx={{ mt: 8, textAlign: "center" }}>
       <CircularProgress />
     </Box>
-  );
+  )
 }
 
 interface SessionListDoneBodyProps {
-  sessions: SessionItem[];
-  keywordList: string[];
-  moreRequest: MoreRequest;
+  sessions: SessionItem[]
+  keywordList: string[]
+  moreRequest: MoreRequest
 }
 function SessionListDoneBody({ sessions, keywordList, moreRequest }: SessionListDoneBodyProps): JSX.Element {
   if (sessions.length === 0 && moreRequest.type === MoreRequestTypes.Unrequestable) {
@@ -72,11 +72,11 @@ function SessionListDoneBody({ sessions, keywordList, moreRequest }: SessionList
           動画セッションが見つかりません
         </Typography>
       </Box>
-    );
+    )
   }
 
   // sort keywords in order from longest to shortest
-  const sortedKeywordList = [...keywordList].sort((left, right) => right.length - left.length);
+  const sortedKeywordList = [...keywordList].sort((left, right) => right.length - left.length)
   return (
     <Grid container={true} spacing={3} alignItems="flex-start">
       {sessions.map(sessionItem => (
@@ -92,16 +92,16 @@ function SessionListDoneBody({ sessions, keywordList, moreRequest }: SessionList
         </Grid>
       )}
     </Grid>
-  );
+  )
 }
 
 interface SearchMoreProps {
-  moreRequest: MoreRequest;
-  hasKeywords: boolean;
+  moreRequest: MoreRequest
+  hasKeywords: boolean
 }
 function SearchMore({ moreRequest, hasKeywords }: SearchMoreProps): JSX.Element {
   if (moreRequest.type === MoreRequestTypes.Unrequestable) {
-    return <></>;
+    return <></>
   }
 
   return (
@@ -125,11 +125,11 @@ function SearchMore({ moreRequest, hasKeywords }: SearchMoreProps): JSX.Element 
         <CircularProgress />
       )}
     </Stack>
-  );
+  )
 }
 
 interface SessionListErrorBodyProps {
-  message: string;
+  message: string
 }
 function SessionListErrorBody({ message }: SessionListErrorBodyProps): JSX.Element {
   return (
@@ -141,5 +141,5 @@ function SessionListErrorBody({ message }: SessionListErrorBodyProps): JSX.Eleme
         {message}
       </Typography>
     </Box>
-  );
+  )
 }

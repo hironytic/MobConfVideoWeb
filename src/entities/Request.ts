@@ -22,33 +22,33 @@
 // THE SOFTWARE.
 //
 
-import { DocumentData, FirestoreDataConverter, QueryDocumentSnapshot, WithFieldValue } from "@firebase/firestore";
+import { DocumentData, FirestoreDataConverter, QueryDocumentSnapshot, WithFieldValue } from "@firebase/firestore"
 
 export interface Request {
-  id: string;
-  sessionId: string | undefined;
-  title: string;
-  conference: string;
-  minutes: number | undefined;
-  videoUrl: string;
-  slideUrl: string | undefined;
-  memo: string | undefined;
-  isWatched: boolean;
+  id: string
+  sessionId: string | undefined
+  title: string
+  conference: string
+  minutes: number | undefined
+  videoUrl: string
+  slideUrl: string | undefined
+  memo: string | undefined
+  isWatched: boolean
 }
 
 interface FSRequest {
-  sessionId: string | undefined;
-  title: string;
-  conference: string;
-  minutes: number | undefined;
-  video: string;
-  slide: string | undefined;
-  memo: string | undefined;
-  watched: boolean;
+  sessionId: string | undefined
+  title: string
+  conference: string
+  minutes: number | undefined
+  video: string
+  slide: string | undefined
+  memo: string | undefined
+  watched: boolean
 }
 export const requestConverter: FirestoreDataConverter<Request> = {
   fromFirestore(snapshot: QueryDocumentSnapshot): Request {
-    const data = snapshot.data() as FSRequest;
+    const data = snapshot.data() as FSRequest
     return {
       id: snapshot.id,
       sessionId: data.sessionId,
@@ -59,7 +59,7 @@ export const requestConverter: FirestoreDataConverter<Request> = {
       slideUrl: data.slide,
       memo: data.memo,
       isWatched: data.watched,
-    };
+    }
   },
 
   toFirestore(modelObject: WithFieldValue<Request>): DocumentData {
@@ -72,6 +72,6 @@ export const requestConverter: FirestoreDataConverter<Request> = {
       slide: modelObject.slideUrl,
       memo: modelObject.memo,
       watched: modelObject.isWatched,
-    };
+    }
   }
-};
+}

@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-import React from "react";
-import { HomeLogic, NullHomeLogic } from "./HomeLogic";
+import React from "react"
+import { HomeLogic, NullHomeLogic } from "./HomeLogic"
 
-export const HomeContext = React.createContext<HomeLogic>(new NullHomeLogic());
+export const HomeContext = React.createContext<HomeLogic>(new NullHomeLogic())

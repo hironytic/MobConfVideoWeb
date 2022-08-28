@@ -34,75 +34,75 @@ import {
   Stack,
   TextField,
   Typography
-} from "@mui/material";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import { Dropdown, EMPTY_DROPDOWN } from "../../utils/Dropdown";
-import React, { useContext, useEffect } from "react";
-import { SessionContext } from "./SessionContext";
-import { useObservableState } from "observable-hooks";
-import { useSearchParams } from "react-router-dom";
+} from "@mui/material"
+import { ExpandLess, ExpandMore } from "@mui/icons-material"
+import { Dropdown, EMPTY_DROPDOWN } from "../../utils/Dropdown"
+import React, { useContext, useEffect } from "react"
+import { SessionContext } from "./SessionContext"
+import { useObservableState } from "observable-hooks"
+import { useSearchParams } from "react-router-dom"
 
 export function SessionSearchFilter(): JSX.Element {
-  const sessionLogic = useContext(SessionContext);
-  const isExpanded = useObservableState(sessionLogic.isFilterPanelExpanded$, true);
+  const sessionLogic = useContext(SessionContext)
+  const isExpanded = useObservableState(sessionLogic.isFilterPanelExpanded$, true)
 
   return (
     <Box sx={{ mt: 1, mb: 4, mx: "auto" }}>
       <SessionSearchFilterCard isExpanded={isExpanded} onExpand={(isExpanded) => sessionLogic.expandFilterPanel(isExpanded)}/>
     </Box>
-  );
+  )
 }
 
 interface SessionSearchFilterCardProps {
-  isExpanded: boolean;
-  onExpand: (isExpanded: boolean) => void;
+  isExpanded: boolean
+  onExpand: (isExpanded: boolean) => void
 }
 function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCardProps): JSX.Element {
-  const sessionLogic = useContext(SessionContext);
-  const conference = useObservableState(sessionLogic.filterConference$, EMPTY_DROPDOWN);
-  const sessionTime = useObservableState(sessionLogic.filterSessionTime$, EMPTY_DROPDOWN);
-  const keyword = useObservableState(sessionLogic.filterKeywords$, "");
-  const [searchParams, setSearchParams] = useSearchParams();
+  const sessionLogic = useContext(SessionContext)
+  const conference = useObservableState(sessionLogic.filterConference$, EMPTY_DROPDOWN)
+  const sessionTime = useObservableState(sessionLogic.filterSessionTime$, EMPTY_DROPDOWN)
+  const keyword = useObservableState(sessionLogic.filterKeywords$, "")
+  const [searchParams, setSearchParams] = useSearchParams()
 
   useEffect(() => {
-    const keywords = searchParams.get("q");
+    const keywords = searchParams.get("q")
     if (keywords === null) { // When filter is not specified
-      sessionLogic.clearFilter();
+      sessionLogic.clearFilter()
     } else { // When filter is specified
       // Execute specified filter.
       sessionLogic.executeFilter({
         conference: searchParams.get("c") ?? undefined,
         sessionTime: searchParams.get("t") ?? undefined,
         keywords,
-      }, false);
+      }, false)
     }
-  }, [sessionLogic, searchParams, setSearchParams]);
+  }, [sessionLogic, searchParams, setSearchParams])
   
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+    event.preventDefault()
     
     // Convert form data to search params.
-    const formData = new FormData(event.currentTarget);
-    const params: { [key: string]: string } = {};
+    const formData = new FormData(event.currentTarget)
+    const params: { [key: string]: string } = {}
     const formDataToParams = (name: string, except: string | undefined, none: string | undefined) => {
-      const data = formData.get(name);
+      const data = formData.get(name)
       if (data !== null && typeof data === "string" && data !== except) {
-        params[name] = data;
+        params[name] = data
       } else if (none !== undefined) {
-        params[name] = none;
+        params[name] = none
       }
     }
 
-    formDataToParams("q", undefined, "");
-    formDataToParams("c", "-", undefined);
-    formDataToParams("t", "-", undefined);
+    formDataToParams("q", undefined, "")
+    formDataToParams("c", "-", undefined)
+    formDataToParams("t", "-", undefined)
     
     sessionLogic.executeFilter({
       conference: params["c"] ?? undefined,
       sessionTime: params["t"] ?? undefined,
       keywords: params["q"] ?? "",
-    }, true);
-    setSearchParams(params);
+    }, true)
+    setSearchParams(params)
   }
   
   return (
@@ -150,5 +150,5 @@ function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCa
         </form>
       </Collapse>
     </Card>
-  );
+  )
 }

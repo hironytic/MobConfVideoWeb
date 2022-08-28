@@ -22,46 +22,46 @@
 // THE SOFTWARE.
 //
 
-import { Observer } from 'rxjs';
+import { Observer } from 'rxjs'
 
-type ExpectationResolve = (value?: void | PromiseLike<void>) => void;
+type ExpectationResolve = (value?: void | PromiseLike<void>) => void
 
 interface IExpectation<T> {
-  checker: (value: T) => void;
-  resolve: ExpectationResolve;
+  checker: (value: T) => void
+  resolve: ExpectationResolve
 }
 
 export class EventuallyObserver<T> implements Observer<T> {
   private static onReceived<T>(expectations: Array<IExpectation<T>>, value: T) {
-    const resolves: ExpectationResolve[] = [];
-    const resolvedIndices: number[] = [];
+    const resolves: ExpectationResolve[] = []
+    const resolvedIndices: number[] = []
     for (let index = 0; index < expectations.length; index++) {
-      const expectation = expectations[index];
+      const expectation = expectations[index]
       try {
-        expectation.checker(value);
-        resolves.push(expectation.resolve);
-        resolvedIndices.push(index);
+        expectation.checker(value)
+        resolves.push(expectation.resolve)
+        resolvedIndices.push(index)
       } catch (e) {
         /* do nothing */
       }
     }
     resolvedIndices.reverse().forEach(index => {
-      expectations.splice(index, 1);
-    });
+      expectations.splice(index, 1)
+    })
     resolves.forEach(resolve => {
-      resolve();
+      resolve()
     })
   }
 
-  private nextExpectations: Array<IExpectation<T>> = [];
-  private errorExpectations: Array<IExpectation<any>> = [];
+  private nextExpectations: Array<IExpectation<T>> = []
+  private errorExpectations: Array<IExpectation<any>> = []
 
   public next(value: T) {
-    EventuallyObserver.onReceived(this.nextExpectations, value);
+    EventuallyObserver.onReceived(this.nextExpectations, value)
   }
 
   public error(err: any) {
-    EventuallyObserver.onReceived(this.errorExpectations, err);
+    EventuallyObserver.onReceived(this.errorExpectations, err)
   }
 
   public complete() {
@@ -73,8 +73,8 @@ export class EventuallyObserver<T> implements Observer<T> {
       this.nextExpectations.push({
         checker,
         resolve,
-      });
-    });
+      })
+    })
   }
 
   public expectError(checker: (error: any) => void): Promise<void> {
@@ -82,7 +82,7 @@ export class EventuallyObserver<T> implements Observer<T> {
       this.errorExpectations.push({
         checker,
         resolve,
-      });
-    });
+      })
+    })
   }
 }

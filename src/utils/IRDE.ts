@@ -27,25 +27,25 @@ export const IRDETypes = {
   Running: "Running",
   Done: "Done",
   Error: "Error",
-} as const;
+} as const
 
-export type IRDEType = typeof IRDETypes[keyof typeof IRDETypes];
+export type IRDEType = typeof IRDETypes[keyof typeof IRDETypes]
 
 export type IRDEInitial<Props> = {
-  type: typeof IRDETypes.Initial;
-} & Props;
+  type: typeof IRDETypes.Initial
+} & Props
 
 export type IRDERunning<Props> = {
-  type: typeof IRDETypes.Running;
-} & Props;
+  type: typeof IRDETypes.Running
+} & Props
 
 export type IRDEDone<Props> = {
-  type: typeof IRDETypes.Done;
-} & Props;
+  type: typeof IRDETypes.Done
+} & Props
 
 export type IRDEError<Props> = {
-  type: typeof IRDETypes.Error;
-} & Props;
+  type: typeof IRDETypes.Error
+} & Props
 
 /** Union of four states -- initial, running, done and error */
-export type IRDE<IProps, RProps, DProps, EProps> = IRDEInitial<IProps> | IRDERunning<RProps> | IRDEDone<DProps> | IRDEError<EProps>;
+export type IRDE<IProps, RProps, DProps, EProps> = IRDEInitial<IProps> | IRDERunning<RProps> | IRDEDone<DProps> | IRDEError<EProps>

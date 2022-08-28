@@ -23,28 +23,28 @@
 //
 
 
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material"
 
 export interface DropdownState {
-  value: string;
-  items: DropdownStateItem[];
+  value: string
+  items: DropdownStateItem[]
 }
 
 export interface DropdownStateItem {
-  value: string;
-  title: string;
+  value: string
+  title: string
 }
 
 interface DropdownProps {
-  name?: string;
-  labelId: string;
-  label: string;
-  state: DropdownState;
-  minWidth?: number | string;
-  onChange: (value: string) => void;
+  name?: string
+  labelId: string
+  label: string
+  state: DropdownState
+  minWidth?: number | string
+  onChange: (value: string) => void
 }
 
-export const EMPTY_DROPDOWN: DropdownState = { value: "", items: [] };
+export const EMPTY_DROPDOWN: DropdownState = { value: "", items: [] }
 
 export function Dropdown({ name, labelId, label, state, minWidth, onChange }: DropdownProps): JSX.Element {
   return (
@@ -60,5 +60,5 @@ export function Dropdown({ name, labelId, label, state, minWidth, onChange }: Dr
         }
       </Select>
     </FormControl>
-  );
+  )
 }

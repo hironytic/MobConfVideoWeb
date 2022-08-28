@@ -22,16 +22,16 @@
 // THE SOFTWARE.
 //
 
-import { HomeContext } from "../features/home/HomeContext";
-import { ProviderProps } from "./ProviderProps";
-import { FirestoreHomeRepository } from "../features/home/HomeRepository";
-import { AppHomeLogic } from "../features/home/HomeLogic";
-import { LogicProvider } from "../utils/LogicProvider";
+import { HomeContext } from "../features/home/HomeContext"
+import { ProviderProps } from "./ProviderProps"
+import { FirestoreHomeRepository } from "../features/home/HomeRepository"
+import { AppHomeLogic } from "../features/home/HomeLogic"
+import { LogicProvider } from "../utils/LogicProvider"
 
 export function AppHomeProvider({ children }: ProviderProps): JSX.Element {
   return (
     <LogicProvider context={HomeContext} creator={() => new AppHomeLogic(new FirestoreHomeRepository())}>
       {children}
     </LogicProvider>
-  );
+  )
 }

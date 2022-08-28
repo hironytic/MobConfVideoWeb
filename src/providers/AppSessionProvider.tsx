@@ -22,16 +22,16 @@
 // THE SOFTWARE.
 //
 
-import { ProviderProps } from "./ProviderProps";
-import { LogicProvider } from "../utils/LogicProvider";
-import { SessionContext } from "../features/session/SessionContext";
-import { AppSessionLogic } from "../features/session/SessionLogic";
-import { FirestoreSessionRepository } from "../features/session/SessionRepository";
+import { ProviderProps } from "./ProviderProps"
+import { LogicProvider } from "../utils/LogicProvider"
+import { SessionContext } from "../features/session/SessionContext"
+import { AppSessionLogic } from "../features/session/SessionLogic"
+import { FirestoreSessionRepository } from "../features/session/SessionRepository"
 
 export function AppSessionProvider({ children }: ProviderProps): JSX.Element {
   return (
     <LogicProvider context={SessionContext} creator={() => new AppSessionLogic(new FirestoreSessionRepository())}>
       {children}
     </LogicProvider>
-  );
+  )
 }

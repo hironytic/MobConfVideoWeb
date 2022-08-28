@@ -22,9 +22,9 @@
 // THE SOFTWARE.
 //
 
-import { Box } from "@mui/material";
-import { SessionSearchFilter } from "./SessionSearchFilter";
-import { SessionList } from "./SessionList";
+import { Box } from "@mui/material"
+import { SessionSearchFilter } from "./SessionSearchFilter"
+import { SessionList } from "./SessionList"
 
 export function SessionPage(): JSX.Element {
   return (
@@ -32,5 +32,5 @@ export function SessionPage(): JSX.Element {
       <SessionSearchFilter />
       <SessionList />
     </Box>
-  );
+  )
 }

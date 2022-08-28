@@ -28,29 +28,29 @@ import {
   QueryDocumentSnapshot,
   Timestamp,
   WithFieldValue
-} from "@firebase/firestore";
+} from "@firebase/firestore"
 
 export interface Conference {
-  id: string;
+  id: string
   name: string,
-  starts: Date;
+  starts: Date
 }
 
 interface FSConference {
-  name: string;
-  starts: Timestamp;
+  name: string
+  starts: Timestamp
 }
 export const conferenceConverter: FirestoreDataConverter<Conference> = {
   fromFirestore(snapshot: QueryDocumentSnapshot): Conference {
-    const data = snapshot.data() as FSConference;
+    const data = snapshot.data() as FSConference
     return {
       id: snapshot.id,
       name: data.name,
       starts: data.starts.toDate(),
-    };
+    }
   },
   
   toFirestore(modelObject: WithFieldValue<Conference>): DocumentData {
-    return modelObject;
+    return modelObject
   }
-};
+}

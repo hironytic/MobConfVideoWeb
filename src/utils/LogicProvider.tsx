@@ -22,35 +22,35 @@
 // THE SOFTWARE.
 //
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"
 
 export interface Logic {
-  dispose: () => void;
+  dispose: () => void
 }
 
 interface LogicProviderProps<VM extends Logic> {
-  context: React.Context<VM>;
-  creator: () => VM;
-  children: React.ReactNode;
+  context: React.Context<VM>
+  creator: () => VM
+  children: React.ReactNode
 }
 export function LogicProvider<VM extends Logic>({ context, creator, children }: LogicProviderProps<VM>): JSX.Element {
-  const [logic, setLogic] = useState<VM | undefined>(undefined);
+  const [logic, setLogic] = useState<VM | undefined>(undefined)
   useEffect(() => {
-    const logic = creator();
-    setLogic(logic);
+    const logic = creator()
+    setLogic(logic)
     return () => {
-      logic.dispose();
+      logic.dispose()
     }
-  }, [creator]);
+  }, [creator])
   
   if (logic !== undefined) {
-    const Provider = context.Provider;
+    const Provider = context.Provider
     return (
       <Provider value={logic}>
         {children}
       </Provider>
     )
   } else {
-    return <></>;
+    return <></>
   }
 }

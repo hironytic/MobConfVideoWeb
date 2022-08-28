@@ -22,23 +22,23 @@
 // THE SOFTWARE.
 //
 
-import { IRDETypes } from "../../utils/IRDE";
-import { Request } from "../../entities/Request";
-import { RequestListIRDE } from "./RequestLogic";
-import { Box, CircularProgress, Grid, Typography } from "@mui/material";
-import { RequestCard } from "./RequestCard";
-import { useNavigate } from "react-router-dom";
+import { IRDETypes } from "../../utils/IRDE"
+import { Request } from "../../entities/Request"
+import { RequestListIRDE } from "./RequestLogic"
+import { Box, CircularProgress, Grid, Typography } from "@mui/material"
+import { RequestCard } from "./RequestCard"
+import { useNavigate } from "react-router-dom"
 
 interface RequestListProps {
-  requestList: RequestListIRDE;
+  requestList: RequestListIRDE
 }
 
 export function RequestList({ requestList }: RequestListProps): JSX.Element {
   switch (requestList.type) {
     case IRDETypes.Initial:
-      return <RequestListInitialBody/>;
+      return <RequestListInitialBody/>
     case IRDETypes.Running:
-      return <RequestListRunningBody/>;
+      return <RequestListRunningBody/>
     case IRDETypes.Done:
       return <RequestListDoneBody requests={requestList.requests}/>
     case IRDETypes.Error:
@@ -47,7 +47,7 @@ export function RequestList({ requestList }: RequestListProps): JSX.Element {
 }
 
 function RequestListInitialBody(): JSX.Element {
-  return <></>;
+  return <></>
 }
 
 function RequestListRunningBody(): JSX.Element {
@@ -55,17 +55,17 @@ function RequestListRunningBody(): JSX.Element {
     <Box sx={{ mt: 8, textAlign: "center" }}>
       <CircularProgress />
     </Box>
-  );
+  )
 }
 
 interface RequestListDoneBodyProps {
-  requests: Request[]; 
+  requests: Request[] 
 }
 function RequestListDoneBody({ requests }: RequestListDoneBodyProps): JSX.Element {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   function onCardClick(request: Request) {
-    navigate(request.id);
+    navigate(request.id)
   }
   
   if (requests.length === 0) {
@@ -75,7 +75,7 @@ function RequestListDoneBody({ requests }: RequestListDoneBodyProps): JSX.Elemen
           リクエストがありません
         </Typography>
       </Box>
-    );
+    )
   }
   
   return (
@@ -90,11 +90,11 @@ function RequestListDoneBody({ requests }: RequestListDoneBodyProps): JSX.Elemen
         }
       </Grid>
     </Box>
-  );
+  )
 }
 
 interface RequestListErrorBodyProps {
-  message: string;
+  message: string
 }
 function RequestListErrorBody({ message }: RequestListErrorBodyProps): JSX.Element {
   return (
@@ -106,5 +106,5 @@ function RequestListErrorBody({ message }: RequestListErrorBodyProps): JSX.Eleme
         {message}
       </Typography>
     </Box>
-  );
+  )
 }

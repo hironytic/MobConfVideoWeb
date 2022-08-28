@@ -22,14 +22,14 @@
 // THE SOFTWARE.
 //
 
-import { Request } from "../../entities/Request";
-import { Card, CardActionArea, Grid, SxProps, Typography } from "@mui/material";
-import { lime, yellow } from "@mui/material/colors";
-import { Check } from "@mui/icons-material";
+import { Request } from "../../entities/Request"
+import { Card, CardActionArea, Grid, SxProps, Typography } from "@mui/material"
+import { lime, yellow } from "@mui/material/colors"
+import { Check } from "@mui/icons-material"
 
 interface RequestCardProps {
-  request: Request;
-  onClick: () => void;
+  request: Request
+  onClick: () => void
 }
 
 export function RequestCard({ request, onClick }: RequestCardProps): JSX.Element {
@@ -37,7 +37,7 @@ export function RequestCard({ request, onClick }: RequestCardProps): JSX.Element
     mx: "auto",
     textAlign: "start",
     backgroundColor: (request.isWatched) ? lime["50"] : yellow["100"],
-  };
+  }
   
   return (
     <Card sx={cardSx}>
@@ -70,5 +70,5 @@ export function RequestCard({ request, onClick }: RequestCardProps): JSX.Element
         </Grid>
       </CardActionArea>
     </Card>
-  );
+  )
 }

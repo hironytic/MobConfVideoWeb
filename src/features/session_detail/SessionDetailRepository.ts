@@ -22,27 +22,27 @@
 // THE SOFTWARE.
 //
 
-import { Observable } from "rxjs";
-import { Session } from "../../entities/Session";
-import { Event } from "../../entities/Event";
-import { Firestore } from "../../Firestore";
+import { Observable } from "rxjs"
+import { Session } from "../../entities/Session"
+import { Event } from "../../entities/Event"
+import { Firestore } from "../../Firestore"
 
 export interface SessionDetailRepository {
-  getSession$(sessionId: string): Observable<Session>;
-  getAllEvents$(): Observable<Event[]>;
-  getConferenceName$(conferenceId: string): Observable<string>;
+  getSession$(sessionId: string): Observable<Session>
+  getAllEvents$(): Observable<Event[]>
+  getConferenceName$(conferenceId: string): Observable<string>
 }
 
 export class FirestoreSessionDetailRepository implements SessionDetailRepository {
   getSession$(sessionId: string): Observable<Session> {
-    return Firestore.getSession$(sessionId);
+    return Firestore.getSession$(sessionId)
   }
 
   getAllEvents$(): Observable<Event[]> {
-    return Firestore.getAllEvents$();
+    return Firestore.getAllEvents$()
   }
 
   getConferenceName$(conferenceId: string): Observable<string> {
-    return Firestore.getConferenceName$(conferenceId);
+    return Firestore.getConferenceName$(conferenceId)
   }
 }

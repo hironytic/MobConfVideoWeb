@@ -22,20 +22,20 @@
 // THE SOFTWARE.
 //
 
-import { Tab, Tabs, Toolbar, Typography } from "@mui/material";
-import { List, VideoLabel } from "@mui/icons-material";
-import { Link } from "react-router-dom";
-import { AppBar } from "../../utils/AppBar";
-import { HomeTab, HomeTabs } from "./HomeLogic";
-import { useContext } from "react";
-import { HomeContext } from "./HomeContext";
-import { useObservableState } from "observable-hooks";
+import { Tab, Tabs, Toolbar, Typography } from "@mui/material"
+import { List, VideoLabel } from "@mui/icons-material"
+import { Link } from "react-router-dom"
+import { AppBar } from "../../utils/AppBar"
+import { HomeTab, HomeTabs } from "./HomeLogic"
+import { useContext } from "react"
+import { HomeContext } from "./HomeContext"
+import { useObservableState } from "observable-hooks"
 
 export function HomeAppBar(): JSX.Element {
-  const homeLogic = useContext(HomeContext);
-  const isInMaintenance = useObservableState(homeLogic.isInMaintenance$, false);
-  const title = useObservableState(homeLogic.title$, "");
-  const tab = useObservableState(homeLogic.homeTab$, false);
+  const homeLogic = useContext(HomeContext)
+  const isInMaintenance = useObservableState(homeLogic.isInMaintenance$, false)
+  const title = useObservableState(homeLogic.title$, "")
+  const tab = useObservableState(homeLogic.homeTab$, false)
   
   return (
     <AppBar position="sticky">
@@ -45,7 +45,7 @@ export function HomeAppBar(): JSX.Element {
         <AppTabs tab={isInMaintenance ? false : tab}/>
       </Toolbar>
     </AppBar>
-  );
+  )
 }
 
 
@@ -55,5 +55,5 @@ function AppTabs( { tab }: { tab: HomeTab }): JSX.Element {
       <Tab value={HomeTabs.Request} label="受付済み" icon={<List/>} to="/request" component={Link} />
       <Tab value={HomeTabs.Session} label="動画検索" icon={<VideoLabel/>} to="/session" component={Link}/>
     </Tabs>
-  );
+  )
 }

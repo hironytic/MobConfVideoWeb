@@ -22,96 +22,96 @@
 // THE SOFTWARE.
 //
 
-import { IRDE, IRDETypes } from "../../utils/IRDE";
-import { Event } from "../../entities/Event";
-import { Request } from "../../entities/Request";
-import { BehaviorSubject, NEVER, Observable, Subscription } from "rxjs";
-import { Logic } from "../../utils/LogicProvider";
-import { RequestRepository } from "./RequestRepository";
+import { IRDE, IRDETypes } from "../../utils/IRDE"
+import { Event } from "../../entities/Event"
+import { Request } from "../../entities/Request"
+import { BehaviorSubject, NEVER, Observable, Subscription } from "rxjs"
+import { Logic } from "../../utils/LogicProvider"
+import { RequestRepository } from "./RequestRepository"
 
 export interface RequestListIProps {}
 export interface RequestListRProps {}
 export interface RequestListDProps { requests: Request[] }
 export interface RequestListEProps { message: string }
-export type RequestListIRDE = IRDE<RequestListIProps, RequestListRProps, RequestListDProps, RequestListEProps>;
+export type RequestListIRDE = IRDE<RequestListIProps, RequestListRProps, RequestListDProps, RequestListEProps>
 
 export interface RequestLogic extends Logic {
-  readonly currentEventId: string | undefined;
-  setCurrentEventId(eventId: string | undefined): void;
+  readonly currentEventId: string | undefined
+  setCurrentEventId(eventId: string | undefined): void
   
-  allEvents$: Observable<Event[]>;
-  requestList$: Observable<RequestListIRDE>;
+  allEvents$: Observable<Event[]>
+  requestList$: Observable<RequestListIRDE>
 }
 
 export class NullRequestLogic implements RequestLogic {
   dispose() {}
 
-  readonly currentEventId: string | undefined = undefined;
+  readonly currentEventId: string | undefined = undefined
   setCurrentEventId(eventId: string | undefined): void {}
   
-  allEvents$ = NEVER;
-  requestList$ = NEVER;
+  allEvents$ = NEVER
+  requestList$ = NEVER
 }
 
 export class AppRequestLogic implements RequestLogic {
-  private readonly subscription = new Subscription();
-  private requestsSubscription: Subscription | undefined = undefined;
-  private currentEventId_: string | undefined = undefined;
-  get currentEventId() { return this.currentEventId_; }
+  private readonly subscription = new Subscription()
+  private requestsSubscription: Subscription | undefined = undefined
+  private currentEventId_: string | undefined = undefined
+  get currentEventId() { return this.currentEventId_ }
 
-  allEvents$ = new BehaviorSubject<Event[]>([]);
-  requestList$ = new BehaviorSubject<RequestListIRDE>({ type: IRDETypes.Initial });
+  allEvents$ = new BehaviorSubject<Event[]>([])
+  requestList$ = new BehaviorSubject<RequestListIRDE>({ type: IRDETypes.Initial })
   
   constructor(private readonly repository: RequestRepository) {
     this.subscription.add(
       repository.getAllEvents$().subscribe({
         next: (value) => {
-          this.allEvents$.next(value);
+          this.allEvents$.next(value)
 
           // FIXME:
           // if (this.currentEventId_ === undefined && value.length > 0) {
-          //   this.setCurrentEventId(value[0].id);
+          //   this.setCurrentEventId(value[0].id)
           // }
         },
         error: (err) => {
-          console.log("Error at getAllEvents$ in AppRequestLogic", err);
-          this.allEvents$.next([]);
+          console.log("Error at getAllEvents$ in AppRequestLogic", err)
+          this.allEvents$.next([])
         },
       })
-    );
+    )
   }
 
   dispose() {
-    this.subscription.unsubscribe();
-    this.requestsSubscription?.unsubscribe();
+    this.subscription.unsubscribe()
+    this.requestsSubscription?.unsubscribe()
   }
 
   setCurrentEventId(eventId: string | undefined): void {
     if (this.currentEventId_ === eventId) {
       // nothing changed.
-      return;
+      return
     }
     
     if (this.requestsSubscription !== undefined) {
-      this.requestsSubscription.unsubscribe();
-      this.requestsSubscription = undefined;
+      this.requestsSubscription.unsubscribe()
+      this.requestsSubscription = undefined
     }
     
     if (eventId === undefined) {
-      this.requestList$.next({ type: IRDETypes.Initial });
+      this.requestList$.next({ type: IRDETypes.Initial })
     } else {
-      this.requestList$.next({ type: IRDETypes.Running });
+      this.requestList$.next({ type: IRDETypes.Running })
       
       this.requestsSubscription = this.repository.getAllRequests$(eventId).subscribe({
         next: (value) => {
-          this.requestList$.next({ type: IRDETypes.Done, requests: value });
+          this.requestList$.next({ type: IRDETypes.Done, requests: value })
         },
         error: (err) => {
-          console.log("Error at getAllRequests$ in AppRequestLogic", err);
-          this.requestList$.next({ type: IRDETypes.Error, message: err.toString() });
+          console.log("Error at getAllRequests$ in AppRequestLogic", err)
+          this.requestList$.next({ type: IRDETypes.Error, message: err.toString() })
         }
-      });
+      })
     }
-    this.currentEventId_ = eventId;
+    this.currentEventId_ = eventId
   }
 }

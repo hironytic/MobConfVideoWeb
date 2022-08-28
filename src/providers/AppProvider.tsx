@@ -22,14 +22,14 @@
 // THE SOFTWARE.
 //
 
-import React from "react";
-import { AppHomeProvider } from "./AppHomeProvider";
-import { AppRequestProvider } from "./AppRequestProvider";
-import { AppSessionProvider } from "./AppSessionProvider";
-import { AppRequestDetailProvider } from "./AppRequestDetailProvider";
+import React from "react"
+import { AppHomeProvider } from "./AppHomeProvider"
+import { AppRequestProvider } from "./AppRequestProvider"
+import { AppSessionProvider } from "./AppSessionProvider"
+import { AppRequestDetailProvider } from "./AppRequestDetailProvider"
 
 interface AppProviderProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 export function AppProvider({ children }: AppProviderProps): JSX.Element {
@@ -43,5 +43,5 @@ export function AppProvider({ children }: AppProviderProps): JSX.Element {
         </AppRequestDetailProvider>          
       </AppRequestProvider>
     </AppHomeProvider>
-  );
+  )
 }

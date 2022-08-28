@@ -33,36 +33,36 @@ import {
   Typography,
   useMediaQuery,
   useTheme
-} from "@mui/material";
-import { ArrowBack, Note, OndemandVideo } from "@mui/icons-material";
-import { IRDETypes } from "../../utils/IRDE";
-import { RequestDetail } from "./RequestDetailLogic";
-import { useNavigate, useParams } from "react-router-dom";
-import { AppBar } from "../../utils/AppBar";
-import { WatchedEvents } from "../session_detail/WatchedEvents";
-import { Description } from "../session_detail/Description";
-import { Speakers } from "../session_detail/Speakers";
-import { useContext, useEffect } from "react";
-import { RequestDetailContext } from "./RequestDetailContext";
-import { useObservableState } from "observable-hooks";
+} from "@mui/material"
+import { ArrowBack, Note, OndemandVideo } from "@mui/icons-material"
+import { IRDETypes } from "../../utils/IRDE"
+import { RequestDetail } from "./RequestDetailLogic"
+import { useNavigate, useParams } from "react-router-dom"
+import { AppBar } from "../../utils/AppBar"
+import { WatchedEvents } from "../session_detail/WatchedEvents"
+import { Description } from "../session_detail/Description"
+import { Speakers } from "../session_detail/Speakers"
+import { useContext, useEffect } from "react"
+import { RequestDetailContext } from "./RequestDetailContext"
+import { useObservableState } from "observable-hooks"
 
 export function RequestDetailDialog(): JSX.Element {
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const navigate = useNavigate();
-  const params = useParams();
-  const logic = useContext(RequestDetailContext);
+  const theme = useTheme()
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
+  const navigate = useNavigate()
+  const params = useParams()
+  const logic = useContext(RequestDetailContext)
 
   useEffect(() => {
-    const eventId = params["eventId"];
-    const requestId = params["requestId"];
+    const eventId = params["eventId"]
+    const requestId = params["requestId"]
     if (eventId !== undefined && requestId !== undefined) {
-      logic.setCurrentRequest(eventId, requestId);
+      logic.setCurrentRequest(eventId, requestId)
     }
-  }, [params, logic]);
+  }, [params, logic])
   
   function onClose() {
-    navigate("..");
+    navigate("..")
   }
   
   return (
@@ -91,18 +91,18 @@ export function RequestDetailDialog(): JSX.Element {
         </DialogContent>
       )}
     </Dialog>
-  );
+  )
 }
 
 function RequestDetailBody(): JSX.Element {
-  const logic = useContext(RequestDetailContext);
-  const irde = useObservableState(logic.requestDetail$, { type: IRDETypes.Initial });
+  const logic = useContext(RequestDetailContext)
+  const irde = useObservableState(logic.requestDetail$, { type: IRDETypes.Initial })
 
   switch (irde.type) {
     case IRDETypes.Initial:
-      return <RequestDetailInitialBody/>;
+      return <RequestDetailInitialBody/>
     case IRDETypes.Running:
-      return <RequestDetailRunningBody/>;
+      return <RequestDetailRunningBody/>
     case IRDETypes.Done:
       return <RequestDetailDoneBody requestDetail={irde.requestDetail} />
     case IRDETypes.Error:
@@ -111,7 +111,7 @@ function RequestDetailBody(): JSX.Element {
 }
 
 function RequestDetailInitialBody(): JSX.Element {
-  return <></>;
+  return <></>
 }
 
 function RequestDetailRunningBody(): JSX.Element {
@@ -119,7 +119,7 @@ function RequestDetailRunningBody(): JSX.Element {
     <div style={{ textAlign: "center" }}>
       <CircularProgress/>
     </div>
-  );
+  )
 }
 
 interface RequestDetailDoneBodyProps {
@@ -187,11 +187,11 @@ function RequestDetailDoneBody({ requestDetail }: RequestDetailDoneBodyProps): J
         </Grid>
       </Grid>
     </Grid>
-  );
+  )
 }
 
 interface RequestDetailErrorBodyProps {
-  message: string;
+  message: string
 }
 function RequestDetailErrorBody({ message }: RequestDetailErrorBodyProps): JSX.Element {
   return (
@@ -203,5 +203,5 @@ function RequestDetailErrorBody({ message }: RequestDetailErrorBodyProps): JSX.E
         {message}
       </Typography>
     </div>
-  );
+  )
 }

@@ -22,22 +22,22 @@
 // THE SOFTWARE.
 //
 
-import { Speaker } from "../../entities/Session";
-import { Avatar, Grid, Typography } from "@mui/material";
+import { Speaker } from "../../entities/Session"
+import { Avatar, Grid, Typography } from "@mui/material"
 
 interface SpeakersProps {
-  speakers: Speaker[];
+  speakers: Speaker[]
 }
 export function Speakers({ speakers }: SpeakersProps): JSX.Element {
   return (
     <>
       {speakers.map((speaker, index) => <OneSpeaker key={index} speaker={speaker}/>)}
     </>
-  );
+  )
 }
 
 interface OneSpeakerProps {
-  speaker: Speaker;
+  speaker: Speaker
 }
 function OneSpeaker({ speaker }: OneSpeakerProps): JSX.Element {
   return (
@@ -51,5 +51,5 @@ function OneSpeaker({ speaker }: OneSpeakerProps): JSX.Element {
         </Typography>
       </Grid>
     </Grid>
-  );
+  )
 }

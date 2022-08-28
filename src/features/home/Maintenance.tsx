@@ -22,8 +22,8 @@
 // THE SOFTWARE.
 //
 
-import { HomeAppBar } from "./HomeAppBar";
-import { Typography } from "@mui/material";
+import { HomeAppBar } from "./HomeAppBar"
+import { Typography } from "@mui/material"
 
 export function Maintenance(): JSX.Element {
   return (
@@ -40,5 +40,5 @@ export function Maintenance(): JSX.Element {
         </Typography>
       </div>
     </>
-  );
+  )
 }

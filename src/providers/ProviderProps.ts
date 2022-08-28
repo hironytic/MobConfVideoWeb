@@ -22,8 +22,8 @@
 // THE SOFTWARE.
 //
 
-import React from "react";
+import React from "react"
 
 export interface ProviderProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }

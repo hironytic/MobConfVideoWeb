@@ -27,12 +27,12 @@
  * @param block A function that will run on first call.
  */
 export function executeOnce(block: () => void): () => void {
-  let proc: (() => void) | undefined = block;
+  let proc: (() => void) | undefined = block
   return () => {
     if (proc !== undefined) {
-      const p = proc;
-      proc = undefined;
-      p();
+      const p = proc
+      proc = undefined
+      p()
     }
-  };
+  }
 }

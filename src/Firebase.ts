@@ -22,27 +22,27 @@
 // THE SOFTWARE.
 //
 
-import { FirebaseApp, initializeApp } from 'firebase/app';
-import { Firestore, getFirestore as getFireStoreFromApp } from 'firebase/firestore';
-import { from, Observable, switchMap } from "rxjs";
+import { FirebaseApp, initializeApp } from 'firebase/app'
+import { Firestore, getFirestore as getFireStoreFromApp } from 'firebase/firestore'
+import { from, Observable, switchMap } from "rxjs"
 
 async function getFirebaseConfig(): Promise<object> {
   if (process.env.NODE_ENV !== 'production') {
     const config = JSON.parse(process.env.REACT_APP_FIREBASE_CONFIG!)
-    return config;
+    return config
   } else {
-    return (await fetch('/__/firebase/init.json')).json();
+    return (await fetch('/__/firebase/init.json')).json()
   }
 }
 
 async function initializeFirebaseApp(): Promise<FirebaseApp> {
-  const config = await getFirebaseConfig();
-  return initializeApp(config);
+  const config = await getFirebaseConfig()
+  return initializeApp(config)
 }
 
-let firebaseApp: Promise<FirebaseApp> = initializeFirebaseApp();
+let firebaseApp: Promise<FirebaseApp> = initializeFirebaseApp()
 async function getFirebaseApp(): Promise<FirebaseApp> {
-  return firebaseApp;
+  return firebaseApp
 }
 
 export async function getFirestore(): Promise<Firestore> {
@@ -52,5 +52,5 @@ export async function getFirestore(): Promise<Firestore> {
 export function withFirestore<T>(builder: (firestore: Firestore) => Observable<T>): Observable<T> {
   return from(getFirestore()).pipe(
     switchMap(firestore => builder(firestore))
-  );
+  )
 }

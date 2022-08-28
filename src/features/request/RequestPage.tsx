@@ -22,33 +22,33 @@
 // THE SOFTWARE.
 //
 
-import { EventTabs } from "./EventTabs";
-import { RequestList } from "./RequestList";
-import { useContext, useEffect } from "react";
-import { RequestContext } from "./RequestContext";
-import { Outlet, useNavigate, useParams } from "react-router-dom";
-import { IRDETypes } from "../../utils/IRDE";
-import { useObservableState } from "observable-hooks";
+import { EventTabs } from "./EventTabs"
+import { RequestList } from "./RequestList"
+import { useContext, useEffect } from "react"
+import { RequestContext } from "./RequestContext"
+import { Outlet, useNavigate, useParams } from "react-router-dom"
+import { IRDETypes } from "../../utils/IRDE"
+import { useObservableState } from "observable-hooks"
 
 export function RequestPage(): JSX.Element {
-  const requestLogic = useContext(RequestContext);
-  const navigate = useNavigate();
-  const params = useParams();
-  const eventId = params["eventId"];
-  const allEvents = useObservableState(requestLogic.allEvents$, []);
-  const requestListIRDE = useObservableState(requestLogic.requestList$, { type: IRDETypes.Initial });
+  const requestLogic = useContext(RequestContext)
+  const navigate = useNavigate()
+  const params = useParams()
+  const eventId = params["eventId"]
+  const allEvents = useObservableState(requestLogic.allEvents$, [])
+  const requestListIRDE = useObservableState(requestLogic.requestList$, { type: IRDETypes.Initial })
 
   useEffect(() => {
     if (requestLogic.currentEventId !== undefined && eventId === undefined) {
-      navigate("/request/" + requestLogic.currentEventId, { replace: true });
+      navigate("/request/" + requestLogic.currentEventId, { replace: true })
     } else {
-      requestLogic.setCurrentEventId(eventId);
+      requestLogic.setCurrentEventId(eventId)
     }
-  }, [requestLogic, eventId, navigate]);
+  }, [requestLogic, eventId, navigate])
 
   const onCurrentIdChanged = (currentId: string | false) => {
-    navigate("/request/" + ((currentId !== false) ? currentId : ""));
-  };
+    navigate("/request/" + ((currentId !== false) ? currentId : ""))
+  }
 
   return (
     <>
@@ -56,5 +56,5 @@ export function RequestPage(): JSX.Element {
       <RequestList requestList={requestListIRDE}/>
       <Outlet/>
     </>
-  );
+  )
 }
