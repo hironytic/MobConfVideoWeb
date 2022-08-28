@@ -86,7 +86,7 @@ function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCa
     const params: { [key: string]: string } = {};
     const formDataToParams = (name: string, except: string | undefined, none: string | undefined) => {
       const data = formData.get(name);
-      if (data != null && typeof data === "string" && data !== except) {
+      if (data !== null && typeof data === "string" && data !== except) {
         params[name] = data;
       } else if (none !== undefined) {
         params[name] = none;
