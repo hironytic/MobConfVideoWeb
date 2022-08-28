@@ -83,7 +83,7 @@ function SessionListDoneBody({ sessions, keywordList, moreRequest }: SessionList
         <Grid key={sessionItem.session.id} item={true} xs={12}>
           <SessionCard sessionItem={sessionItem}
                        keywordList={sortedKeywordList}
-                       onClick={() => {}}/>
+                       linkTo={sessionItem.session.id}/>
         </Grid>
       ))}
       {(moreRequest.type === MoreRequestTypes.Requestable || moreRequest.type === MoreRequestTypes.Requesting) && (

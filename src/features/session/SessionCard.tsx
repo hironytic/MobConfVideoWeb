@@ -27,18 +27,19 @@ import { Avatar, Card, CardActionArea, Grid, Typography } from "@mui/material";
 import { CaseInsensitiveSearch } from "../../utils/CaseInsensitiveSearch";
 import { Speaker } from "../../entities/Session";
 import { WatchedEvents } from "../session_detail/WatchedEvents";
+import { Link } from "react-router-dom";
 
 export interface SessionCardProps {
   sessionItem: SessionItem;
   keywordList: string[];
-  onClick: () => void;
+  linkTo: string;
 }
 
-export function SessionCard({ sessionItem, keywordList, onClick }: SessionCardProps): JSX.Element {
+export function SessionCard({ sessionItem, keywordList, linkTo }: SessionCardProps): JSX.Element {
   const sessionTitleLwbr = detectBoldRange(sessionItem.session.title, keywordList);
   return (
     <Card sx={{ mx: "auto" }} elevation={3}>
-      <CardActionArea sx={{ p: 2 }} onClick={() => onClick()}>
+      <CardActionArea sx={{ p: 2 }} component={Link} to={linkTo}>
         <Grid container={true} spacing={2} justifyContent="space-between">
           <Grid item={true} xs={12}>
             <Grid container={true} spacing={2} justifyContent="space-between">

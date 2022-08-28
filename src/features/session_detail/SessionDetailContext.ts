@@ -1,5 +1,5 @@
 //
-// AppRouter.tsx
+// SessionDetailContext.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,31 +22,7 @@
 // THE SOFTWARE.
 //
 
-import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
-import { Home } from "../features/home/Home";
-import { RequestPage } from "../features/request/RequestPage";
-import { SessionPage } from "../features/session/SessionPage";
-import { RequestDetailDialog } from "../features/request_detail/RequestDetailDialog";
-import { SessionDetailPage } from "../features/session_detail/SessionDetailPage";
+import React from "react";
+import { NullSessionDetailLogic, SessionDetailLogic } from "./SessionDetailLogic";
 
-export function AppRouter(): JSX.Element {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home/>}>
-          <Route path="request" element={<Outlet/>}>
-            <Route index element={<RequestPage/>}/>
-            <Route path=":eventId" element={<RequestPage/>}>
-              <Route path=":requestId" element={<RequestDetailDialog/>}/>
-            </Route>
-          </Route>
-          <Route path="session" element={<Outlet/>}>
-            <Route index element={<SessionPage/>}/>
-            <Route path=":sessionId" element={<SessionDetailPage/>}/>
-          </Route>
-          <Route path="*" element={<></>} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  )
-}
+export const SessionDetailContext = React.createContext<SessionDetailLogic>(new NullSessionDetailLogic());

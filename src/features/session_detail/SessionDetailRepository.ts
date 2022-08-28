@@ -1,5 +1,5 @@
 //
-// AppRouter.tsx
+// SessionDetailRepository.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,31 +22,27 @@
 // THE SOFTWARE.
 //
 
-import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
-import { Home } from "../features/home/Home";
-import { RequestPage } from "../features/request/RequestPage";
-import { SessionPage } from "../features/session/SessionPage";
-import { RequestDetailDialog } from "../features/request_detail/RequestDetailDialog";
-import { SessionDetailPage } from "../features/session_detail/SessionDetailPage";
+import { Observable } from "rxjs";
+import { Session } from "../../entities/Session";
+import { Event } from "../../entities/Event";
+import { Firestore } from "../../Firestore";
 
-export function AppRouter(): JSX.Element {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home/>}>
-          <Route path="request" element={<Outlet/>}>
-            <Route index element={<RequestPage/>}/>
-            <Route path=":eventId" element={<RequestPage/>}>
-              <Route path=":requestId" element={<RequestDetailDialog/>}/>
-            </Route>
-          </Route>
-          <Route path="session" element={<Outlet/>}>
-            <Route index element={<SessionPage/>}/>
-            <Route path=":sessionId" element={<SessionDetailPage/>}/>
-          </Route>
-          <Route path="*" element={<></>} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  )
+export interface SessionDetailRepository {
+  getSession$(sessionId: string): Observable<Session>;
+  getAllEvents$(): Observable<Event[]>;
+  getConferenceName$(conferenceId: string): Observable<string>;
+}
+
+export class FirestoreSessionDetailRepository implements SessionDetailRepository {
+  getSession$(sessionId: string): Observable<Session> {
+    return Firestore.getSession$(sessionId);
+  }
+
+  getAllEvents$(): Observable<Event[]> {
+    return Firestore.getAllEvents$();
+  }
+
+  getConferenceName$(conferenceId: string): Observable<string> {
+    return Firestore.getConferenceName$(conferenceId);
+  }
 }
