@@ -22,22 +22,22 @@
 // THE SOFTWARE.
 //
 
-import { Event } from "../../entities/Event";
-import { Request } from "../../entities/Request";
-import { Observable } from "rxjs";
-import { Firestore } from "../../Firestore";
+import { Event } from "../../entities/Event"
+import { Request } from "../../entities/Request"
+import { Observable } from "rxjs"
+import { Firestore } from "../../Firestore"
 
 export interface RequestRepository {
-  getAllEvents$(): Observable<Event[]>;
-  getAllRequests$(eventId: string): Observable<Request[]>;
+  getAllEvents$(): Observable<Event[]>
+  getAllRequests$(eventId: string): Observable<Request[]>
 }
 
 export class FirestoreRequestRepository implements RequestRepository {
   getAllEvents$(): Observable<Event[]> {
-    return Firestore.getAllEvents$();
+    return Firestore.getAllEvents$()
   }
   
   getAllRequests$(eventId: string): Observable<Request[]> {
-    return Firestore.getAllRequests$(eventId);
+    return Firestore.getAllRequests$(eventId)
   }
 }

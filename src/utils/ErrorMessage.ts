@@ -24,10 +24,10 @@
 
 export function errorMessage(err: unknown): string {
   if (err instanceof Error) {
-    return err.message;
+    return err.message
   } else if (err instanceof Object) {
-    return err.toString();
+    return err.toString()
   } else {
-    return typeof err;
+    return typeof err
   }
 }

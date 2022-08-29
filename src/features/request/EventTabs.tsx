@@ -22,13 +22,13 @@
 // THE SOFTWARE.
 //
 
-import { Event } from "../../entities/Event";
-import { Box, CircularProgress, Tab, Tabs } from "@mui/material";
+import { Event } from "../../entities/Event"
+import { Box, CircularProgress, Tab, Tabs } from "@mui/material"
 
 interface EventTabsProps {
-  events: Event[];
-  currentId: string | false;
-  onCurrentIdChanged: (currentId: string | false) => void;
+  events: Event[]
+  currentId: string | false
+  onCurrentIdChanged: (currentId: string | false) => void
 }
 
 export function EventTabs({ events, currentId, onCurrentIdChanged }: EventTabsProps): JSX.Element {
@@ -37,7 +37,7 @@ export function EventTabs({ events, currentId, onCurrentIdChanged }: EventTabsPr
       <Box sx={{ textAlign: "center" }}>
         <CircularProgress size={18} sx={{ m: 2 }} />
       </Box>
-    );
+    )
   } else {
     return (
       <Tabs value={currentId}
@@ -47,6 +47,6 @@ export function EventTabs({ events, currentId, onCurrentIdChanged }: EventTabsPr
           <Tab key={event.id} label={event.name} value={event.id}/>
         ))}
       </Tabs>
-    );
+    )
   }
 }

@@ -22,34 +22,34 @@
 // THE SOFTWARE.
 //
 
-import { RequestRepository } from "./RequestRepository";
-import { NEVER, Observable, startWith, Subject, Subscription, throwError } from "rxjs";
-import { Event } from "../../entities/Event";
-import { Request } from "../../entities/Request";
+import { RequestRepository } from "./RequestRepository"
+import { NEVER, Observable, startWith, Subject, Subscription, throwError } from "rxjs"
+import { Event } from "../../entities/Event"
+import { Request } from "../../entities/Request"
 import {
   AppRequestLogic,
   RequestListDProps,
   RequestListEProps,
   RequestListIRDE,
   RequestLogic
-} from "./RequestLogic";
-import { EventuallyObserver } from "../../utils/EventuallyObserver";
-import { IRDEDone, IRDEError, IRDETypes } from "../../utils/IRDE";
+} from "./RequestLogic"
+import { EventuallyObserver } from "../../utils/EventuallyObserver"
+import { IRDEDone, IRDEError, IRDETypes } from "../../utils/IRDE"
 
 class MockRequestRepository implements RequestRepository {
-  getAllEvents$ = jest.fn(() => NEVER as Observable<Event[]>);
-  getAllRequests$ = jest.fn(eventId => NEVER as Observable<Request[]>);
+  getAllEvents$ = jest.fn(() => NEVER as Observable<Event[]>)
+  getAllRequests$ = jest.fn(eventId => NEVER as Observable<Request[]>)
 }
 
 const eventData1: Event[] = [
   { id: "e1", name: "Event 1", isAccepting: false },
   { id: "e2", name: "Event 2", isAccepting: false },
-];
+]
 const eventData2: Event[] = [
   { id: "e1", name: "Event 1", isAccepting: false },
   { id: "e2", name: "Event 2", isAccepting: false },
   { id: "e3", name: "Event 3", isAccepting: false },
-];
+]
 
 const requestData1: Request[] = [
   {
@@ -74,7 +74,7 @@ const requestData1: Request[] = [
     memo: "memo",
     isWatched: false,
   },
-];
+]
 
 const requestData2: Request[] = [
   {
@@ -110,213 +110,213 @@ const requestData2: Request[] = [
     memo: "",
     isWatched: true,
   },
-];
+]
 
-let mockRequestRepository: MockRequestRepository;
-let subscription: Subscription;
-let logic: RequestLogic | undefined;
+let mockRequestRepository: MockRequestRepository
+let subscription: Subscription
+let logic: RequestLogic | undefined
 
 function createLogic(): RequestLogic {
-  logic = new AppRequestLogic(mockRequestRepository);
-  return logic;
+  logic = new AppRequestLogic(mockRequestRepository)
+  return logic
 }
 
 beforeEach(() => {
-  mockRequestRepository = new MockRequestRepository();
-  subscription = new Subscription();
-  logic = undefined;
-});
+  mockRequestRepository = new MockRequestRepository()
+  subscription = new Subscription()
+  logic = undefined
+})
 
 afterEach(() => {
-  subscription.unsubscribe();
+  subscription.unsubscribe()
   if (logic !== undefined) {
-    logic.dispose();
+    logic.dispose()
   }
-});
+})
 
 describe("getAllEvents$", () => {
   it("emits all events", async () => {
-    mockRequestRepository.getAllEvents$.mockReturnValue(NEVER.pipe(startWith(eventData1)));
+    mockRequestRepository.getAllEvents$.mockReturnValue(NEVER.pipe(startWith(eventData1)))
 
-    const logic = createLogic();
+    const logic = createLogic()
 
-    const observer = new EventuallyObserver<Event[]>();
+    const observer = new EventuallyObserver<Event[]>()
     const expectation = observer.expectValue(events => {
-      expect(events).toBe(eventData1);
-    });
+      expect(events).toBe(eventData1)
+    })
 
-    subscription.add(logic.allEvents$.subscribe(observer));
+    subscription.add(logic.allEvents$.subscribe(observer))
 
-    await expectation;
-  });
+    await expectation
+  })
 
   it("emits next all events", async () => {
-    const mockSubject = new Subject<Event[]>();
-    mockRequestRepository.getAllEvents$.mockReturnValue(mockSubject.pipe(startWith(eventData1)));
+    const mockSubject = new Subject<Event[]>()
+    mockRequestRepository.getAllEvents$.mockReturnValue(mockSubject.pipe(startWith(eventData1)))
 
-    const logic = createLogic();
+    const logic = createLogic()
 
-    const observer = new EventuallyObserver<Event[]>();
+    const observer = new EventuallyObserver<Event[]>()
     const expectation1 = observer.expectValue(events => {
-      expect(events).toBe(eventData1);
-    });
-    subscription.add(logic.allEvents$.subscribe(observer));
-    await expectation1;
+      expect(events).toBe(eventData1)
+    })
+    subscription.add(logic.allEvents$.subscribe(observer))
+    await expectation1
 
     const expectation2 = observer.expectValue(events => {
-      expect(events).toBe(eventData2);
-    });
-    mockSubject.next(eventData2);
-    await expectation2;
-  });
+      expect(events).toBe(eventData2)
+    })
+    mockSubject.next(eventData2)
+    await expectation2
+  })
 
   it("emits empty event list when failed to load them", async () => {
-    mockRequestRepository.getAllEvents$.mockReturnValue(throwError(() => new Error("error")));
+    mockRequestRepository.getAllEvents$.mockReturnValue(throwError(() => new Error("error")))
 
-    const logic = createLogic();
+    const logic = createLogic()
 
-    const observer = new EventuallyObserver<Event[]>();
+    const observer = new EventuallyObserver<Event[]>()
     const expectation = observer.expectValue(events => {
-      expect(events.length).toBe(0);
-    });
+      expect(events.length).toBe(0)
+    })
 
-    subscription.add(logic.allEvents$.subscribe(observer));
+    subscription.add(logic.allEvents$.subscribe(observer))
 
-    await expectation;
-  });
-});
+    await expectation
+  })
+})
 
 describe("currentEventId", () => {
   it("holds current event id", () => {
-    const logic = createLogic();
+    const logic = createLogic()
     
-    logic.setCurrentEventId("e3");
-    expect(logic.currentEventId).toBe("e3");
-  });
-});
+    logic.setCurrentEventId("e3")
+    expect(logic.currentEventId).toBe("e3")
+  })
+})
 
 describe("getAllRequests$", () => {
   it("emits all requests for current event", async () => {
-    mockRequestRepository.getAllEvents$.mockReturnValue(NEVER.pipe(startWith(eventData1)));
-    mockRequestRepository.getAllRequests$.mockReturnValue(NEVER.pipe(startWith(requestData1)));
+    mockRequestRepository.getAllEvents$.mockReturnValue(NEVER.pipe(startWith(eventData1)))
+    mockRequestRepository.getAllRequests$.mockReturnValue(NEVER.pipe(startWith(requestData1)))
 
-    const logic = createLogic();
+    const logic = createLogic()
 
-    const observer = new EventuallyObserver<RequestListIRDE>();
+    const observer = new EventuallyObserver<RequestListIRDE>()
     const expectation = observer.expectValue(requestList => {
-      expect(requestList.type).toBe(IRDETypes.Done);
-      expect((requestList as IRDEDone<RequestListDProps>).requests).toBe(requestData1);
-    });
-    subscription.add(logic.requestList$.subscribe(observer));
-    logic.setCurrentEventId("e1");
-    await expectation;
-    expect(mockRequestRepository.getAllRequests$.mock.calls[0][0]).toBe("e1");
-  });
+      expect(requestList.type).toBe(IRDETypes.Done)
+      expect((requestList as IRDEDone<RequestListDProps>).requests).toBe(requestData1)
+    })
+    subscription.add(logic.requestList$.subscribe(observer))
+    logic.setCurrentEventId("e1")
+    await expectation
+    expect(mockRequestRepository.getAllRequests$.mock.calls[0][0]).toBe("e1")
+  })
   
   it("emits a type of running on beginning of loading, and emits a type of done when loaded", async () => {
-    mockRequestRepository.getAllEvents$.mockReturnValue(NEVER.pipe(startWith(eventData1)));
-    const mockSubject = new Subject<Request[]>();
-    mockRequestRepository.getAllRequests$.mockReturnValue(mockSubject);
+    mockRequestRepository.getAllEvents$.mockReturnValue(NEVER.pipe(startWith(eventData1)))
+    const mockSubject = new Subject<Request[]>()
+    mockRequestRepository.getAllRequests$.mockReturnValue(mockSubject)
     
-    const logic = createLogic();
+    const logic = createLogic()
     
-    const observer = new EventuallyObserver<RequestListIRDE>();
+    const observer = new EventuallyObserver<RequestListIRDE>()
     const expectationOfRunning = observer.expectValue(requestList => {
-      expect(requestList.type).toBe(IRDETypes.Running);
-    });
-    subscription.add(logic.requestList$.subscribe(observer));
-    logic.setCurrentEventId("e1");
-    await expectationOfRunning;
+      expect(requestList.type).toBe(IRDETypes.Running)
+    })
+    subscription.add(logic.requestList$.subscribe(observer))
+    logic.setCurrentEventId("e1")
+    await expectationOfRunning
     
     const expectationOfDone = observer.expectValue(requestList => {
-      expect(requestList.type).toBe(IRDETypes.Done);
-    });
-    mockSubject.next(requestData1);
-    await expectationOfDone;
-  });
+      expect(requestList.type).toBe(IRDETypes.Done)
+    })
+    mockSubject.next(requestData1)
+    await expectationOfDone
+  })
   
   it("reloads requests when user changes the current event", async () => {
-    mockRequestRepository.getAllEvents$.mockReturnValue(NEVER.pipe(startWith(eventData1)));
+    mockRequestRepository.getAllEvents$.mockReturnValue(NEVER.pipe(startWith(eventData1)))
     mockRequestRepository.getAllRequests$.mockImplementation(eventId => {
       switch (eventId) {
         case "e1":
-          return NEVER.pipe(startWith(requestData1));
+          return NEVER.pipe(startWith(requestData1))
         case "e2":
-          return NEVER.pipe(startWith(requestData2));
+          return NEVER.pipe(startWith(requestData2))
         default:
-          return NEVER;
+          return NEVER
       }
-    });
+    })
     
-    const logic = createLogic();
+    const logic = createLogic()
     
-    const observer = new EventuallyObserver<RequestListIRDE>();
+    const observer = new EventuallyObserver<RequestListIRDE>()
     const expecationOfRequestForEvent1 = observer.expectValue(requestList => {
-      expect(requestList.type).toBe(IRDETypes.Done);
-      expect((requestList as IRDEDone<RequestListDProps>).requests).toBe(requestData1);
-    });
-    subscription.add(logic.requestList$.subscribe(observer));
-    logic.setCurrentEventId("e1");
-    await expecationOfRequestForEvent1;
+      expect(requestList.type).toBe(IRDETypes.Done)
+      expect((requestList as IRDEDone<RequestListDProps>).requests).toBe(requestData1)
+    })
+    subscription.add(logic.requestList$.subscribe(observer))
+    logic.setCurrentEventId("e1")
+    await expecationOfRequestForEvent1
     
     const expectationOfLoadingRequestsForEvent2 = observer.expectValue(requestList => {
-      expect(requestList.type).toBe(IRDETypes.Running);
-    });
+      expect(requestList.type).toBe(IRDETypes.Running)
+    })
     
     const expectationOfLoadedRequestsForEvent2 = observer.expectValue(requestList => {
-      expect(requestList.type).toBe(IRDETypes.Done);
-      expect((requestList as IRDEDone<RequestListDProps>).requests).toBe(requestData2);
-    });
-    logic.setCurrentEventId("e2");
-    await expectationOfLoadingRequestsForEvent2;
-    await expectationOfLoadedRequestsForEvent2;
-  });
+      expect(requestList.type).toBe(IRDETypes.Done)
+      expect((requestList as IRDEDone<RequestListDProps>).requests).toBe(requestData2)
+    })
+    logic.setCurrentEventId("e2")
+    await expectationOfLoadingRequestsForEvent2
+    await expectationOfLoadedRequestsForEvent2
+  })
   
   it("emits a type of error when failed to load request", async () => {
-    const error = new Error("error occurred");
-    mockRequestRepository.getAllEvents$.mockReturnValue(NEVER.pipe(startWith(eventData1)));
-    mockRequestRepository.getAllRequests$.mockReturnValue(throwError(() => error));
+    const error = new Error("error occurred")
+    mockRequestRepository.getAllEvents$.mockReturnValue(NEVER.pipe(startWith(eventData1)))
+    mockRequestRepository.getAllRequests$.mockReturnValue(throwError(() => error))
     
-    const logic = createLogic();
+    const logic = createLogic()
     
-    const observer = new EventuallyObserver<RequestListIRDE>();
+    const observer = new EventuallyObserver<RequestListIRDE>()
     const expectation = observer.expectValue(requestList => {
-      expect(requestList.type).toBe(IRDETypes.Error);
-      expect((requestList as IRDEError<RequestListEProps>).message).toBe(error.toString());
-    });
-    subscription.add(logic.requestList$.subscribe(observer));
-    logic.setCurrentEventId("e1");
-    await expectation;
-  });
+      expect(requestList.type).toBe(IRDETypes.Error)
+      expect((requestList as IRDEError<RequestListEProps>).message).toBe(error.toString())
+    })
+    subscription.add(logic.requestList$.subscribe(observer))
+    logic.setCurrentEventId("e1")
+    await expectation
+  })
   
   it("resumes from error by selecting another event", async () => {
-    mockRequestRepository.getAllEvents$.mockReturnValue(NEVER.pipe(startWith(eventData1)));
+    mockRequestRepository.getAllEvents$.mockReturnValue(NEVER.pipe(startWith(eventData1)))
     mockRequestRepository.getAllRequests$.mockImplementation(eventId => {
       switch (eventId) {
         case "e1":
-          return throwError(() => new Error("failed to load requests for e1"));
+          return throwError(() => new Error("failed to load requests for e1"))
         case "e2":
-          return NEVER.pipe(startWith(requestData2));
+          return NEVER.pipe(startWith(requestData2))
         default:
-          return NEVER;
+          return NEVER
       }
-    });
+    })
 
-    const logic = createLogic();
+    const logic = createLogic()
     
-    const observer = new EventuallyObserver<RequestListIRDE>();
+    const observer = new EventuallyObserver<RequestListIRDE>()
     const expectationOfRequestsForEvent1 = observer.expectValue(requestList => {
-      expect(requestList.type).toBe(IRDETypes.Error);
-    });
-    subscription.add(logic.requestList$.subscribe(observer));
-    logic.setCurrentEventId("e1");
-    await expectationOfRequestsForEvent1;
+      expect(requestList.type).toBe(IRDETypes.Error)
+    })
+    subscription.add(logic.requestList$.subscribe(observer))
+    logic.setCurrentEventId("e1")
+    await expectationOfRequestsForEvent1
     
     const expectationOfRequestsForEvent2 = observer.expectValue(requestList => {
-      expect(requestList.type).toBe(IRDETypes.Done);
-      expect((requestList as IRDEDone<RequestListDProps>).requests).toBe(requestData2);
-    });
-    logic.setCurrentEventId("e2");
-    await expectationOfRequestsForEvent2;
-  });
-});
+      expect(requestList.type).toBe(IRDETypes.Done)
+      expect((requestList as IRDEDone<RequestListDProps>).requests).toBe(requestData2)
+    })
+    logic.setCurrentEventId("e2")
+    await expectationOfRequestsForEvent2
+  })
+})

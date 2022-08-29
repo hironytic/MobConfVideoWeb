@@ -22,8 +22,8 @@
 // THE SOFTWARE.
 //
 
-import { Grid, styled, Typography } from "@mui/material";
-import { Check } from "@mui/icons-material";
+import { Grid, styled, Typography } from "@mui/material"
+import { Check } from "@mui/icons-material"
 
 const WatchedTypography = styled(Typography)(({ theme }) => ({
   borderStyle: "solid",
@@ -31,20 +31,20 @@ const WatchedTypography = styled(Typography)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   padding: theme.shape.borderRadius,
   borderColor: theme.palette.text.secondary,
-}));
+}))
 
 const WatchedCheck = styled(Check)(({ theme }) => ({
   fontSize: theme.typography.body1.fontSize,
   verticalAlign: "middle",
-}));
+}))
 
 export interface IdAndName {
-  id: string;
-  name: string;
+  id: string
+  name: string
 }
 
 interface WatchedEventsProps {
-  events: IdAndName[];
+  events: IdAndName[]
 }
 export function WatchedEvents({ events }: WatchedEventsProps): JSX.Element {
   return (
@@ -57,5 +57,5 @@ export function WatchedEvents({ events }: WatchedEventsProps): JSX.Element {
         </Grid>
       ))}
     </Grid>
-  );
+  )
 }

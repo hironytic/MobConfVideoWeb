@@ -22,47 +22,47 @@
 // THE SOFTWARE.
 //
 
-import { DocumentData, FirestoreDataConverter, QueryDocumentSnapshot, WithFieldValue, Timestamp } from "@firebase/firestore";
+import { DocumentData, FirestoreDataConverter, QueryDocumentSnapshot, WithFieldValue, Timestamp } from "@firebase/firestore"
 
 export interface Session {
-  id: string;
-  conferenceId: string;
-  watched: boolean;
-  watchedOn: WatchedOn;
-  title: string;
-  description: string;
-  starts: Date;
-  minutes: number;
-  slide: string | undefined;
-  video: string | undefined;
-  speakers: Speaker[];
+  id: string
+  conferenceId: string
+  watched: boolean
+  watchedOn: WatchedOn
+  title: string
+  description: string
+  starts: Date
+  minutes: number
+  slide: string | undefined
+  video: string | undefined
+  speakers: Speaker[]
 }
 
 export interface Speaker {
-  name: string;
-  twitter: string | undefined;
-  icon: string | undefined;
+  name: string
+  twitter: string | undefined
+  icon: string | undefined
 }
 
 export interface WatchedOn {
-  [eventId: string]: number;
+  [eventId: string]: number
 }
 
 interface FSSession {
-  conferenceId: string;
-  watched: boolean;
-  watchedOn: WatchedOn | undefined;
-  title: string;
-  description: string;
-  starts: Timestamp;
-  minutes: number;
-  slide?: string;
-  video?: string;
-  speakers: Speaker[];
+  conferenceId: string
+  watched: boolean
+  watchedOn: WatchedOn | undefined
+  title: string
+  description: string
+  starts: Timestamp
+  minutes: number
+  slide?: string
+  video?: string
+  speakers: Speaker[]
 }
 export const sessionConverter: FirestoreDataConverter<Session> = {
   fromFirestore(snapshot: QueryDocumentSnapshot): Session {
-    const data = snapshot.data() as FSSession;
+    const data = snapshot.data() as FSSession
     return {
       id: snapshot.id,
       conferenceId: data.conferenceId,
@@ -75,7 +75,7 @@ export const sessionConverter: FirestoreDataConverter<Session> = {
       slide: data.slide,
       video: data.video,
       speakers: data.speakers,
-    };
+    }
   },
 
   toFirestore(modelObject: WithFieldValue<Session>): DocumentData {
@@ -92,4 +92,4 @@ export const sessionConverter: FirestoreDataConverter<Session> = {
       speakers: modelObject.speakers,
     }
   }
-};
+}

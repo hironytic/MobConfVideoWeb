@@ -22,14 +22,14 @@
 // THE SOFTWARE.
 //
 
-import { Event } from "../../entities/Event";
-import { Session } from "../../entities/Session";
-import { SessionDetailRepository } from "./SessionDetailRepository";
-import { NEVER, Observable, startWith, Subscription, throwError } from "rxjs";
-import { AppSessionDetailLogic, SessionDetailIRDE, SessionDetailLogic, SessionItem } from "./SessionDetailLogic";
-import { EventuallyObserver } from "../../utils/EventuallyObserver";
-import { IRDETypes } from "../../utils/IRDE";
-import { errorMessage } from "../../utils/ErrorMessage";
+import { Event } from "../../entities/Event"
+import { Session } from "../../entities/Session"
+import { SessionDetailRepository } from "./SessionDetailRepository"
+import { NEVER, Observable, startWith, Subscription, throwError } from "rxjs"
+import { AppSessionDetailLogic, SessionDetailIRDE, SessionDetailLogic, SessionItem } from "./SessionDetailLogic"
+import { EventuallyObserver } from "../../utils/EventuallyObserver"
+import { IRDETypes } from "../../utils/IRDE"
+import { errorMessage } from "../../utils/ErrorMessage"
 
 const session1 = {
   id: "s1",
@@ -45,125 +45,125 @@ const session1 = {
   speakers: [
     { name: "Speaker 1", twitter: "speaker1", icon: undefined }
   ]
-} as Session;
+} as Session
 
 const eventList1 = [
   { id: "e1", name: "Event 1", isAccepting: false },
   { id: "e2", name: "Event 2", isAccepting: false },
   { id: "e3", name: "Event 3", isAccepting: false },
-] as Event[];
+] as Event[]
 
-const conferenceName1 = "Conf 1";
+const conferenceName1 = "Conf 1"
 
 class MockSessionDetailRepository implements SessionDetailRepository {
-  getSession$ = jest.fn((sessionId: string): Observable<Session> => NEVER.pipe(startWith(session1)));
-  getAllEvents$ = jest.fn((): Observable<Event[]> => NEVER.pipe(startWith(eventList1)));
-  getConferenceName$ = jest.fn((conferenceId: string): Observable<string> => NEVER.pipe(startWith(conferenceName1)));
+  getSession$ = jest.fn((sessionId: string): Observable<Session> => NEVER.pipe(startWith(session1)))
+  getAllEvents$ = jest.fn((): Observable<Event[]> => NEVER.pipe(startWith(eventList1)))
+  getConferenceName$ = jest.fn((conferenceId: string): Observable<string> => NEVER.pipe(startWith(conferenceName1)))
 }
 
-let mockSessionDetailRepository: MockSessionDetailRepository;
-let subscription: Subscription;
-let logic: SessionDetailLogic | undefined;
+let mockSessionDetailRepository: MockSessionDetailRepository
+let subscription: Subscription
+let logic: SessionDetailLogic | undefined
 
 function createLogic(): SessionDetailLogic {
-  logic = new AppSessionDetailLogic(mockSessionDetailRepository);
-  return logic;
+  logic = new AppSessionDetailLogic(mockSessionDetailRepository)
+  return logic
 }
 
 beforeEach(() => {
-  mockSessionDetailRepository = new MockSessionDetailRepository();
-  subscription = new Subscription();
-  logic = undefined;
-});
+  mockSessionDetailRepository = new MockSessionDetailRepository()
+  subscription = new Subscription()
+  logic = undefined
+})
 
 afterEach(() => {
-  subscription.unsubscribe();
+  subscription.unsubscribe()
   if (logic !== undefined) {
-    logic.dispose();
+    logic.dispose()
   }
-});
+})
 
 describe("session detail", () => {
   it("should change to be loading", async () => {
-    const logic = createLogic();
+    const logic = createLogic()
 
-    const observer = new EventuallyObserver<SessionDetailIRDE>();
+    const observer = new EventuallyObserver<SessionDetailIRDE>()
     const expectation1 = observer.expectValue(irde => {
-      expect(irde.type).toBe(IRDETypes.Initial);
-    });
-    subscription.add(logic.sessionDetail$.subscribe(observer));
-    await expectation1;
+      expect(irde.type).toBe(IRDETypes.Initial)
+    })
+    subscription.add(logic.sessionDetail$.subscribe(observer))
+    await expectation1
 
     const expectation2 = observer.expectValue(irde => {
-      expect(irde.type).toBe(IRDETypes.Running);
-    });
-    logic.setCurrentSession("s1");
-    await expectation2;
-  });
+      expect(irde.type).toBe(IRDETypes.Running)
+    })
+    logic.setCurrentSession("s1")
+    await expectation2
+  })
 
   it("should show detail info about session", async () => {
-    const logic = createLogic();
+    const logic = createLogic()
 
-    let sessionItem = {} as SessionItem;
-    const observer = new EventuallyObserver<SessionDetailIRDE>();
+    let sessionItem = {} as SessionItem
+    const observer = new EventuallyObserver<SessionDetailIRDE>()
     const expectation = observer.expectValue(irde => {
-      expect(irde.type).toBe(IRDETypes.Done);
+      expect(irde.type).toBe(IRDETypes.Done)
       if (irde.type === IRDETypes.Done) {
-        sessionItem = irde.sessionItem;
+        sessionItem = irde.sessionItem
       }
-    });
-    subscription.add(logic.sessionDetail$.subscribe(observer));
+    })
+    subscription.add(logic.sessionDetail$.subscribe(observer))
 
-    logic.setCurrentSession("s1");
-    await expectation;
+    logic.setCurrentSession("s1")
+    await expectation
 
-    expect(sessionItem.session).toEqual(session1);
-    expect(sessionItem.conferenceName).toBe("Conf 1");
+    expect(sessionItem.session).toEqual(session1)
+    expect(sessionItem.conferenceName).toBe("Conf 1")
     expect(sessionItem.watchedEvents).toEqual([
       { id: "e1", name: "Event 1"},
       { id: "e3", name: "Event 3" }
-    ]);
-  });
+    ])
+  })
 
   it("should show error when failed to retrieve session", async () => {
-    const error = new Error("failed to load session for s1");
-    mockSessionDetailRepository.getSession$.mockReturnValue(throwError(() => error));
-    const logic = createLogic();
+    const error = new Error("failed to load session for s1")
+    mockSessionDetailRepository.getSession$.mockReturnValue(throwError(() => error))
+    const logic = createLogic()
 
-    let message = "";
-    const observer = new EventuallyObserver<SessionDetailIRDE>();
+    let message = ""
+    const observer = new EventuallyObserver<SessionDetailIRDE>()
     const expectation = observer.expectValue(irde => {
-      expect(irde.type).toBe(IRDETypes.Error);
+      expect(irde.type).toBe(IRDETypes.Error)
       if (irde.type === IRDETypes.Error) {
-        message = irde.message;
+        message = irde.message
       }
-    });
-    subscription.add(logic.sessionDetail$.subscribe(observer));
+    })
+    subscription.add(logic.sessionDetail$.subscribe(observer))
 
-    logic.setCurrentSession("s1");
-    await expectation;
+    logic.setCurrentSession("s1")
+    await expectation
 
-    expect(message).toBe(errorMessage(error));
-  });
+    expect(message).toBe(errorMessage(error))
+  })
 
   it("should not show error when failed to retrieve conference", async () => {
-    const error = new Error("failed to load conference name for c1");
-    mockSessionDetailRepository.getConferenceName$.mockReturnValue(throwError(() => error));
-    const logic = createLogic();
+    const error = new Error("failed to load conference name for c1")
+    mockSessionDetailRepository.getConferenceName$.mockReturnValue(throwError(() => error))
+    const logic = createLogic()
 
-    let sessionItem = {} as SessionItem;
-    const observer = new EventuallyObserver<SessionDetailIRDE>();
+    let sessionItem = {} as SessionItem
+    const observer = new EventuallyObserver<SessionDetailIRDE>()
     const expectation = observer.expectValue(irde => {
-      expect(irde.type).toBe(IRDETypes.Done);
+      expect(irde.type).toBe(IRDETypes.Done)
       if (irde.type === IRDETypes.Done) {
-        sessionItem = irde.sessionItem;
+        sessionItem = irde.sessionItem
       }
-    });
-    subscription.add(logic.sessionDetail$.subscribe(observer));
+    })
+    subscription.add(logic.sessionDetail$.subscribe(observer))
 
-    logic.setCurrentSession("s1");
-    await expectation;
+    logic.setCurrentSession("s1")
+    await expectation
 
-    expect(sessionItem.conferenceName).toBe("");
-  });
-});
+    expect(sessionItem.conferenceName).toBe("")
+  })
+})

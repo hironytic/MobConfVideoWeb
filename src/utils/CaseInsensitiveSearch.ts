@@ -23,34 +23,34 @@
 //
 
 export interface CaseInsensitiveSearchResult {
-  index: number;
-  length: number;
+  index: number
+  length: number
 }
 
 export class CaseInsensitiveSearch {
-  public str: string;
-  private regExp: RegExp;
+  public str: string
+  private regExp: RegExp
 
   constructor(str: string) {
-    this.str = str;
-    this.regExp = new RegExp(str.replace(/[-[\]{}()*+?.,\\^$|#\s]/, "\\$&"), "ig");
+    this.str = str
+    this.regExp = new RegExp(str.replace(/[-[\]{}()*+?.,\\^$|#\s]/, "\\$&"), "ig")
   }
 
   public foundIn(text: string): boolean {
-    this.regExp.lastIndex = 0;
-    return this.regExp.test(text);
+    this.regExp.lastIndex = 0
+    return this.regExp.test(text)
   }
 
   public searchIn(text: string, position: number): CaseInsensitiveSearchResult | null {
-    this.regExp.lastIndex = position;
-    const match = this.regExp.exec(text);
+    this.regExp.lastIndex = position
+    const match = this.regExp.exec(text)
     if (match !== null) {
       return {
         index: match.index,
         length: match[0].length,
-      };
+      }
     } else {
-      return null;
+      return null
     }
   }
 }

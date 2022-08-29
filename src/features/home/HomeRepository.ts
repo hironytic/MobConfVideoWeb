@@ -22,16 +22,16 @@
 // THE SOFTWARE.
 //
 
-import { Observable } from "rxjs";
-import { Config } from "../../entities/Config";
-import { Firestore } from "../../Firestore";
+import { Observable } from "rxjs"
+import { Config } from "../../entities/Config"
+import { Firestore } from "../../Firestore"
 
 export interface HomeRepository {
-  getConfig$(): Observable<Config>;
+  getConfig$(): Observable<Config>
 }
 
 export class FirestoreHomeRepository implements HomeRepository {
   getConfig$(): Observable<Config> {
-    return Firestore.getConfig$();
+    return Firestore.getConfig$()
   }
 }

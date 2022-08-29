@@ -22,13 +22,13 @@
 // THE SOFTWARE.
 //
 
-import { AppRouter } from "./routes/AppRouter";
-import { AppProvider } from "./providers/AppProvider";
+import { AppRouter } from "./routes/AppRouter"
+import { AppProvider } from "./providers/AppProvider"
 
 export function App(): JSX.Element {
   return (
     <AppProvider>
       <AppRouter />
     </AppProvider>
-  );
+  )
 }

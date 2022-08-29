@@ -22,18 +22,18 @@
 // THE SOFTWARE.
 //
 
-import { SessionItem } from "./SessionDetailLogic";
-import { IRDETypes } from "../../utils/IRDE";
-import { Box, Button, CircularProgress, Grid, Typography } from "@mui/material";
-import { WatchedEvents } from "./WatchedEvents";
-import { Description } from "./Description";
-import { Speakers } from "./Speakers";
-import { Note, OndemandVideo } from "@mui/icons-material";
-import { AppSessionDetailProvider } from "../../providers/AppSessionDetailProvider";
-import { useContext, useEffect } from "react";
-import { SessionDetailContext } from "./SessionDetailContext";
-import { useObservableState } from "observable-hooks";
-import { useParams } from "react-router-dom";
+import { SessionItem } from "./SessionDetailLogic"
+import { IRDETypes } from "../../utils/IRDE"
+import { Box, Button, CircularProgress, Grid, Typography } from "@mui/material"
+import { WatchedEvents } from "./WatchedEvents"
+import { Description } from "./Description"
+import { Speakers } from "./Speakers"
+import { Note, OndemandVideo } from "@mui/icons-material"
+import { AppSessionDetailProvider } from "../../providers/AppSessionDetailProvider"
+import { useContext, useEffect } from "react"
+import { SessionDetailContext } from "./SessionDetailContext"
+import { useObservableState } from "observable-hooks"
+import { useParams } from "react-router-dom"
 
 export function SessionDetailPage(): JSX.Element {
   return (
@@ -42,35 +42,35 @@ export function SessionDetailPage(): JSX.Element {
         <SessionDetailBody/>
       </Box>
     </AppSessionDetailProvider>      
-  );
+  )
 }
 
 function SessionDetailBody(): JSX.Element {
-  const logic = useContext(SessionDetailContext);
-  const params = useParams();
-  const sessionId = params["sessionId"];
-  const irde = useObservableState(logic.sessionDetail$, { type: IRDETypes.Initial });
+  const logic = useContext(SessionDetailContext)
+  const params = useParams()
+  const sessionId = params["sessionId"]
+  const irde = useObservableState(logic.sessionDetail$, { type: IRDETypes.Initial })
   
   useEffect(() => {
     if (sessionId !== undefined) {
-      logic.setCurrentSession(sessionId);
+      logic.setCurrentSession(sessionId)
     }
-  }, [logic, sessionId]);
+  }, [logic, sessionId])
 
   switch (irde.type) {
     case IRDETypes.Initial:
-      return <SessionDetailInitialBody/>;
+      return <SessionDetailInitialBody/>
     case IRDETypes.Running:
-      return <SessionDetailRunningBody/>;
+      return <SessionDetailRunningBody/>
     case IRDETypes.Done:
-      return <SessionDetailDoneBody sessionItem={irde.sessionItem} />;
+      return <SessionDetailDoneBody sessionItem={irde.sessionItem} />
     case IRDETypes.Error:
-      return <SessionDetailErrorBody message={irde.message}/>;
+      return <SessionDetailErrorBody message={irde.message}/>
   }
 }
 
 function SessionDetailInitialBody(): JSX.Element {
-  return <></>;
+  return <></>
 }
 
 function SessionDetailRunningBody(): JSX.Element {
@@ -78,11 +78,11 @@ function SessionDetailRunningBody(): JSX.Element {
     <div style={{ textAlign: "center" }}>
       <CircularProgress/>
     </div>
-  );
+  )
 }
 
 interface SessionDetailDoneBodyProps {
-  sessionItem: SessionItem;
+  sessionItem: SessionItem
 }
 function SessionDetailDoneBody({ sessionItem }: SessionDetailDoneBodyProps): JSX.Element {
   return (
@@ -147,11 +147,11 @@ function SessionDetailDoneBody({ sessionItem }: SessionDetailDoneBodyProps): JSX
         </Grid>
       </Grid>
     </Grid>
-  );
+  )
 }
 
 interface SessionDetailErrorBodyProps {
-  message: string;
+  message: string
 }
 function SessionDetailErrorBody({ message }: SessionDetailErrorBodyProps): JSX.Element {
   return (
@@ -163,5 +163,5 @@ function SessionDetailErrorBody({ message }: SessionDetailErrorBodyProps): JSX.E
         {message}
       </Typography>
     </div>
-  );
+  )
 }

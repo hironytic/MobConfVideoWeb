@@ -22,25 +22,25 @@
 // THE SOFTWARE.
 //
 
-import { BehaviorSubject, filter, map, NEVER, Observable, retry, Subscription, tap } from "rxjs";
-import { HomeRepository } from "./HomeRepository";
-import { Logic } from "../../utils/LogicProvider";
-import { Location, matchPath } from "react-router-dom";
-import { Config } from "../../entities/Config";
+import { BehaviorSubject, filter, map, NEVER, Observable, retry, Subscription, tap } from "rxjs"
+import { HomeRepository } from "./HomeRepository"
+import { Logic } from "../../utils/LogicProvider"
+import { Location, matchPath } from "react-router-dom"
+import { Config } from "../../entities/Config"
 
 export const HomeTabs = {
   Request: "request",
   Session: "session",
-} as const;
+} as const
 
-export type HomeTab = typeof HomeTabs[keyof typeof HomeTabs] | false;
+export type HomeTab = typeof HomeTabs[keyof typeof HomeTabs] | false
 
 export interface HomeLogic extends Logic {
-  setLocation(value: Location): void;
+  setLocation(value: Location): void
   
-  isInMaintenance$: Observable<boolean>;
-  homeTab$: Observable<HomeTab>;
-  title$: Observable<string>;
+  isInMaintenance$: Observable<boolean>
+  homeTab$: Observable<HomeTab>
+  title$: Observable<string>
 }
 
 export class NullHomeLogic implements HomeLogic {
@@ -48,61 +48,61 @@ export class NullHomeLogic implements HomeLogic {
   
   setLocation(value: Location) {}
 
-  isInMaintenance$ = NEVER;
-  homeTab$ = NEVER;
-  title$ = NEVER;
+  isInMaintenance$ = NEVER
+  homeTab$ = NEVER
+  title$ = NEVER
 }
 
 export class AppHomeLogic implements HomeLogic {
-  private readonly subscription = new Subscription();  
+  private readonly subscription = new Subscription()  
   
-  private config$ = new BehaviorSubject<Config | undefined>(undefined);
-  homeTab$ = new BehaviorSubject<HomeTab>(false);
+  private config$ = new BehaviorSubject<Config | undefined>(undefined)
+  homeTab$ = new BehaviorSubject<HomeTab>(false)
 
-  isInMaintenance$: Observable<boolean>;
-  title$: Observable<string>;
+  isInMaintenance$: Observable<boolean>
+  title$: Observable<string>
   
   constructor(configRepository: HomeRepository) {
     const config$ = configRepository.getConfig$().pipe(
       tap({ error(error) { console.error("Error occurred in HomeRepository.config$", error) }}),
       retry({ delay: 10_000 }),
-    );
+    )
     this.subscription.add(config$.subscribe({
       next: (value) => {
-        this.config$.next(value);
+        this.config$.next(value)
       }
-    }));
+    }))
 
     this.isInMaintenance$ = this.config$.pipe(
       filter((it: Config | undefined): it is Config => it !== undefined),
       map(it => it.isInMaintenance)
-    );
+    )
     
     this.title$ = this.homeTab$.pipe(
       map(it => {
         switch (it) {
           case HomeTabs.Request:
-            return "リクエスト一覧";
+            return "リクエスト一覧"
           case HomeTabs.Session:
-            return "動画を見つける";
+            return "動画を見つける"
           default:
-            return "";
+            return ""
         }
       }),
-    );
+    )
   }
 
   dispose() {
-    this.subscription.unsubscribe();
+    this.subscription.unsubscribe()
   }
   
   setLocation({ pathname }: Location) {
     if (matchPath({ path: "/request", end: false }, pathname) !== null) {
-      this.homeTab$.next(HomeTabs.Request);
+      this.homeTab$.next(HomeTabs.Request)
     } else if (matchPath({ path: "/session", end: false }, pathname) !== null) {
-      this.homeTab$.next(HomeTabs.Session);
+      this.homeTab$.next(HomeTabs.Session)
     } else {
-      this.homeTab$.next(false);
+      this.homeTab$.next(false)
     }
   }
 }

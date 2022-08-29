@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-import React from "react";
-import { NullRequestLogic, RequestLogic } from "./RequestLogic";
+import React from "react"
+import { NullRequestLogic, RequestLogic } from "./RequestLogic"
 
-export const RequestContext = React.createContext<RequestLogic>(new NullRequestLogic());
+export const RequestContext = React.createContext<RequestLogic>(new NullRequestLogic())

@@ -22,33 +22,33 @@
 // THE SOFTWARE.
 //
 
-import { Observable } from "rxjs";
-import { Request } from "../../entities/Request";
-import { Session } from "../../entities/Session";
-import { Event } from "../../entities/Event";
-import { Firestore } from "../../Firestore";
+import { Observable } from "rxjs"
+import { Request } from "../../entities/Request"
+import { Session } from "../../entities/Session"
+import { Event } from "../../entities/Event"
+import { Firestore } from "../../Firestore"
 
 export interface RequestDetailRepository {
-  getRequest$(eventId: string, requestId: string): Observable<Request>;
-  getSession$(sessionId: string): Observable<Session>;
-  getAllEvents$(): Observable<Event[]>;
-  getConferenceName$(conferenceId: string): Observable<string>;
+  getRequest$(eventId: string, requestId: string): Observable<Request>
+  getSession$(sessionId: string): Observable<Session>
+  getAllEvents$(): Observable<Event[]>
+  getConferenceName$(conferenceId: string): Observable<string>
 }
 
 export class FirestoreRequestDetailRepository implements RequestDetailRepository {
   getRequest$(eventId: string, requestId: string): Observable<Request> {
-    return Firestore.getRequest$(eventId, requestId);
+    return Firestore.getRequest$(eventId, requestId)
   }
   
   getSession$(sessionId: string): Observable<Session> {
-    return Firestore.getSession$(sessionId);
+    return Firestore.getSession$(sessionId)
   }
   
   getAllEvents$(): Observable<Event[]> {
-    return Firestore.getAllEvents$();
+    return Firestore.getAllEvents$()
   }
   
   getConferenceName$(conferenceId: string): Observable<string> {
-    return Firestore.getConferenceName$(conferenceId);
+    return Firestore.getConferenceName$(conferenceId)
   }
 }

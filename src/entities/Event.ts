@@ -22,32 +22,32 @@
 // THE SOFTWARE.
 //
 
-import { DocumentData, FirestoreDataConverter, QueryDocumentSnapshot, WithFieldValue } from "@firebase/firestore";
+import { DocumentData, FirestoreDataConverter, QueryDocumentSnapshot, WithFieldValue } from "@firebase/firestore"
 
 export interface Event {
-  id: string;
-  name: string;
-  isAccepting: boolean;
+  id: string
+  name: string
+  isAccepting: boolean
 }
 
 interface FSEvent {
-  name: string;
-  accepting: boolean;
+  name: string
+  accepting: boolean
 }
 export const eventConverter: FirestoreDataConverter<Event> = {
   fromFirestore(snapshot: QueryDocumentSnapshot): Event {
-    const data = snapshot.data() as FSEvent;
+    const data = snapshot.data() as FSEvent
     return {
       id: snapshot.id,
       name: data.name,
       isAccepting: data.accepting,
-    };
+    }
   },
 
   toFirestore(modelObject: WithFieldValue<Event>): DocumentData {
     return {
       name: modelObject.name,
       accepting: modelObject.isAccepting,
-    };
+    }
   }
-};
+}

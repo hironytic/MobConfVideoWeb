@@ -24,6 +24,6 @@
 
 export function runDetached<T>(fn: () => Promise<T>): void {
   fn().catch(e => {
-    console.error(e);
-  });
+    console.error(e)
+  })
 }

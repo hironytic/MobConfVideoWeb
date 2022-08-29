@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-import React from "react";
-import { NullSessionLogic, SessionLogic } from "./SessionLogic";
+import React from "react"
+import { NullSessionLogic, SessionLogic } from "./SessionLogic"
 
-export const SessionContext = React.createContext<SessionLogic>(new NullSessionLogic());
+export const SessionContext = React.createContext<SessionLogic>(new NullSessionLogic())

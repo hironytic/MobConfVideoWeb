@@ -22,13 +22,13 @@
 // THE SOFTWARE.
 //
 
-import { Typography } from "@mui/material";
+import { Typography } from "@mui/material"
 
 interface DescriptionProps {
-  description: string;
+  description: string
 }
 export function Description({ description }: DescriptionProps): JSX.Element {
-  const lines = description.split(/\r\n|\r|\n/);
+  const lines = description.split(/\r\n|\r|\n/)
   return (
     <>
       {lines.map((line, index) => (
@@ -37,18 +37,18 @@ export function Description({ description }: DescriptionProps): JSX.Element {
         </Typography>
       ))}
     </>
-  );
+  )
 }
 
 function preserveBeginningSpace(line: string): string {
-  let prefix = "";
+  let prefix = ""
   while (line.charAt(0) === " ") {
-    prefix = prefix + "\u00a0";
-    line = line.substring(1);
+    prefix = prefix + "\u00a0"
+    line = line.substring(1)
   }
   if (prefix.length > 0) {
-    return prefix + line;
+    return prefix + line
   } else {
-    return line;
+    return line
   }
 }

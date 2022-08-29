@@ -22,8 +22,8 @@
 // THE SOFTWARE.
 //
 
-import { AppBar as MUIAppBar, AppBarProps, createTheme, ThemeProvider } from "@mui/material";
-import React from "react";
+import { AppBar as MUIAppBar, AppBarProps, createTheme, ThemeProvider } from "@mui/material"
+import React from "react"
 
 const appBarTheme = createTheme({
   palette: {
@@ -53,7 +53,7 @@ const appBarTheme = createTheme({
       },
     },
   },
-});
+})
 
 export function AppBar({ position, children }: AppBarProps): JSX.Element {
   return (
