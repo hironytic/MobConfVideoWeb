@@ -26,7 +26,7 @@ import { IRDE, IRDETypes } from "../../utils/IRDE"
 import { Session } from "../../entities/Session"
 import { IdAndName } from "./WatchedEvents"
 import { Logic } from "../../utils/LogicProvider"
-import { BehaviorSubject, NEVER, Observable, Subscription } from "rxjs"
+import { BehaviorSubject, map, NEVER, Observable, Subscription } from "rxjs"
 import { SessionDetailRepository } from "./SessionDetailRepository"
 import { Event } from "../../entities/Event"
 import { errorMessage } from "../../utils/ErrorMessage"
@@ -45,26 +45,48 @@ export type SessionDetailIRDE = IRDE<SessionDetailIProps, SessionDetailRProps, S
 
 export interface SessionDetailLogic extends Logic {
   setCurrentSession(sessionId: string): void
+  requestCurrentSession(): void
+  answerToConfirmation(perform: boolean): void
 
   sessionDetail$: Observable<SessionDetailIRDE>
+  sessionTitle$: Observable<string>
+  isNewRequestDialogOpen$: Observable<boolean>
 }
 
 export class NullSessionDetailLogic implements SessionDetailLogic {
   dispose() {}
   setCurrentSession(sessionId: string) {}
-  
+  requestCurrentSession() {}
+  answerToConfirmation(perform: boolean): void {}
+
   sessionDetail$ = NEVER
+  sessionTitle$ = NEVER
+  isNewRequestDialogOpen$ = NEVER
 }
 
 export class AppSessionDetailLogic implements SessionDetailLogic {
   sessionDetail$ = new BehaviorSubject<SessionDetailIRDE>({ type: IRDETypes.Initial })
+  sessionTitle$: Observable<string>
+  isNewRequestDialogOpen$ = new BehaviorSubject<boolean>(false)
 
   constructor(private readonly repository: SessionDetailRepository) {
+    this.sessionTitle$ = this.sessionDetail$.pipe(
+      map(irde => {
+        if (irde.type === IRDETypes.Done) {
+          return irde.sessionItem.session.title
+        } else {
+          return ""
+        }
+      })
+    )
+    
     this.subscribeAllEvents()
   }
   
   setCurrentSession(sessionId: string) {
     if (this.latestSessionId !== sessionId) {
+      // Close request dialog
+      this.isNewRequestDialogOpen$.next(false)
       this.subscribeSession(sessionId)
     }
   }
@@ -185,4 +207,23 @@ export class AppSessionDetailLogic implements SessionDetailLogic {
     this.sessionSubscription?.unsubscribe()
     this.conferenceSubscription?.unsubscribe()
   }
+
+  requestCurrentSession() {
+    if (this.latestSession === undefined) {
+      return
+    }
+    
+    // Open request dialog
+    this.isNewRequestDialogOpen$.next(true)
+  }
+
+  answerToConfirmation(perform: boolean): void {
+    // Close request dialog
+    this.isNewRequestDialogOpen$.next(false)
+    
+    if (perform) {
+      // TODO:
+    }
+  }
+  
 }
