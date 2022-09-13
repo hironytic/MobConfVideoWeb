@@ -30,6 +30,7 @@ import { AppSessionDetailLogic, SessionDetailIRDE, SessionDetailLogic, SessionIt
 import { EventuallyObserver } from "../../utils/EventuallyObserver"
 import { IRDETypes } from "../../utils/IRDE"
 import { errorMessage } from "../../utils/ErrorMessage"
+import { NewRequestLogic } from "../new_request/NewRequestLogic"
 
 const session1 = {
   id: "s1",
@@ -59,6 +60,11 @@ class MockSessionDetailRepository implements SessionDetailRepository {
   getSession$ = jest.fn((sessionId: string): Observable<Session> => NEVER.pipe(startWith(session1)))
   getAllEvents$ = jest.fn((): Observable<Event[]> => NEVER.pipe(startWith(eventList1)))
   getConferenceName$ = jest.fn((conferenceId: string): Observable<string> => NEVER.pipe(startWith(conferenceName1)))
+}
+
+class MockNewRequestLogic implements NewRequestLogic {
+  dispose() {}
+  makeNewRequestFromSession = jest.fn((sessionId: string): void => {})
 }
 
 let mockSessionDetailRepository: MockSessionDetailRepository
@@ -165,5 +171,106 @@ describe("session detail", () => {
     await expectation
 
     expect(sessionItem.conferenceName).toBe("")
+  })
+  
+  describe("new request", () => {
+    let mockNewRequestLogic: MockNewRequestLogic
+    
+    beforeEach(() => {
+      mockNewRequestLogic = new MockNewRequestLogic()
+    })
+    
+    afterEach(() => {
+      mockNewRequestLogic.dispose()
+    })
+    
+    async function createLogicAndWaitForLoaded(): Promise<SessionDetailLogic> {
+      const logic = createLogic()
+      logic.setNewRequestLogic(mockNewRequestLogic)
+      logic.setCurrentSession("s1")
+
+      // Wait until the session is loaded.
+      const observer = new EventuallyObserver<SessionDetailIRDE>()
+      const expectation = observer.expectValue(irde => {
+        expect(irde.type).toBe(IRDETypes.Done)
+      })
+      subscription.add(logic.sessionDetail$.subscribe(observer))
+      await expectation
+      
+      return logic
+    }
+    
+    it("should open confirmation dialog", async () => {
+      const logic = await createLogicAndWaitForLoaded()
+      
+      const dialogObserver = new EventuallyObserver<boolean>()
+      const expectClosed = dialogObserver.expectValue(isOpen => {
+        expect(isOpen).toBeFalsy()
+      })
+      subscription.add(logic.isNewRequestDialogOpen$.subscribe(dialogObserver))
+      await expectClosed
+      
+      const expectOpen = dialogObserver.expectValue(isOpen => {
+        expect(isOpen).toBeTruthy()
+      }) 
+      logic.requestCurrentSession()
+      await expectOpen
+    })
+    
+    it("should have session name in confirmation dialog", async () => {
+      const logic = await createLogicAndWaitForLoaded()
+      
+      const sessionTitleObserver = new EventuallyObserver<string>()
+      const expectTitle = sessionTitleObserver.expectValue(title => {
+        expect(title).toBe("Session 1")
+      })
+      subscription.add(logic.sessionTitle$.subscribe(sessionTitleObserver))
+      logic.requestCurrentSession()
+      await expectTitle
+    })
+    
+    it("should make a new request for current session when user wants to proceed", async () => {
+      const logic = await createLogicAndWaitForLoaded()
+
+      const dialogObserver = new EventuallyObserver<boolean>()
+      const expectOpen = dialogObserver.expectValue(isOpen => {
+        expect(isOpen).toBeTruthy()
+      })
+      subscription.add(logic.isNewRequestDialogOpen$.subscribe(dialogObserver))
+      logic.requestCurrentSession()
+      await expectOpen
+
+      const expectClosed = dialogObserver.expectValue(isOpen => {
+        expect(isOpen).toBeFalsy()
+      })
+      subscription.add(logic.isNewRequestDialogOpen$.subscribe(dialogObserver))
+      
+      logic.answerToConfirmation(true)
+      await expectClosed
+      
+      expect(mockNewRequestLogic.makeNewRequestFromSession).toBeCalledWith("s1")
+    })
+
+    it("should not make a new request when user wants to cancel", async () => {
+      const logic = await createLogicAndWaitForLoaded()
+
+      const dialogObserver = new EventuallyObserver<boolean>()
+      const expectOpen = dialogObserver.expectValue(isOpen => {
+        expect(isOpen).toBeTruthy()
+      })
+      subscription.add(logic.isNewRequestDialogOpen$.subscribe(dialogObserver))
+      logic.requestCurrentSession()
+      await expectOpen
+
+      const expectClosed = dialogObserver.expectValue(isOpen => {
+        expect(isOpen).toBeFalsy()
+      })
+      subscription.add(logic.isNewRequestDialogOpen$.subscribe(dialogObserver))
+
+      logic.answerToConfirmation(false)
+      await expectClosed
+
+      expect(mockNewRequestLogic.makeNewRequestFromSession).not.toBeCalled()
+    })
   })
 })
