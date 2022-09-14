@@ -1,5 +1,5 @@
 //
-// AppProvider.tsx
+// AddRequestFromSessionParams.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,29 +22,8 @@
 // THE SOFTWARE.
 //
 
-import React from "react"
-import { AppHomeProvider } from "./AppHomeProvider"
-import { AppRequestProvider } from "./AppRequestProvider"
-import { AppSessionProvider } from "./AppSessionProvider"
-import { AppRequestDetailProvider } from "./AppRequestDetailProvider"
-import { AppRequestSubmissionProvider } from "./AppRequestSubmissionProvider"
-
-interface AppProviderProps {
-  children: React.ReactNode
-}
-
-export function AppProvider({ children }: AppProviderProps): JSX.Element {
-  return (
-    <AppHomeProvider>
-      <AppRequestSubmissionProvider>
-        <AppRequestProvider>
-          <AppRequestDetailProvider>
-            <AppSessionProvider>
-              {children}
-            </AppSessionProvider>
-          </AppRequestDetailProvider>          
-        </AppRequestProvider>
-      </AppRequestSubmissionProvider>
-    </AppHomeProvider>
-  )
+export interface AddRequestFromSessionParams {
+  requestKey: string
+  sessionId: string
+  memo?: string
 }

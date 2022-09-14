@@ -24,7 +24,9 @@
 
 import { FirebaseApp, initializeApp } from 'firebase/app'
 import { Firestore, getFirestore as getFireStoreFromApp } from 'firebase/firestore'
+import { getFunctions as getFunctionsFromApp, Functions, httpsCallable } from 'firebase/functions'
 import { from, Observable, switchMap } from "rxjs"
+import { HttpsCallable } from "@firebase/functions"
 
 async function getFirebaseConfig(): Promise<object> {
   if (process.env.NODE_ENV !== 'production') {
@@ -53,4 +55,12 @@ export function withFirestore<T>(builder: (firestore: Firestore) => Observable<T
   return from(getFirestore()).pipe(
     switchMap(firestore => builder(firestore))
   )
+}
+
+export async function getFunctions(): Promise<Functions> {
+  return getFunctionsFromApp(await getFirebaseApp())
+}
+
+export async function getFunction<RequestData = unknown, ResponseData = unknown>(name: string): Promise<HttpsCallable<RequestData, ResponseData>> {
+  return httpsCallable<RequestData, ResponseData>(await getFunctions(), name)
 }
