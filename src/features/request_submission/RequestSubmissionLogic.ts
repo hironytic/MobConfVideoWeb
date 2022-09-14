@@ -29,6 +29,7 @@ export const PhaseTypes = {
   Nothing: "Nothing",
   Processing: "Processing",
   RequestKeyNeeded: "RequestKeyNeeded",
+  Finished: "Finished",
   Error: "Error",
 } as const
 
@@ -44,17 +45,25 @@ export interface RequestKeyNeededPhase {
   type: typeof PhaseTypes.RequestKeyNeeded,
   
   requestKeyValueChanged(value: string): void
-  finish(perform: boolean): void
+  finish(proceed: boolean): void
   
   requestKey$: Observable<string>
+}
+
+export interface FinishedPhase {
+  type: typeof PhaseTypes.Finished,
+  
+  closeDialog(): void
 }
 
 export interface ErrorPhase {
   type: typeof PhaseTypes.Error,
   message: string,
+
+  closeDialog(): void
 }
 
-export type Phase = NothingPhase | ProcessingPhase | RequestKeyNeededPhase | ErrorPhase  
+export type Phase = NothingPhase | ProcessingPhase | RequestKeyNeededPhase | FinishedPhase | ErrorPhase  
 
 export interface RequestSubmissionLogic extends Logic {
   submitNewRequestFromSession(sessionId: string): void
