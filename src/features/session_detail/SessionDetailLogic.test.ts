@@ -30,7 +30,7 @@ import { AppSessionDetailLogic, SessionDetailIRDE, SessionDetailLogic, SessionIt
 import { EventuallyObserver } from "../../utils/EventuallyObserver"
 import { IRDETypes } from "../../utils/IRDE"
 import { errorMessage } from "../../utils/ErrorMessage"
-import { NewRequestLogic } from "../new_request/NewRequestLogic"
+import { RequestSubmissionLogic } from "../request_submission/RequestSubmissionLogic"
 
 const session1 = {
   id: "s1",
@@ -62,9 +62,10 @@ class MockSessionDetailRepository implements SessionDetailRepository {
   getConferenceName$ = jest.fn((conferenceId: string): Observable<string> => NEVER.pipe(startWith(conferenceName1)))
 }
 
-class MockNewRequestLogic implements NewRequestLogic {
+class MockRequestSubmissionLogic implements RequestSubmissionLogic {
   dispose() {}
-  makeNewRequestFromSession = jest.fn((sessionId: string): void => {})
+  submitNewRequestFromSession = jest.fn((sessionId: string): void => {})
+  phase$ = NEVER
 }
 
 let mockSessionDetailRepository: MockSessionDetailRepository
@@ -174,19 +175,19 @@ describe("session detail", () => {
   })
   
   describe("new request", () => {
-    let mockNewRequestLogic: MockNewRequestLogic
+    let mockRequestSubmissionLogic: MockRequestSubmissionLogic
     
     beforeEach(() => {
-      mockNewRequestLogic = new MockNewRequestLogic()
+      mockRequestSubmissionLogic = new MockRequestSubmissionLogic()
     })
     
     afterEach(() => {
-      mockNewRequestLogic.dispose()
+      mockRequestSubmissionLogic.dispose()
     })
     
     async function createLogicAndWaitForLoaded(): Promise<SessionDetailLogic> {
       const logic = createLogic()
-      logic.setNewRequestLogic(mockNewRequestLogic)
+      logic.setRequestSubmissionLogic(mockRequestSubmissionLogic)
       logic.setCurrentSession("s1")
 
       // Wait until the session is loaded.
@@ -248,7 +249,7 @@ describe("session detail", () => {
       logic.answerToConfirmation(true)
       await expectClosed
       
-      expect(mockNewRequestLogic.makeNewRequestFromSession).toBeCalledWith("s1")
+      expect(mockRequestSubmissionLogic.submitNewRequestFromSession).toBeCalledWith("s1")
     })
 
     it("should not make a new request when user wants to cancel", async () => {
@@ -270,7 +271,7 @@ describe("session detail", () => {
       logic.answerToConfirmation(false)
       await expectClosed
 
-      expect(mockNewRequestLogic.makeNewRequestFromSession).not.toBeCalled()
+      expect(mockRequestSubmissionLogic.submitNewRequestFromSession).not.toBeCalled()
     })
   })
 })

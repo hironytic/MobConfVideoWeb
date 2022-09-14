@@ -1,5 +1,5 @@
 //
-// NewRequestLogic.ts
+// RequestSubmissionLogic.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -23,12 +23,48 @@
 //
 
 import { Logic } from "../../utils/LogicProvider"
+import { NEVER, Observable } from "rxjs"
 
-export interface NewRequestLogic extends Logic {
-  makeNewRequestFromSession(sessionId: string): void
+export const PhaseTypes = {
+  Nothing: "Nothing",
+  Processing: "Processing",
+  RequestKeyNeeded: "RequestKeyNeeded",
+  Error: "Error",
+} as const
+
+export interface NothingPhase {
+  type: typeof PhaseTypes.Nothing,
+} 
+
+export interface ProcessingPhase {
+  type: typeof PhaseTypes.Processing,
 }
 
-export class NullNewRequestLogic implements NewRequestLogic {
+export interface RequestKeyNeededPhase {
+  type: typeof PhaseTypes.RequestKeyNeeded,
+  
+  requestKeyValueChanged(value: string): void
+  finish(perform: boolean): void
+  
+  requestKey$: Observable<string>
+}
+
+export interface ErrorPhase {
+  type: typeof PhaseTypes.Error,
+  message: string,
+}
+
+export type Phase = NothingPhase | ProcessingPhase | RequestKeyNeededPhase | ErrorPhase  
+
+export interface RequestSubmissionLogic extends Logic {
+  submitNewRequestFromSession(sessionId: string): void
+  
+  phase$: Observable<Phase>
+}
+
+export class NullRequestSubmissionLogic implements RequestSubmissionLogic {
   dispose() {}
-  makeNewRequestFromSession(sessionId: string) {}
+  submitNewRequestFromSession(sessionId: string) {}
+  
+  phase$ = NEVER
 }

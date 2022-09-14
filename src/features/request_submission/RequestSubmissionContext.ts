@@ -1,5 +1,5 @@
 //
-// NewRequestContext.ts
+// RequestSubmissionContext.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -23,6 +23,6 @@
 //
 
 import React from "react"
-import { NewRequestLogic, NullNewRequestLogic } from "./NewRequestLogic"
+import { RequestSubmissionLogic, NullRequestSubmissionLogic } from "./RequestSubmissionLogic"
 
-export const NewRequestContext = React.createContext<NewRequestLogic>(new NullNewRequestLogic())
+export const RequestSubmissionContext = React.createContext<RequestSubmissionLogic>(new NullRequestSubmissionLogic())

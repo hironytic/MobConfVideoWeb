@@ -35,7 +35,7 @@ import { SessionDetailContext } from "./SessionDetailContext"
 import { useObservableState } from "observable-hooks"
 import { useParams } from "react-router-dom"
 import { NewRequestFromSessionDialog } from "./NewRequestFromSessionDialog"
-import { NewRequestContext } from "../new_request/NewRequestContext"
+import { RequestSubmissionContext } from "../request_submission/RequestSubmissionContext"
 
 export function SessionDetailPage(): JSX.Element {
   return (
@@ -50,13 +50,13 @@ export function SessionDetailPage(): JSX.Element {
 
 function SessionDetailBody(): JSX.Element {
   const logic = useContext(SessionDetailContext)
-  const newRequestLogic = useContext(NewRequestContext)
+  const newRequestLogic = useContext(RequestSubmissionContext)
   const params = useParams()
   const sessionId = params["sessionId"]
   const irde = useObservableState(logic.sessionDetail$, { type: IRDETypes.Initial })
   
   useEffect(() => {
-    logic.setNewRequestLogic(newRequestLogic)
+    logic.setRequestSubmissionLogic(newRequestLogic)
   }, [logic, newRequestLogic])
   
   useEffect(() => {

@@ -30,7 +30,7 @@ import { BehaviorSubject, map, NEVER, Observable, Subscription } from "rxjs"
 import { SessionDetailRepository } from "./SessionDetailRepository"
 import { Event } from "../../entities/Event"
 import { errorMessage } from "../../utils/ErrorMessage"
-import { NewRequestLogic } from "../new_request/NewRequestLogic"
+import { RequestSubmissionLogic } from "../request_submission/RequestSubmissionLogic"
 
 export interface SessionItem {
   session: Session
@@ -45,7 +45,7 @@ export interface SessionDetailEProps { message: string }
 export type SessionDetailIRDE = IRDE<SessionDetailIProps, SessionDetailRProps, SessionDetailDProps, SessionDetailEProps>
 
 export interface SessionDetailLogic extends Logic {
-  setNewRequestLogic(newRequestLogic: NewRequestLogic): void
+  setRequestSubmissionLogic(requestSubmissionLogic: RequestSubmissionLogic): void
   setCurrentSession(sessionId: string): void
   requestCurrentSession(): void
   answerToConfirmation(perform: boolean): void
@@ -57,7 +57,7 @@ export interface SessionDetailLogic extends Logic {
 
 export class NullSessionDetailLogic implements SessionDetailLogic {
   dispose() {}
-  setNewRequestLogic(newRequestLogic: NewRequestLogic) {}
+  setRequestSubmissionLogic(requestSubmissionLogic: RequestSubmissionLogic) {}
   setCurrentSession(sessionId: string) {}
   requestCurrentSession() {}
   answerToConfirmation(perform: boolean): void {}
@@ -68,7 +68,7 @@ export class NullSessionDetailLogic implements SessionDetailLogic {
 }
 
 export class AppSessionDetailLogic implements SessionDetailLogic {
-  newRequestLogic: NewRequestLogic | undefined = undefined
+  requestSubmissionLogic: RequestSubmissionLogic | undefined = undefined
   sessionDetail$ = new BehaviorSubject<SessionDetailIRDE>({ type: IRDETypes.Initial })
   sessionTitle$: Observable<string>
   isNewRequestDialogOpen$ = new BehaviorSubject<boolean>(false)
@@ -87,8 +87,8 @@ export class AppSessionDetailLogic implements SessionDetailLogic {
     this.subscribeAllEvents()
   }
 
-  setNewRequestLogic(newRequestLogic: NewRequestLogic) {
-    this.newRequestLogic = newRequestLogic
+  setRequestSubmissionLogic(requestSubmissionLogic: RequestSubmissionLogic) {
+    this.requestSubmissionLogic = requestSubmissionLogic
   }
 
   setCurrentSession(sessionId: string) {
@@ -211,14 +211,14 @@ export class AppSessionDetailLogic implements SessionDetailLogic {
   }
   
   dispose() {
-    this.newRequestLogic = undefined
+    this.requestSubmissionLogic = undefined
     this.eventsSubscription?.unsubscribe()
     this.sessionSubscription?.unsubscribe()
     this.conferenceSubscription?.unsubscribe()
   }
 
   requestCurrentSession() {
-    if (this.newRequestLogic === undefined) {
+    if (this.requestSubmissionLogic === undefined) {
       return
     }
     if (this.latestSession === undefined) {
@@ -234,13 +234,13 @@ export class AppSessionDetailLogic implements SessionDetailLogic {
     this.isNewRequestDialogOpen$.next(false)
 
     if (perform) {
-      if (this.newRequestLogic === undefined) {
+      if (this.requestSubmissionLogic === undefined) {
         return
       }
       if (this.latestSession === undefined) {
         return
       }
-      this.newRequestLogic.makeNewRequestFromSession(this.latestSession.id)
+      this.requestSubmissionLogic.submitNewRequestFromSession(this.latestSession.id)
     }
   }
 }
