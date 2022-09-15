@@ -23,11 +23,11 @@
 //
 
 import React from "react"
-import { AppHomeProvider } from "./AppHomeProvider"
-import { AppRequestProvider } from "./AppRequestProvider"
-import { AppSessionProvider } from "./AppSessionProvider"
-import { AppRequestDetailProvider } from "./AppRequestDetailProvider"
-import { AppRequestSubmissionProvider } from "./AppRequestSubmissionProvider"
+import { HomeProvider } from "../features/home/HomeProvider"
+import { RequestProvider } from "../features/request/RequestProvider"
+import { SessionProvider } from "../features/session/SessionProvider"
+import { RequestDetailProvider } from "../features/request_detail/RequestDetailProvider"
+import { RequestSubmissionProvider } from "../features/request_submission/RequestSubmissionProvider"
 
 interface AppProviderProps {
   children: React.ReactNode
@@ -35,16 +35,16 @@ interface AppProviderProps {
 
 export function AppProvider({ children }: AppProviderProps): JSX.Element {
   return (
-    <AppHomeProvider>
-      <AppRequestSubmissionProvider>
-        <AppRequestProvider>
-          <AppRequestDetailProvider>
-            <AppSessionProvider>
+    <HomeProvider>
+      <RequestSubmissionProvider>
+        <RequestProvider>
+          <RequestDetailProvider>
+            <SessionProvider>
               {children}
-            </AppSessionProvider>
-          </AppRequestDetailProvider>          
-        </AppRequestProvider>
-      </AppRequestSubmissionProvider>
-    </AppHomeProvider>
+            </SessionProvider>
+          </RequestDetailProvider>          
+        </RequestProvider>
+      </RequestSubmissionProvider>
+    </HomeProvider>
   )
 }

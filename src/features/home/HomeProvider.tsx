@@ -1,5 +1,5 @@
 //
-// AppSessionProvider.tsx
+// HomeProvider.tsx
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,15 +22,15 @@
 // THE SOFTWARE.
 //
 
-import { ProviderProps } from "./ProviderProps"
-import { LogicProvider } from "../utils/LogicProvider"
-import { SessionContext } from "../features/session/SessionContext"
-import { AppSessionLogic } from "../features/session/SessionLogic"
-import { FirestoreSessionRepository } from "../features/session/SessionRepository"
+import { HomeContext } from "./HomeContext"
+import { ProviderProps } from "../../providers/ProviderProps"
+import { FirestoreHomeRepository } from "./HomeRepository"
+import { AppHomeLogic } from "./HomeLogic"
+import { LogicProvider } from "../../utils/LogicProvider"
 
-export function AppSessionProvider({ children }: ProviderProps): JSX.Element {
+export function HomeProvider({ children }: ProviderProps): JSX.Element {
   return (
-    <LogicProvider context={SessionContext} creator={() => new AppSessionLogic(new FirestoreSessionRepository())}>
+    <LogicProvider context={HomeContext} creator={() => new AppHomeLogic(new FirestoreHomeRepository())}>
       {children}
     </LogicProvider>
   )

@@ -29,7 +29,7 @@ import { WatchedEvents } from "./WatchedEvents"
 import { Description } from "./Description"
 import { Speakers } from "./Speakers"
 import { Note, OndemandVideo } from "@mui/icons-material"
-import { AppSessionDetailProvider } from "../../providers/AppSessionDetailProvider"
+import { SessionDetailProvider } from "./SessionDetailProvider"
 import { useContext, useEffect } from "react"
 import { SessionDetailContext } from "./SessionDetailContext"
 import { useObservableState } from "observable-hooks"
@@ -39,12 +39,12 @@ import { RequestSubmissionContext } from "../request_submission/RequestSubmissio
 
 export function SessionDetailPage(): JSX.Element {
   return (
-    <AppSessionDetailProvider>
+    <SessionDetailProvider>
       <Box sx={{ p: 4 }}>
         <SessionDetailBody/>
       </Box>
       <NewRequestFromSessionDialog/>
-    </AppSessionDetailProvider>      
+    </SessionDetailProvider>      
   )
 }
 

@@ -1,5 +1,5 @@
 //
-// AppRequestProvider.tsx
+// RequestProvider.tsx
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,13 +22,13 @@
 // THE SOFTWARE.
 //
 
-import { ProviderProps } from "./ProviderProps"
-import { LogicProvider } from "../utils/LogicProvider"
-import { RequestContext } from "../features/request/RequestContext"
-import { AppRequestLogic } from "../features/request/RequestLogic"
-import { FirestoreRequestRepository } from "../features/request/RequestRepository"
+import { ProviderProps } from "../../providers/ProviderProps"
+import { LogicProvider } from "../../utils/LogicProvider"
+import { RequestContext } from "./RequestContext"
+import { AppRequestLogic } from "./RequestLogic"
+import { FirestoreRequestRepository } from "./RequestRepository"
 
-export function AppRequestProvider({ children }: ProviderProps): JSX.Element {
+export function RequestProvider({ children }: ProviderProps): JSX.Element {
   return (
     <LogicProvider context={RequestContext} creator={() => new AppRequestLogic(new FirestoreRequestRepository())}>
       {children}

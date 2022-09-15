@@ -1,5 +1,5 @@
 //
-// AppSessionDetailProvider.tsx
+// SessionProvider.tsx
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,15 +22,15 @@
 // THE SOFTWARE.
 //
 
-import { ProviderProps } from "./ProviderProps"
-import { LogicProvider } from "../utils/LogicProvider"
-import { SessionDetailContext } from "../features/session_detail/SessionDetailContext"
-import { FirestoreSessionDetailRepository } from "../features/session_detail/SessionDetailRepository"
-import { AppSessionDetailLogic } from "../features/session_detail/SessionDetailLogic"
+import { ProviderProps } from "../../providers/ProviderProps"
+import { LogicProvider } from "../../utils/LogicProvider"
+import { SessionContext } from "./SessionContext"
+import { AppSessionLogic } from "./SessionLogic"
+import { FirestoreSessionRepository } from "./SessionRepository"
 
-export function AppSessionDetailProvider({ children }: ProviderProps): JSX.Element {
+export function SessionProvider({ children }: ProviderProps): JSX.Element {
   return (
-    <LogicProvider context={SessionDetailContext} creator={() => new AppSessionDetailLogic(new FirestoreSessionDetailRepository())}>
+    <LogicProvider context={SessionContext} creator={() => new AppSessionLogic(new FirestoreSessionRepository())}>
       {children}
     </LogicProvider>
   )
