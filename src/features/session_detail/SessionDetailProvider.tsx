@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-import { ProviderProps } from "../../providers/ProviderProps"
+import { ProviderProps } from "../../utils/ProviderProps"
 import { LogicProvider } from "../../utils/LogicProvider"
 import { SessionDetailContext } from "./SessionDetailContext"
 import { FirestoreSessionDetailRepository } from "./SessionDetailRepository"

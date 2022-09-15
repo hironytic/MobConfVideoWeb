@@ -23,12 +23,24 @@
 //
 
 import { AppRouter } from "./routes/AppRouter"
-import { AppProvider } from "./providers/AppProvider"
+import { SessionProvider } from "./features/session/SessionProvider"
+import { RequestDetailProvider } from "./features/request_detail/RequestDetailProvider"
+import { RequestProvider } from "./features/request/RequestProvider"
+import { RequestSubmissionProvider } from "./features/request_submission/RequestSubmissionProvider"
+import { HomeProvider } from "./features/home/HomeProvider"
 
 export function App(): JSX.Element {
   return (
-    <AppProvider>
-      <AppRouter />
-    </AppProvider>
+    <HomeProvider>
+      <RequestSubmissionProvider>
+        <RequestProvider>
+          <RequestDetailProvider>
+            <SessionProvider>
+              <AppRouter />
+            </SessionProvider>
+          </RequestDetailProvider>
+        </RequestProvider>
+      </RequestSubmissionProvider>
+    </HomeProvider>
   )
 }

@@ -23,7 +23,7 @@
 //
 
 import { HomeContext } from "./HomeContext"
-import { ProviderProps } from "../../providers/ProviderProps"
+import { ProviderProps } from "../../utils/ProviderProps"
 import { FirestoreHomeRepository } from "./HomeRepository"
 import { AppHomeLogic } from "./HomeLogic"
 import { LogicProvider } from "../../utils/LogicProvider"
