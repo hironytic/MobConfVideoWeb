@@ -40,7 +40,6 @@ export interface HomeLogic extends Logic {
   
   isInMaintenance$: Observable<boolean>
   homeTab$: Observable<HomeTab>
-  title$: Observable<string>
 }
 
 export class NullHomeLogic implements HomeLogic {
@@ -50,7 +49,6 @@ export class NullHomeLogic implements HomeLogic {
 
   isInMaintenance$ = NEVER
   homeTab$ = NEVER
-  title$ = NEVER
 }
 
 export class AppHomeLogic implements HomeLogic {
@@ -60,7 +58,6 @@ export class AppHomeLogic implements HomeLogic {
   homeTab$ = new BehaviorSubject<HomeTab>(false)
 
   isInMaintenance$: Observable<boolean>
-  title$: Observable<string>
   
   constructor(configRepository: HomeRepository) {
     const config$ = configRepository.getConfig$().pipe(
@@ -76,19 +73,6 @@ export class AppHomeLogic implements HomeLogic {
     this.isInMaintenance$ = this.config$.pipe(
       filter((it: Config | undefined): it is Config => it !== undefined),
       map(it => it.isInMaintenance)
-    )
-    
-    this.title$ = this.homeTab$.pipe(
-      map(it => {
-        switch (it) {
-          case HomeTabs.Request:
-            return "リクエスト一覧"
-          case HomeTabs.Session:
-            return "動画を見つける"
-          default:
-            return ""
-        }
-      }),
     )
   }
 

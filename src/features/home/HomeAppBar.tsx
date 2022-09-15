@@ -34,13 +34,12 @@ import { useObservableState } from "observable-hooks"
 export function HomeAppBar(): JSX.Element {
   const homeLogic = useContext(HomeContext)
   const isInMaintenance = useObservableState(homeLogic.isInMaintenance$, false)
-  const title = useObservableState(homeLogic.title$, "")
   const tab = useObservableState(homeLogic.homeTab$, false)
   
   return (
     <AppBar position="sticky">
       <Toolbar>
-        <Typography variant="h6">{isInMaintenance ? "メンテナンス中" : title}</Typography>
+        <Typography variant="h6">カンファレンス動画鑑賞会</Typography>
         <div style={{ flexGrow: 1 }} />
         <AppTabs tab={isInMaintenance ? false : tab}/>
       </Toolbar>
