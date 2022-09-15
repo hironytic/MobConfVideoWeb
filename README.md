@@ -71,7 +71,7 @@ Main business logics are implemented in `AppRequestLogic` class and it is abtrac
 
 `RequestContext` is a React context and its provider provides an implementation of `RequestLogic`. UI components in the feature use it by `useContext()`.
 
-An instance of `NullAppRequestLogic` class is provided as an initial value for the context though, it is not actually used. A context provider that provides an instance of `AppRequestLogic` exists at ancestor of these UI components. It is provided on codes in `src/providers` directory.
+An instance of `NullAppRequestLogic` class is provided as an initial value for the context though, it is not actually used. A context provider that provides an instance of `AppRequestLogic` exists at ancestor of these UI components. It is provided by `RequestProvider` component.
 
 `AppRequestLogic` is initialized with `RequestRepository` object. It is an abstraction layer for accessing data.
 `FirestoreRequestRepository` implements the interface and 
