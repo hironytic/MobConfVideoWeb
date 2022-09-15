@@ -22,25 +22,93 @@
 // THE SOFTWARE.
 //
 
-import { AppRouter } from "./routes/AppRouter"
-import { SessionProvider } from "./features/session/SessionProvider"
-import { RequestDetailProvider } from "./features/request_detail/RequestDetailProvider"
-import { RequestProvider } from "./features/request/RequestProvider"
-import { RequestSubmissionProvider } from "./features/request_submission/RequestSubmissionProvider"
 import { HomeProvider } from "./features/home/HomeProvider"
+import { RequestSubmissionProvider } from "./features/request_submission/RequestSubmissionProvider"
+import { RequestProvider } from "./features/request/RequestProvider"
+import { SessionProvider } from "./features/session/SessionProvider"
+import { Home } from "./features/home/Home"
+import { RequestSubmissionDialog } from "./features/request_submission/RequestSubmissionDialog"
+import { RequestDetailProvider } from "./features/request_detail/RequestDetailProvider"
+import { RequestDetailDialog } from "./features/request_detail/RequestDetailDialog"
+import { SessionDetailProvider } from "./features/session_detail/SessionDetailProvider"
+import { SessionDetailPage } from "./features/session_detail/SessionDetailPage"
+import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom"
+import { RequestPage } from "./features/request/RequestPage"
+import { SessionPage } from "./features/session/SessionPage"
+import { useContext } from "react"
+import { HomeContext } from "./features/home/HomeContext"
+import { useObservableState } from "observable-hooks"
+import { CssBaseline } from "@mui/material"
+import { Maintenance } from "./features/home/Maintenance"
 
 export function App(): JSX.Element {
   return (
+    <>
+      <CssBaseline />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Root/>}>
+            <Route path="request" element={<Outlet/>}>
+              <Route index element={<RequestPage/>}/>
+              <Route path=":eventId" element={<RequestPage/>}>
+                <Route path=":requestId" element={<RequestDetail/>}/>
+              </Route>
+            </Route>
+            <Route path="session" element={<Outlet/>}>
+              <Route index element={<SessionPage/>}/>
+              <Route path=":sessionId" element={<SessionDetail/>}/>
+            </Route>
+            <Route path="*" element={<></>} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </>
+  )
+}
+
+function Root(): JSX.Element {
+  return (
     <HomeProvider>
-      <RequestSubmissionProvider>
-        <RequestProvider>
-          <RequestDetailProvider>
-            <SessionProvider>
-              <AppRouter />
-            </SessionProvider>
-          </RequestDetailProvider>
-        </RequestProvider>
-      </RequestSubmissionProvider>
+      <HomeOrMaintenance/>
     </HomeProvider>
+  )
+}
+
+function HomeOrMaintenance(): JSX.Element {
+  const homeLogic = useContext(HomeContext)
+  const isInMaintenance = useObservableState(homeLogic.isInMaintenance$)
+  return (
+    <>
+      {(isInMaintenance !== undefined) && (
+        (isInMaintenance) ? (
+          <Maintenance/>
+        ) : (
+          <RequestSubmissionProvider>
+            <RequestProvider>
+              <SessionProvider>
+                <Home/>
+              </SessionProvider>
+            </RequestProvider>
+            <RequestSubmissionDialog/>
+          </RequestSubmissionProvider>
+        )
+      )}      
+    </>    
+  )
+}
+
+function RequestDetail(): JSX.Element {
+  return (
+    <RequestDetailProvider>
+      <RequestDetailDialog/>
+    </RequestDetailProvider>
+  )
+}
+
+function SessionDetail(): JSX.Element {
+  return (
+    <SessionDetailProvider>
+      <SessionDetailPage/>
+    </SessionDetailProvider>
   )
 }
