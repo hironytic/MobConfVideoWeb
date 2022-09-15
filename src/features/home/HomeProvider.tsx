@@ -1,5 +1,5 @@
 //
-// AppRequestSubmissionProvider.tsx
+// HomeProvider.tsx
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,15 +22,15 @@
 // THE SOFTWARE.
 //
 
-import { ProviderProps } from "./ProviderProps"
-import { LogicProvider } from "../utils/LogicProvider"
-import { RequestSubmissionContext } from "../features/request_submission/RequestSubmissionContext"
-import { FirestoreRequestSubmissionRepository } from "../features/request_submission/RequestSubmissionRepository"
-import { AppRequestSubmissionLogic } from "../features/request_submission/RequestSubmissionLogic"
+import { HomeContext } from "./HomeContext"
+import { ProviderProps } from "../../utils/ProviderProps"
+import { FirestoreHomeRepository } from "./HomeRepository"
+import { AppHomeLogic } from "./HomeLogic"
+import { LogicProvider } from "../../utils/LogicProvider"
 
-export function AppRequestSubmissionProvider({ children }: ProviderProps): JSX.Element {
+export function HomeProvider({ children }: ProviderProps): JSX.Element {
   return (
-    <LogicProvider context={RequestSubmissionContext} creator={() => new AppRequestSubmissionLogic(new FirestoreRequestSubmissionRepository())}>
+    <LogicProvider context={HomeContext} creator={() => new AppHomeLogic(new FirestoreHomeRepository())}>
       {children}
     </LogicProvider>
   )

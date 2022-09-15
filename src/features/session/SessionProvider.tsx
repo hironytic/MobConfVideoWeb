@@ -1,5 +1,5 @@
 //
-// AppRouter.tsx
+// SessionProvider.tsx
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,31 +22,16 @@
 // THE SOFTWARE.
 //
 
-import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom"
-import { Home } from "../features/home/Home"
-import { RequestPage } from "../features/request/RequestPage"
-import { SessionPage } from "../features/session/SessionPage"
-import { RequestDetailDialog } from "../features/request_detail/RequestDetailDialog"
-import { SessionDetailPage } from "../features/session_detail/SessionDetailPage"
+import { ProviderProps } from "../../utils/ProviderProps"
+import { LogicProvider } from "../../utils/LogicProvider"
+import { SessionContext } from "./SessionContext"
+import { AppSessionLogic } from "./SessionLogic"
+import { FirestoreSessionRepository } from "./SessionRepository"
 
-export function AppRouter(): JSX.Element {
+export function SessionProvider({ children }: ProviderProps): JSX.Element {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home/>}>
-          <Route path="request" element={<Outlet/>}>
-            <Route index element={<RequestPage/>}/>
-            <Route path=":eventId" element={<RequestPage/>}>
-              <Route path=":requestId" element={<RequestDetailDialog/>}/>
-            </Route>
-          </Route>
-          <Route path="session" element={<Outlet/>}>
-            <Route index element={<SessionPage/>}/>
-            <Route path=":sessionId" element={<SessionDetailPage/>}/>
-          </Route>
-          <Route path="*" element={<></>} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <LogicProvider context={SessionContext} creator={() => new AppSessionLogic(new FirestoreSessionRepository())}>
+      {children}
+    </LogicProvider>
   )
 }

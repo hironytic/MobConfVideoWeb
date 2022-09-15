@@ -24,28 +24,10 @@
 
 import { HomeAppBar } from "./HomeAppBar"
 import { Outlet, useLocation } from "react-router-dom"
-import { CssBaseline } from "@mui/material"
-import { Maintenance } from "./Maintenance"
 import { useContext, useEffect } from "react"
 import { HomeContext } from "./HomeContext"
-import { useObservableState } from "observable-hooks"
-import { RequestSubmissionDialog } from "../request_submission/RequestSubmissionDialog"
 
 export function Home(): JSX.Element {
-  const homeLogic = useContext(HomeContext)
-  const isInMaintenance = useObservableState(homeLogic.isInMaintenance$)
-
-  return (
-    <>
-      <CssBaseline />
-      {(isInMaintenance !== undefined) && (
-        (isInMaintenance) ? <Maintenance /> : <OrdinaryHome/>
-      )}
-    </>
-  )
-}
-
-function OrdinaryHome(): JSX.Element {
   const location = useLocation()
   const homeLogic = useContext(HomeContext)
 
@@ -57,7 +39,6 @@ function OrdinaryHome(): JSX.Element {
     <>
       <HomeAppBar />
       <Outlet/>
-      <RequestSubmissionDialog/>
     </>
   )
 }

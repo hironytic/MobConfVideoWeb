@@ -1,5 +1,5 @@
 //
-// AppHomeProvider.tsx
+// RequestDetailProvider.tsx
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,15 +22,15 @@
 // THE SOFTWARE.
 //
 
-import { HomeContext } from "../features/home/HomeContext"
-import { ProviderProps } from "./ProviderProps"
-import { FirestoreHomeRepository } from "../features/home/HomeRepository"
-import { AppHomeLogic } from "../features/home/HomeLogic"
-import { LogicProvider } from "../utils/LogicProvider"
+import { ProviderProps } from "../../utils/ProviderProps"
+import { LogicProvider } from "../../utils/LogicProvider"
+import { AppRequestDetailLogic } from "./RequestDetailLogic"
+import { RequestDetailContext } from "./RequestDetailContext"
+import { FirestoreRequestDetailRepository } from "./RequestDetailRepository"
 
-export function AppHomeProvider({ children }: ProviderProps): JSX.Element {
+export function RequestDetailProvider({ children }: ProviderProps): JSX.Element {
   return (
-    <LogicProvider context={HomeContext} creator={() => new AppHomeLogic(new FirestoreHomeRepository())}>
+    <LogicProvider context={RequestDetailContext} creator={() => new AppRequestDetailLogic(new FirestoreRequestDetailRepository())}>
       {children}
     </LogicProvider>
   )
