@@ -1,5 +1,5 @@
 //
-// AppProvider.tsx
+// RequestSubmissionRepository.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,29 +22,16 @@
 // THE SOFTWARE.
 //
 
-import React from "react"
-import { AppHomeProvider } from "./AppHomeProvider"
-import { AppRequestProvider } from "./AppRequestProvider"
-import { AppSessionProvider } from "./AppSessionProvider"
-import { AppRequestDetailProvider } from "./AppRequestDetailProvider"
-import { AppRequestSubmissionProvider } from "./AppRequestSubmissionProvider"
+import { AddRequestFromSessionParams } from "../../entities/AddRequestFromSessionParams"
+import { getFunction } from "../../Firebase"
 
-interface AppProviderProps {
-  children: React.ReactNode
+export interface RequestSubmissionRepository {
+  addRequestFromSession(params: AddRequestFromSessionParams): Promise<void>
 }
 
-export function AppProvider({ children }: AppProviderProps): JSX.Element {
-  return (
-    <AppHomeProvider>
-      <AppRequestSubmissionProvider>
-        <AppRequestProvider>
-          <AppRequestDetailProvider>
-            <AppSessionProvider>
-              {children}
-            </AppSessionProvider>
-          </AppRequestDetailProvider>          
-        </AppRequestProvider>
-      </AppRequestSubmissionProvider>
-    </AppHomeProvider>
-  )
+export class FirestoreRequestSubmissionRepository implements RequestSubmissionRepository {
+  async addRequestFromSession(params: AddRequestFromSessionParams): Promise<void> {
+    const func = await getFunction<AddRequestFromSessionParams, void>("addRequestFromSession")
+    await func(params)
+  }
 }

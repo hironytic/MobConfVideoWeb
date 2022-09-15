@@ -26,10 +26,11 @@ import { IRDE, IRDETypes } from "../../utils/IRDE"
 import { Session } from "../../entities/Session"
 import { IdAndName } from "./WatchedEvents"
 import { Logic } from "../../utils/LogicProvider"
-import { BehaviorSubject, NEVER, Observable, Subscription } from "rxjs"
+import { BehaviorSubject, map, NEVER, Observable, Subscription } from "rxjs"
 import { SessionDetailRepository } from "./SessionDetailRepository"
 import { Event } from "../../entities/Event"
 import { errorMessage } from "../../utils/ErrorMessage"
+import { RequestSubmissionLogic } from "../request_submission/RequestSubmissionLogic"
 
 export interface SessionItem {
   session: Session
@@ -44,27 +45,56 @@ export interface SessionDetailEProps { message: string }
 export type SessionDetailIRDE = IRDE<SessionDetailIProps, SessionDetailRProps, SessionDetailDProps, SessionDetailEProps>
 
 export interface SessionDetailLogic extends Logic {
+  setRequestSubmissionLogic(requestSubmissionLogic: RequestSubmissionLogic): void
   setCurrentSession(sessionId: string): void
+  requestCurrentSession(): void
+  answerToConfirmation(perform: boolean): void
 
   sessionDetail$: Observable<SessionDetailIRDE>
+  sessionTitle$: Observable<string>
+  isNewRequestDialogOpen$: Observable<boolean>
 }
 
 export class NullSessionDetailLogic implements SessionDetailLogic {
   dispose() {}
+  setRequestSubmissionLogic(requestSubmissionLogic: RequestSubmissionLogic) {}
   setCurrentSession(sessionId: string) {}
-  
+  requestCurrentSession() {}
+  answerToConfirmation(perform: boolean): void {}
+
   sessionDetail$ = NEVER
+  sessionTitle$ = NEVER
+  isNewRequestDialogOpen$ = NEVER
 }
 
 export class AppSessionDetailLogic implements SessionDetailLogic {
+  requestSubmissionLogic: RequestSubmissionLogic | undefined = undefined
   sessionDetail$ = new BehaviorSubject<SessionDetailIRDE>({ type: IRDETypes.Initial })
+  sessionTitle$: Observable<string>
+  isNewRequestDialogOpen$ = new BehaviorSubject<boolean>(false)
 
   constructor(private readonly repository: SessionDetailRepository) {
+    this.sessionTitle$ = this.sessionDetail$.pipe(
+      map(irde => {
+        if (irde.type === IRDETypes.Done) {
+          return irde.sessionItem.session.title
+        } else {
+          return ""
+        }
+      })
+    )
+    
     this.subscribeAllEvents()
   }
-  
+
+  setRequestSubmissionLogic(requestSubmissionLogic: RequestSubmissionLogic) {
+    this.requestSubmissionLogic = requestSubmissionLogic
+  }
+
   setCurrentSession(sessionId: string) {
     if (this.latestSessionId !== sessionId) {
+      // Close request dialog
+      this.isNewRequestDialogOpen$.next(false)
       this.subscribeSession(sessionId)
     }
   }
@@ -181,8 +211,36 @@ export class AppSessionDetailLogic implements SessionDetailLogic {
   }
   
   dispose() {
+    this.requestSubmissionLogic = undefined
     this.eventsSubscription?.unsubscribe()
     this.sessionSubscription?.unsubscribe()
     this.conferenceSubscription?.unsubscribe()
+  }
+
+  requestCurrentSession() {
+    if (this.requestSubmissionLogic === undefined) {
+      return
+    }
+    if (this.latestSession === undefined) {
+      return
+    }
+    
+    // Open request dialog
+    this.isNewRequestDialogOpen$.next(true)
+  }
+
+  answerToConfirmation(perform: boolean): void {
+    // Close request dialog
+    this.isNewRequestDialogOpen$.next(false)
+
+    if (perform) {
+      if (this.requestSubmissionLogic === undefined) {
+        return
+      }
+      if (this.latestSession === undefined) {
+        return
+      }
+      this.requestSubmissionLogic.submitNewRequestFromSession(this.latestSession.id)
+    }
   }
 }

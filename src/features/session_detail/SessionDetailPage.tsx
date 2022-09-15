@@ -34,6 +34,8 @@ import { useContext, useEffect } from "react"
 import { SessionDetailContext } from "./SessionDetailContext"
 import { useObservableState } from "observable-hooks"
 import { useParams } from "react-router-dom"
+import { NewRequestFromSessionDialog } from "./NewRequestFromSessionDialog"
+import { RequestSubmissionContext } from "../request_submission/RequestSubmissionContext"
 
 export function SessionDetailPage(): JSX.Element {
   return (
@@ -41,15 +43,21 @@ export function SessionDetailPage(): JSX.Element {
       <Box sx={{ p: 4 }}>
         <SessionDetailBody/>
       </Box>
+      <NewRequestFromSessionDialog/>
     </AppSessionDetailProvider>      
   )
 }
 
 function SessionDetailBody(): JSX.Element {
   const logic = useContext(SessionDetailContext)
+  const newRequestLogic = useContext(RequestSubmissionContext)
   const params = useParams()
   const sessionId = params["sessionId"]
   const irde = useObservableState(logic.sessionDetail$, { type: IRDETypes.Initial })
+  
+  useEffect(() => {
+    logic.setRequestSubmissionLogic(newRequestLogic)
+  }, [logic, newRequestLogic])
   
   useEffect(() => {
     if (sessionId !== undefined) {
@@ -85,6 +93,11 @@ interface SessionDetailDoneBodyProps {
   sessionItem: SessionItem
 }
 function SessionDetailDoneBody({ sessionItem }: SessionDetailDoneBodyProps): JSX.Element {
+  const logic = useContext(SessionDetailContext)
+  const requestSession = () => {
+    logic.requestCurrentSession()
+  }
+  
   return (
     <Grid container={true} spacing={2} justifyContent="space-between">
       <Grid item={true} xs={12}>
@@ -142,7 +155,7 @@ function SessionDetailDoneBody({ sessionItem }: SessionDetailDoneBodyProps): JSX
       <Grid item={true} xs={12}>
         <Grid container={true} spacing={0} justifyContent="center">
           <Grid item={true}>
-            <Button variant="contained" color="primary" onClick={() => {}}>この動画をリクエスト</Button>
+            <Button variant="contained" color="primary" onClick={requestSession}>この動画をリクエスト</Button>
           </Grid>
         </Grid>
       </Grid>
