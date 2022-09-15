@@ -109,13 +109,15 @@ function SearchMore({ moreRequest, hasKeywords }: SearchMoreProps): JSX.Element 
       <TipsAndUpdatesOutlined fontSize="small" />
       {(hasKeywords) ? (
         <Typography variant="body2" color="textSecondary">
-          もっと探せば、キーワードにヒットする動画セッションがまだ見つかる可能性があります。<br/>
-          キーワード以外の条件も追加して検索対象を絞り込めば、より見つかりやすくなります。
+          必要以上のリソース消費を避けるため、一度の検索で探す範囲を制限しています。<br/>
+          もっと探すことで、キーワードにヒットする動画セッションがもっと見つかる可能性があります。<br/>
+          キーワード以外の条件も追加して検索対象を絞り込めば、より早く見つかりやすくなります。
         </Typography>
       ) : (
         <Typography variant="body2" color="textSecondary">
-          もっと探せば、動画セッションがまだ見つかる可能性があります。<br/>
-          検索条件を追加して検索対象を絞り込めば、より見つかりやすくなります。
+          必要以上のリソース消費を避けるため、一度の検索で探す範囲を制限しています。<br/>
+          もっと探すことで、動画セッションがもっと見つかる可能性があります。<br/>
+          検索条件を追加して検索対象を絞り込めば、より早く見つかりやすくなります。
         </Typography>
       )}
       {moreRequest.type === MoreRequestTypes.Requestable && (
