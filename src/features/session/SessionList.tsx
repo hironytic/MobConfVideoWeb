@@ -105,18 +105,26 @@ function SearchMore({ moreRequest, hasKeywords }: SearchMoreProps): JSX.Element 
   }
 
   return (
-    <Stack direction="column" alignItems="center" spacing={1}>
+    <Stack direction="column" alignItems="center" spacing={1} sx={{ px: 8 }}>
       <TipsAndUpdatesOutlined fontSize="small" />
       {(hasKeywords) ? (
-        <Typography variant="body2" color="textSecondary">
-          もっと探せば、キーワードにヒットする動画セッションがまだ見つかる可能性があります。<br/>
-          キーワード以外の条件も追加して検索対象を絞り込めば、より見つかりやすくなります。
-        </Typography>
+        <div>
+          <Typography variant="body2" color="textSecondary">
+            必要以上のリソース消費を避けるため、一度の検索で探す範囲を制限しています。もっと探すことで、キーワードにヒットする動画セッションがもっと見つかる可能性があります。
+          </Typography>
+          <Typography variant="body2" color="textSecondary">
+            または、 キーワード以外の条件も追加して検索しなおすことで、検索範囲が絞り込まれて、より早く見つかりやすくなります。
+          </Typography>
+        </div>
       ) : (
-        <Typography variant="body2" color="textSecondary">
-          もっと探せば、動画セッションがまだ見つかる可能性があります。<br/>
-          検索条件を追加して検索対象を絞り込めば、より見つかりやすくなります。
-        </Typography>
+        <div>
+          <Typography variant="body2" color="textSecondary">
+            必要以上のリソース消費を避けるため、一度の検索で探す範囲を制限しています。もっと探すことで、動画セッションがもっと見つかる可能性があります。
+          </Typography>
+          <Typography variant="body2" color="textSecondary">
+            または、検索条件を追加して検索しなおすことで、検索範囲が絞り込まれて、より早く見つかりやすくなります。
+          </Typography>
+        </div>
       )}
       {moreRequest.type === MoreRequestTypes.Requestable && (
         <Button onClick={() => moreRequest.request()}>もっと探す</Button>
