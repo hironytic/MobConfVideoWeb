@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-import { Tab, Tabs, Toolbar, Typography } from "@mui/material"
+import { Tab, Tabs, Toolbar } from "@mui/material"
 import { List, VideoLabel } from "@mui/icons-material"
 import { Link } from "react-router-dom"
 import { AppBar } from "../../utils/AppBar"
@@ -40,7 +40,6 @@ export function HomeAppBar(): JSX.Element {
   return (
     <AppBar position="sticky">
       <Toolbar>
-        <Typography variant="h6">カンファレンス動画鑑賞会</Typography>
         <div style={{ flexGrow: 1 }} />
         <AppTabs tab={isInMaintenance ? false : tab}/>
       </Toolbar>
