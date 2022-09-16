@@ -35,7 +35,7 @@ export function HomeIndex(): JSX.Element {
   useEffect(() => {
     const redirect = "/request/" + (currentEventId ?? "")
     navigate(redirect, { replace: true })
-  }, [requestLogic, navigate])
+  }, [currentEventId, navigate])
   
   return <></>
 }
