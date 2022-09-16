@@ -1,7 +1,7 @@
 //
-// RequestPage.tsx
+// HomeIndex.tsx
 //
-// Copyright (c) 2018-2022 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,40 +22,20 @@
 // THE SOFTWARE.
 //
 
-import { EventTabs } from "./EventTabs"
-import { RequestList } from "./RequestList"
 import { useContext, useEffect } from "react"
-import { RequestContext } from "./RequestContext"
-import { Outlet, useNavigate, useParams } from "react-router-dom"
-import { IRDETypes } from "../../utils/IRDE"
+import { RequestContext } from "../request/RequestContext"
+import { useNavigate } from "react-router-dom"
 import { useObservableState } from "observable-hooks"
 
-export function RequestPage(): JSX.Element {
+export function HomeIndex(): JSX.Element {
   const requestLogic = useContext(RequestContext)
-  const navigate = useNavigate()
-  const params = useParams()
-  const eventId = params["eventId"]
   const currentEventId = useObservableState(requestLogic.currentEventId$)
-  const allEvents = useObservableState(requestLogic.allEvents$, [])
-  const requestListIRDE = useObservableState(requestLogic.requestList$, { type: IRDETypes.Initial })
+  const navigate = useNavigate()
 
   useEffect(() => {
-    if (currentEventId !== undefined && eventId === undefined) {
-      navigate("/request/" + currentEventId, { replace: true })
-    } else if (eventId !== undefined) {
-      requestLogic.setCurrentEventId(eventId)
-    }
-  }, [requestLogic, currentEventId, eventId, navigate])
-
-  const onCurrentIdChanged = (currentId: string | false) => {
-    navigate("/request/" + ((currentId !== false) ? currentId : ""))
-  }
-
-  return (
-    <>
-      <EventTabs events={allEvents} currentId={eventId ?? false} onCurrentIdChanged={onCurrentIdChanged} />
-      <RequestList requestList={requestListIRDE}/>
-      <Outlet/>
-    </>
-  )
+    const redirect = "/request/" + (currentEventId ?? "")
+    navigate(redirect, { replace: true })
+  }, [currentEventId, navigate])
+  
+  return <></>
 }

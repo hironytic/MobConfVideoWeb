@@ -36,30 +36,29 @@ export interface RequestListEProps { message: string }
 export type RequestListIRDE = IRDE<RequestListIProps, RequestListRProps, RequestListDProps, RequestListEProps>
 
 export interface RequestLogic extends Logic {
-  readonly currentEventId: string | undefined
   setCurrentEventId(eventId: string | undefined): void
   
   allEvents$: Observable<Event[]>
+  currentEventId$: Observable<string | undefined>
   requestList$: Observable<RequestListIRDE>
 }
 
 export class NullRequestLogic implements RequestLogic {
   dispose() {}
 
-  readonly currentEventId: string | undefined = undefined
   setCurrentEventId(eventId: string | undefined): void {}
   
   allEvents$ = NEVER
+  currentEventId$ = NEVER
   requestList$ = NEVER
 }
 
 export class AppRequestLogic implements RequestLogic {
   private readonly subscription = new Subscription()
   private requestsSubscription: Subscription | undefined = undefined
-  private currentEventId_: string | undefined = undefined
-  get currentEventId() { return this.currentEventId_ }
 
   allEvents$ = new BehaviorSubject<Event[]>([])
+  currentEventId$ = new BehaviorSubject<string | undefined>(undefined)
   requestList$ = new BehaviorSubject<RequestListIRDE>({ type: IRDETypes.Initial })
   
   constructor(private readonly repository: RequestRepository) {
@@ -68,10 +67,9 @@ export class AppRequestLogic implements RequestLogic {
         next: (value) => {
           this.allEvents$.next(value)
 
-          // FIXME:
-          // if (this.currentEventId_ === undefined && value.length > 0) {
-          //   this.setCurrentEventId(value[0].id)
-          // }
+          if (this.currentEventId$.value === undefined && value.length > 0) {
+            this.setCurrentEventId(value[0].id)
+          }
         },
         error: (err) => {
           console.log("Error at getAllEvents$ in AppRequestLogic", err)
@@ -87,7 +85,7 @@ export class AppRequestLogic implements RequestLogic {
   }
 
   setCurrentEventId(eventId: string | undefined): void {
-    if (this.currentEventId_ === eventId) {
+    if (this.currentEventId$.value === eventId) {
       // nothing changed.
       return
     }
@@ -112,6 +110,6 @@ export class AppRequestLogic implements RequestLogic {
         }
       })
     }
-    this.currentEventId_ = eventId
+    this.currentEventId$.next(eventId)
   }
 }

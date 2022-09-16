@@ -30,6 +30,7 @@ import { HomeTab, HomeTabs } from "./HomeLogic"
 import { useContext } from "react"
 import { HomeContext } from "./HomeContext"
 import { useObservableState } from "observable-hooks"
+import { RequestContext } from "../request/RequestContext"
 
 export function HomeAppBar(): JSX.Element {
   const homeLogic = useContext(HomeContext)
@@ -49,9 +50,13 @@ export function HomeAppBar(): JSX.Element {
 
 
 function AppTabs( { tab }: { tab: HomeTab }): JSX.Element {
+  const requestLogic = useContext(RequestContext)
+  const currentEventId = useObservableState(requestLogic.currentEventId$)
+  const requestLink = "/request/" + (currentEventId ?? "")
+  
   return (
     <Tabs value={tab}>
-      <Tab value={HomeTabs.Request} label="受付済み" icon={<List/>} to="/request" component={Link} />
+      <Tab value={HomeTabs.Request} label="受付済み" icon={<List/>} to={requestLink} component={Link} />
       <Tab value={HomeTabs.Session} label="動画検索" icon={<VideoLabel/>} to="/session" component={Link}/>
     </Tabs>
   )

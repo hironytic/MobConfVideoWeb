@@ -186,12 +186,31 @@ describe("getAllEvents$", () => {
   })
 })
 
-describe("currentEventId", () => {
-  it("holds current event id", () => {
+describe("currentEventId$", () => {
+  it("holds current event id", async () => {
     const logic = createLogic()
-    
+
+    const observer = new EventuallyObserver<string | undefined>()
+    const expectation = observer.expectValue(eventId => {
+      expect(eventId).toBe("e3")
+    })
+    subscription.add(logic.currentEventId$.subscribe(observer))
+
     logic.setCurrentEventId("e3")
-    expect(logic.currentEventId).toBe("e3")
+    await expectation
+  })
+  
+  it("should automatically set current event to latest one", async () => {
+    mockRequestRepository.getAllEvents$.mockReturnValue(NEVER.pipe(startWith(eventData1)))
+    const logic = createLogic()
+
+    const observer = new EventuallyObserver<string | undefined>()
+    const expectation = observer.expectValue(eventId => {
+      expect(eventId).toBe("e1")
+    })
+    subscription.add(logic.currentEventId$.subscribe(observer))
+    
+    await expectation
   })
 })
 

@@ -40,6 +40,7 @@ import { HomeContext } from "./features/home/HomeContext"
 import { useObservableState } from "observable-hooks"
 import { CssBaseline } from "@mui/material"
 import { Maintenance } from "./features/home/Maintenance"
+import { HomeIndex } from "./features/home/HomeIndex"
 
 export function App(): JSX.Element {
   return (
@@ -48,6 +49,7 @@ export function App(): JSX.Element {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Root/>}>
+            <Route index element={<HomeIndex/>}/>
             <Route path="request" element={<Outlet/>}>
               <Route index element={<RequestPage/>}/>
               <Route path=":eventId" element={<RequestPage/>}>
