@@ -22,23 +22,11 @@
 // THE SOFTWARE.
 //
 
-import {
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogContent,
-  Grid,
-  IconButton,
-  Toolbar,
-  Typography,
-  useMediaQuery,
-  useTheme
-} from "@mui/material"
-import { ArrowBack, Note, OndemandVideo } from "@mui/icons-material"
+import { Button, CircularProgress, Dialog, DialogContent, Grid, Typography } from "@mui/material"
+import { Note, OndemandVideo } from "@mui/icons-material"
 import { IRDETypes } from "../../utils/IRDE"
 import { RequestDetail } from "./RequestDetailLogic"
 import { useNavigate, useParams } from "react-router-dom"
-import { AppBar } from "../../utils/AppBar"
 import { WatchedEvents } from "../session_detail/WatchedEvents"
 import { Description } from "../session_detail/Description"
 import { Speakers } from "../session_detail/Speakers"
@@ -47,8 +35,6 @@ import { RequestDetailContext } from "./RequestDetailContext"
 import { useObservableState } from "observable-hooks"
 
 export function RequestDetailDialog(): JSX.Element {
-  const theme = useTheme()
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
   const navigate = useNavigate()
   const params = useParams()
   const logic = useContext(RequestDetailContext)
@@ -62,34 +48,19 @@ export function RequestDetailDialog(): JSX.Element {
   }, [params, logic])
   
   function onClose() {
-    navigate("..")
+    navigate("..", { replace: true })
   }
   
   return (
     <Dialog
       open={true}
       onClose={onClose}
-      fullScreen={fullScreen}
       fullWidth={true}
-      maxWidth="xl">
-      {(fullScreen) ? (
-        <>
-          <AppBar>
-            <Toolbar>
-              <IconButton color="inherit" onClick={onClose} aria-label="Close">
-                <ArrowBack/>
-              </IconButton>
-            </Toolbar>
-          </AppBar>
-          <DialogContent style={{ paddingTop: 76 }}>
-            <RequestDetailBody/>
-          </DialogContent>
-        </>          
-      ) : (
-        <DialogContent>
-          <RequestDetailBody/>
-        </DialogContent>
-      )}
+      maxWidth="xl"
+    >
+      <DialogContent>
+        <RequestDetailBody/>
+      </DialogContent>
     </Dialog>
   )
 }
