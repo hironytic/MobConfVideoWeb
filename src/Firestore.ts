@@ -152,7 +152,7 @@ export class Firestore {
       docQuery = query(docQuery, where("minutes", "==", filter.minutes))
     }
     docQuery = query(docQuery,
-      orderBy("starts", "asc"),
+      orderBy("starts", "desc"),
       limit(LIMIT),
     )
     return await filterSessions(docQuery)
