@@ -1,5 +1,5 @@
 //
-// Index.tsx
+// EventTabs.tsx
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,21 +22,31 @@
 // THE SOFTWARE.
 //
 
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { App } from './App'
-import reportWebVitals from './reportWebVitals'
+import { Event } from "../../entities/Event"
+import { Box, CircularProgress, Tab, Tabs } from "@mui/material"
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-)
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-)
+interface EventTabsProps {
+  events: Event[]
+  currentId: string | false
+  onCurrentIdChanged: (currentId: string | false) => void
+}
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals()
+export function EventTabs({ events, currentId, onCurrentIdChanged }: EventTabsProps): JSX.Element {
+  if (events.length === 0) {
+    return (
+      <Box sx={{ textAlign: "center" }}>
+        <CircularProgress size={18} sx={{ m: 2 }} />
+      </Box>
+    )
+  } else {
+    return (
+      <Tabs value={currentId}
+            onChange={(_, value) => onCurrentIdChanged(value)}
+            variant="scrollable">
+        {events.map(event => (
+          <Tab key={event.id} label={event.name} value={event.id}/>
+        ))}
+      </Tabs>
+    )
+  }
+}

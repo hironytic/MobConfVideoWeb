@@ -1,7 +1,7 @@
 //
 // App.tsx
 //
-// Copyright (c) 2018 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,81 +22,95 @@
 // THE SOFTWARE.
 //
 
-import * as React from 'react';
-import './App.css';
-import Snapshot from './common/Snapshot';
-import IRepositories from './IRepositories';
-import Config from './model/Config';
-import DefaultConferenceRepository from './repository/DefaultConferenceRepository';
-import DefaultConfigRepository from './repository/DefaultConfigRepository';
-import DefaultEventRepository from './repository/DefaultEventRepository';
-import DefaultRequestRepository from './repository/DefaultRequestRepository';
-import DefaultSessionRepository from './repository/DefaultSessionRepository';
-import RepositoryContext from './RepositoryContext';
-import Home from './view/home/Home';
-import Maintenance from './view/home/Maintenance';
-import DefaultNewRequestBlocProvider from './view/new_request/DefaultNewRequestBlocProvider';
-import DefaultRequestBlocProvider from './view/request/DefaultRequestBlocProvider';
-import DefaultSessionDetailBlocProvider from './view/session_detail/DefaultSessionDetailBlocProvider';
-import DefaultVideoBlocProvider from './view/video/DefaultVideoBlocProvider';
+import { HomeProvider } from "./features/home/HomeProvider"
+import { RequestSubmissionProvider } from "./features/request_submission/RequestSubmissionProvider"
+import { RequestProvider } from "./features/request/RequestProvider"
+import { SessionProvider } from "./features/session/SessionProvider"
+import { Home } from "./features/home/Home"
+import { RequestSubmissionDialog } from "./features/request_submission/RequestSubmissionDialog"
+import { RequestDetailProvider } from "./features/request_detail/RequestDetailProvider"
+import { RequestDetailDialog } from "./features/request_detail/RequestDetailDialog"
+import { SessionDetailProvider } from "./features/session_detail/SessionDetailProvider"
+import { SessionDetailPage } from "./features/session_detail/SessionDetailPage"
+import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom"
+import { RequestPage } from "./features/request/RequestPage"
+import { SessionPage } from "./features/session/SessionPage"
+import { useContext } from "react"
+import { HomeContext } from "./features/home/HomeContext"
+import { useObservableState } from "observable-hooks"
+import { CssBaseline } from "@mui/material"
+import { Maintenance } from "./features/home/Maintenance"
+import { HomeIndex } from "./features/home/HomeIndex"
 
-class App extends React.Component {
-  private configRepository = new DefaultConfigRepository();
-  private eventRepository = new DefaultEventRepository();
-  private requestRepository = new DefaultRequestRepository();
-  private conferenceRepository = new DefaultConferenceRepository();
-  private sessionRepository = new DefaultSessionRepository();
-
-  public render() {
-    const repositories: IRepositories = {
-      configRepository: this.configRepository,
-      eventRepository: this.eventRepository,
-      requestRepository: this.requestRepository,
-      conferenceRepository: this.conferenceRepository,
-      sessionRepository: this.sessionRepository,
-    };
-    return (
-      <RepositoryContext.Provider value={repositories}>
-        {this.renderAppBody()}
-      </RepositoryContext.Provider>
-    );
-  }
-
-  private renderAppBody() {
-    return (
-      <div className="App">
-        <RepositoryContext.Consumer>
-          {repos => (
-            <Snapshot source={repos.configRepository.getConfigObservable()}>
-              {(config: Config) => {
-                if (config === undefined) {
-                  return (<React.Fragment/>);
-                } else if (config.inMaintenance) {
-                  return (<Maintenance/>);
-                } else {
-                  return this.renderHome();
-                }
-              }}
-            </Snapshot>
-          )}
-        </RepositoryContext.Consumer>
-      </div>
-    );
-  }
-
-  private renderHome() {
-    return (
-      <DefaultNewRequestBlocProvider>
-        <DefaultSessionDetailBlocProvider>
-          <DefaultRequestBlocProvider>
-            <DefaultVideoBlocProvider>
-              <Home/>
-            </DefaultVideoBlocProvider>
-          </DefaultRequestBlocProvider>
-        </DefaultSessionDetailBlocProvider>
-      </DefaultNewRequestBlocProvider>
-    );
-  }
+export function App(): JSX.Element {
+  return (
+    <>
+      <CssBaseline />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Root/>}>
+            <Route index element={<HomeIndex/>}/>
+            <Route path="request" element={<Outlet/>}>
+              <Route index element={<RequestPage/>}/>
+              <Route path=":eventId" element={<RequestPage/>}>
+                <Route path=":requestId" element={<RequestDetail/>}/>
+              </Route>
+            </Route>
+            <Route path="session" element={<Outlet/>}>
+              <Route index element={<SessionPage/>}/>
+              <Route path=":sessionId" element={<SessionDetail/>}/>
+            </Route>
+            <Route path="*" element={<></>} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </>
+  )
 }
 
-export default App;
+function Root(): JSX.Element {
+  return (
+    <HomeProvider>
+      <HomeOrMaintenance/>
+    </HomeProvider>
+  )
+}
+
+function HomeOrMaintenance(): JSX.Element {
+  const homeLogic = useContext(HomeContext)
+  const isInMaintenance = useObservableState(homeLogic.isInMaintenance$)
+  return (
+    <>
+      {(isInMaintenance !== undefined) && (
+        (isInMaintenance) ? (
+          <Maintenance/>
+        ) : (
+          <RequestSubmissionProvider>
+            <RequestProvider>
+              <SessionProvider>
+                <Home/>
+              </SessionProvider>
+            </RequestProvider>
+            <RequestSubmissionDialog/>
+          </RequestSubmissionProvider>
+        )
+      )}      
+    </>    
+  )
+}
+
+function RequestDetail(): JSX.Element {
+  return (
+    <RequestDetailProvider>
+      <RequestDetailDialog/>
+    </RequestDetailProvider>
+  )
+}
+
+function SessionDetail(): JSX.Element {
+  return (
+    <SessionDetailProvider>
+      <SessionDetailPage/>
+    </SessionDetailProvider>
+  )
+}

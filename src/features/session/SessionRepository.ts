@@ -1,7 +1,7 @@
 //
-// Index.tsx
+// SessionRepository.ts
 //
-// Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2018-2022 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,21 +22,27 @@
 // THE SOFTWARE.
 //
 
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { App } from './App'
-import reportWebVitals from './reportWebVitals'
+import { Observable } from "rxjs"
+import { Conference } from "../../entities/Conference"
+import { Event } from "../../entities/Event"
+import { FilteredSessions, Firestore, SessionFilter } from "../../Firestore"
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-)
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-)
+export interface SessionRepository {
+  getAllConferences$(): Observable<Conference[]>
+  getAllEvents(): Promise<Event[]>
+  getSessions(filter: SessionFilter): Promise<FilteredSessions>
+}
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals()
+export class FirestoreSessionRepository implements SessionRepository {
+  getAllConferences$(): Observable<Conference[]> {
+    return Firestore.getAllConferences$()
+  }
+
+  getAllEvents(): Promise<Event[]> {
+    return Firestore.getAllEvents()
+  }
+
+  getSessions(filter: SessionFilter): Promise<FilteredSessions> {
+    return Firestore.getSessions(filter)
+  }
+}

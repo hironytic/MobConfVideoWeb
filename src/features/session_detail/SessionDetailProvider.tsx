@@ -1,5 +1,5 @@
 //
-// Index.tsx
+// SessionDetailProvider.tsx
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,21 +22,16 @@
 // THE SOFTWARE.
 //
 
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { App } from './App'
-import reportWebVitals from './reportWebVitals'
+import { ProviderProps } from "../../utils/ProviderProps"
+import { LogicProvider } from "../../utils/LogicProvider"
+import { SessionDetailContext } from "./SessionDetailContext"
+import { FirestoreSessionDetailRepository } from "./SessionDetailRepository"
+import { AppSessionDetailLogic } from "./SessionDetailLogic"
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-)
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-)
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals()
+export function SessionDetailProvider({ children }: ProviderProps): JSX.Element {
+  return (
+    <LogicProvider context={SessionDetailContext} creator={() => new AppSessionDetailLogic(new FirestoreSessionDetailRepository())}>
+      {children}
+    </LogicProvider>
+  )
+}

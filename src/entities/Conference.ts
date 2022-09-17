@@ -1,7 +1,7 @@
 //
-// Index.tsx
+// Conference.ts
 //
-// Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2018-2022 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,21 +22,35 @@
 // THE SOFTWARE.
 //
 
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { App } from './App'
-import reportWebVitals from './reportWebVitals'
+import {
+  DocumentData,
+  FirestoreDataConverter,
+  QueryDocumentSnapshot,
+  Timestamp,
+  WithFieldValue
+} from "@firebase/firestore"
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-)
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-)
+export interface Conference {
+  id: string
+  name: string,
+  starts: Date
+}
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals()
+interface FSConference {
+  name: string
+  starts: Timestamp
+}
+export const conferenceConverter: FirestoreDataConverter<Conference> = {
+  fromFirestore(snapshot: QueryDocumentSnapshot): Conference {
+    const data = snapshot.data() as FSConference
+    return {
+      id: snapshot.id,
+      name: data.name,
+      starts: data.starts.toDate(),
+    }
+  },
+  
+  toFirestore(modelObject: WithFieldValue<Conference>): DocumentData {
+    return modelObject
+  }
+}

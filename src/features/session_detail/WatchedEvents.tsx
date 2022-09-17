@@ -1,7 +1,7 @@
 //
-// Index.tsx
+// WatchedEvents.tsx
 //
-// Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2018-2022 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,21 +22,40 @@
 // THE SOFTWARE.
 //
 
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { App } from './App'
-import reportWebVitals from './reportWebVitals'
+import { Grid, styled, Typography } from "@mui/material"
+import { Check } from "@mui/icons-material"
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-)
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-)
+const WatchedTypography = styled(Typography)(({ theme }) => ({
+  borderStyle: "solid",
+  borderWidth: 1,
+  borderRadius: theme.shape.borderRadius,
+  padding: theme.shape.borderRadius,
+  borderColor: theme.palette.text.secondary,
+}))
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals()
+const WatchedCheck = styled(Check)(({ theme }) => ({
+  fontSize: theme.typography.body1.fontSize,
+  verticalAlign: "middle",
+}))
+
+export interface IdAndName {
+  id: string
+  name: string
+}
+
+interface WatchedEventsProps {
+  events: IdAndName[]
+}
+export function WatchedEvents({ events }: WatchedEventsProps): JSX.Element {
+  return (
+    <Grid container={true} spacing={2} justifyContent="flex-start">
+      {events.map(event => (
+        <Grid key={event.id} item={true}>
+          <WatchedTypography variant="body2" color="textSecondary">
+            <WatchedCheck/>{event.name}
+          </WatchedTypography>
+        </Grid>
+      ))}
+    </Grid>
+  )
+}

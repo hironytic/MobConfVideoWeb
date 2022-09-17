@@ -1,7 +1,7 @@
 //
-// Index.tsx
+// Speakers.tsx
 //
-// Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
+// Copyright (c) 2019-2022 Hironori Ichimiya <hiron@hironytic.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,21 +22,34 @@
 // THE SOFTWARE.
 //
 
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { App } from './App'
-import reportWebVitals from './reportWebVitals'
+import { Speaker } from "../../entities/Session"
+import { Avatar, Grid, Typography } from "@mui/material"
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-)
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-)
+interface SpeakersProps {
+  speakers: Speaker[]
+}
+export function Speakers({ speakers }: SpeakersProps): JSX.Element {
+  return (
+    <>
+      {speakers.map((speaker, index) => <OneSpeaker key={index} speaker={speaker}/>)}
+    </>
+  )
+}
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals()
+interface OneSpeakerProps {
+  speaker: Speaker
+}
+function OneSpeaker({ speaker }: OneSpeakerProps): JSX.Element {
+  return (
+    <Grid container={true} spacing={1} alignItems="center" justifyItems="flex-start">
+      <Grid item={true}>
+        <Avatar src={speaker.icon}/>
+      </Grid>
+      <Grid item={true}>
+        <Typography variant="body2" color="textPrimary">
+          {speaker.name}
+        </Typography>
+      </Grid>
+    </Grid>
+  )
+}

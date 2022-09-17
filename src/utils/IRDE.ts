@@ -1,5 +1,5 @@
 //
-// Index.tsx
+// IRDE.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,21 +22,30 @@
 // THE SOFTWARE.
 //
 
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { App } from './App'
-import reportWebVitals from './reportWebVitals'
+export const IRDETypes = {
+  Initial: "Initial",
+  Running: "Running",
+  Done: "Done",
+  Error: "Error",
+} as const
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-)
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-)
+export type IRDEType = typeof IRDETypes[keyof typeof IRDETypes]
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals()
+export type IRDEInitial<Props> = {
+  type: typeof IRDETypes.Initial
+} & Props
+
+export type IRDERunning<Props> = {
+  type: typeof IRDETypes.Running
+} & Props
+
+export type IRDEDone<Props> = {
+  type: typeof IRDETypes.Done
+} & Props
+
+export type IRDEError<Props> = {
+  type: typeof IRDETypes.Error
+} & Props
+
+/** Union of four states -- initial, running, done and error */
+export type IRDE<IProps, RProps, DProps, EProps> = IRDEInitial<IProps> | IRDERunning<RProps> | IRDEDone<DProps> | IRDEError<EProps>

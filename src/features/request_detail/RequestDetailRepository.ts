@@ -1,5 +1,5 @@
 //
-// Index.tsx
+// RequestDetailRepository.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,21 +22,33 @@
 // THE SOFTWARE.
 //
 
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { App } from './App'
-import reportWebVitals from './reportWebVitals'
+import { Observable } from "rxjs"
+import { Request } from "../../entities/Request"
+import { Session } from "../../entities/Session"
+import { Event } from "../../entities/Event"
+import { Firestore } from "../../Firestore"
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-)
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-)
+export interface RequestDetailRepository {
+  getRequest$(eventId: string, requestId: string): Observable<Request>
+  getSession$(sessionId: string): Observable<Session>
+  getAllEvents$(): Observable<Event[]>
+  getConferenceName$(conferenceId: string): Observable<string>
+}
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals()
+export class FirestoreRequestDetailRepository implements RequestDetailRepository {
+  getRequest$(eventId: string, requestId: string): Observable<Request> {
+    return Firestore.getRequest$(eventId, requestId)
+  }
+  
+  getSession$(sessionId: string): Observable<Session> {
+    return Firestore.getSession$(sessionId)
+  }
+  
+  getAllEvents$(): Observable<Event[]> {
+    return Firestore.getAllEvents$()
+  }
+  
+  getConferenceName$(conferenceId: string): Observable<string> {
+    return Firestore.getConferenceName$(conferenceId)
+  }
+}

@@ -1,5 +1,5 @@
 //
-// Index.tsx
+// ExecuteOnce.ts
 //
 // Copyright (c) 2022 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,21 +22,17 @@
 // THE SOFTWARE.
 //
 
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { App } from './App'
-import reportWebVitals from './reportWebVitals'
-
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-)
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-)
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals()
+/**
+ * Returns a function which executes the specified block on the first call and does nothing on subsequent calls.
+ * @param block A function that will run on first call.
+ */
+export function executeOnce(block: () => void): () => void {
+  let proc: (() => void) | undefined = block
+  return () => {
+    if (proc !== undefined) {
+      const p = proc
+      proc = undefined
+      p()
+    }
+  }
+}
