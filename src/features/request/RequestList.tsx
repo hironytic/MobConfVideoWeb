@@ -65,7 +65,7 @@ function RequestListDoneBody({ requests }: RequestListDoneBodyProps): JSX.Elemen
   const navigate = useNavigate()
 
   function onCardClick(request: Request) {
-    navigate(request.id)
+    navigate(request.id, { replace: true })
   }
   
   if (requests.length === 0) {
