@@ -106,7 +106,7 @@ export class NullSessionLogic implements SessionLogic {
 }
 
 const UNSPECIFIED_STATE: DropdownState = { value: "-", items: [{ value: "-", title: "指定なし" }]}
-const SESSION_TIMES = [5, 10, 15, 20, 25, 30, 40, 45, 50, 60, 70, 80, 90, 120]
+const SESSION_TIMES = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 120]
 
 export class AppSessionLogic implements SessionLogic {
   private readonly subscription = new Subscription()
