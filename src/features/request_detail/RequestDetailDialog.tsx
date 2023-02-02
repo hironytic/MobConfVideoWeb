@@ -33,6 +33,7 @@ import { Speakers } from "../session_detail/Speakers"
 import { useContext, useEffect } from "react"
 import { RequestDetailContext } from "./RequestDetailContext"
 import { useObservableState } from "observable-hooks"
+import { TweetButton } from "../../utils/TweetButton"
 
 export function RequestDetailDialog(): JSX.Element {
   const navigate = useNavigate()
@@ -140,15 +141,20 @@ function RequestDetailDoneBody({ requestDetail }: RequestDetailDoneBodyProps): J
           <Grid item={true} style={{flexGrow: 1}}>
             <Grid container={true} spacing={0} alignItems="center" justifyContent="flex-end">
               <Grid item={true}>
+                {requestDetail.videoUrl !== undefined && (
+                  <TweetButton url={requestDetail.videoUrl} hashtags={["mobconfvideo"]}/>
+                )}
+              </Grid>
+              <Grid item={true}>
                 {requestDetail.slideUrl !== undefined && (
-                  <Button href={requestDetail.slideUrl} target="_blank" color="primary">
+                  <Button href={requestDetail.slideUrl} target="_blank" rel="noopener noreferrer" color="primary">
                     <Note /> スライド
                   </Button>
                 )}
               </Grid>
               <Grid item={true}>
                 {requestDetail.videoUrl !== undefined && (
-                  <Button href={requestDetail.videoUrl} target="_blank" color="primary">
+                  <Button href={requestDetail.videoUrl} target="_blank" rel="noopener noreferrer" color="primary">
                     <OndemandVideo/> ビデオ
                   </Button>
                 )}
