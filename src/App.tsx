@@ -41,6 +41,8 @@ import { useObservableState } from "observable-hooks"
 import { CssBaseline } from "@mui/material"
 import { Maintenance } from "./features/home/Maintenance"
 import { HomeIndex } from "./features/home/HomeIndex"
+import { SignInPage } from "./features/sign_in/SignInPage"
+import { SignInProvider } from "./features/sign_in/SignInProvider"
 
 export function App(): JSX.Element {
   return (
@@ -60,6 +62,7 @@ export function App(): JSX.Element {
               <Route index element={<SessionPage/>}/>
               <Route path=":sessionId" element={<SessionDetail/>}/>
             </Route>
+            <Route path="signin" element={<SignIn/>}/>
             <Route path="*" element={<></>} />
           </Route>
         </Routes>
@@ -112,5 +115,13 @@ function SessionDetail(): JSX.Element {
     <SessionDetailProvider>
       <SessionDetailPage/>
     </SessionDetailProvider>
+  )
+}
+
+function SignIn(): JSX.Element {
+  return (
+    <SignInProvider>
+      <SignInPage/>
+    </SignInProvider>
   )
 }
