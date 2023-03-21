@@ -51,15 +51,22 @@ export type RequestDetailIRDE = IRDE<RequestDetailIProps, RequestDetailRProps, R
 
 export interface RequestDetailLogic extends Logic {
   setCurrentRequest(eventId: string, requestId: string): void
+  makeItWatched(): void
+  makeItUnwatched(): void
   
   requestDetail$: Observable<RequestDetailIRDE>
+  isAdmin$: Observable<boolean>
 }
 
 export class NullRequestDetailLogic implements RequestDetailLogic {
   dispose() {}
   setCurrentRequest(eventId: string, requestId: string): void {}
 
+  makeItWatched(): void {}
+  makeItUnwatched(): void {}
+
   requestDetail$ = NEVER
+  isAdmin$ = NEVER
 }
 
 export class AppRequestDetailLogic implements RequestDetailLogic {
@@ -252,5 +259,21 @@ export class AppRequestDetailLogic implements RequestDetailLogic {
     this.requestSubscription?.unsubscribe()
     this.sessionSubscription?.unsubscribe()
     this.conferenceSubscription?.unsubscribe()
+  }
+
+  get isAdmin$(): Observable<boolean> {
+    return this.repository.isAdmin$()
+  }
+
+  makeItWatched() {
+    if (this.latestEventId !== undefined && this.latestRequestId !== undefined) {
+      this.repository.updateRequestWatched(this.latestEventId, this.latestRequestId, true)
+    }
+  }
+  
+  makeItUnwatched() {
+    if (this.latestEventId !== undefined && this.latestRequestId !== undefined) {
+      this.repository.updateRequestWatched(this.latestEventId, this.latestRequestId, false)
+    }
   }
 }

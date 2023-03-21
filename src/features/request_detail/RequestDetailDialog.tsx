@@ -98,6 +98,8 @@ interface RequestDetailDoneBodyProps {
   requestDetail: RequestDetail
 }
 function RequestDetailDoneBody({ requestDetail }: RequestDetailDoneBodyProps): JSX.Element {
+  const logic = useContext(RequestDetailContext)
+  const isAdmin = useObservableState(logic.isAdmin$, false)
   return (
     <Grid container={true} spacing={2} justifyContent="space-between">
       <Grid item={true} xs={12}>
@@ -140,6 +142,16 @@ function RequestDetailDoneBody({ requestDetail }: RequestDetailDoneBodyProps): J
           )}
           <Grid item={true} style={{flexGrow: 1}}>
             <Grid container={true} spacing={0} alignItems="center" justifyContent="flex-end">
+              <Grid item={true}>
+                {isAdmin && (
+                  <Button onClick={() => void logic.makeItWatched()}>視聴済みにする</Button>
+                )}
+              </Grid>
+              <Grid item={true}>
+                {isAdmin && (
+                  <Button onClick={() => void logic.makeItUnwatched()}>未試聴にする</Button>
+                )}
+              </Grid>
               <Grid item={true}>
                 {requestDetail.videoUrl !== undefined && (
                   <TweetButton url={requestDetail.videoUrl} hashtags={["mobconfvideo"]}/>

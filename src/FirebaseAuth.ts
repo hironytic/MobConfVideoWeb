@@ -22,20 +22,55 @@
 // THE SOFTWARE.
 //
 
-import { Observable, shareReplay } from "rxjs"
+import { map, Observable, of, shareReplay, startWith, switchMap, tap } from "rxjs"
 import { onAuthStateChanged, User } from "firebase/auth"
-import { withAuth } from "./Firebase"
+import { withAuth, withFirestore } from "./Firebase"
+import { collection, doc, DocumentSnapshot, onSnapshot } from "firebase/firestore"
+import { DocumentData } from "@firebase/firestore"
 
-export class FirebaseAuth {
-  static getCurrentUser$(): Observable<User | undefined> {
-    return withAuth(auth => {
-      return new Observable<User | undefined>(subscriber => {
-        return onAuthStateChanged(auth, user => {
-          subscriber.next(user ?? undefined)
-        })
-      }).pipe(
+let _currentUser$: Observable<User | undefined> | undefined = undefined
+let _isAdmin$: Observable<boolean> | undefined = undefined
+
+export namespace FirebaseAuth {
+  export function getCurrentUser$(): Observable<User | undefined> {
+    if (_currentUser$ === undefined) {
+      _currentUser$ = withAuth(auth => {
+        return new Observable<User | undefined>(subscriber => {
+          return onAuthStateChanged(auth, user => {
+            subscriber.next(user ?? undefined)
+          })
+        }).pipe(
+          shareReplay(1),
+        )
+      })
+    }
+    return _currentUser$
+  }
+  
+  export function isAdmin$(): Observable<boolean> {
+    if (_isAdmin$ === undefined) {
+      _isAdmin$ = getCurrentUser$().pipe(
+        switchMap(user => {
+          if (user === undefined) {
+            return of(false)
+          } else {
+            return withFirestore(firestore => {
+              const collectionRef = collection(firestore, "config", "private", "admins")
+              const docRef = doc(collectionRef, user.uid)
+              return new Observable<DocumentSnapshot<DocumentData>>(subscriber => {
+                return onSnapshot(docRef, subscriber)
+              }).pipe(
+                map(snapshot => {
+                  return snapshot.data() !== undefined
+                }),
+              )
+            })
+          }
+        }),
+        startWith(false),
         shareReplay(1),
       )
-    })
+    }
+    return _isAdmin$
   }
 }

@@ -27,12 +27,19 @@ import { Request } from "../../entities/Request"
 import { Session } from "../../entities/Session"
 import { Event } from "../../entities/Event"
 import { Firestore } from "../../Firestore"
+import { getFirestore } from "../../Firebase"
+import { runTransaction } from 'firebase/firestore'
+import { runDetached } from "../../utils/RunDetached"
+import { collection, doc } from "firebase/firestore"
+import { FirebaseAuth } from "../../FirebaseAuth"
 
 export interface RequestDetailRepository {
   getRequest$(eventId: string, requestId: string): Observable<Request>
   getSession$(sessionId: string): Observable<Session>
   getAllEvents$(): Observable<Event[]>
   getConferenceName$(conferenceId: string): Observable<string>
+  isAdmin$(): Observable<boolean>
+  updateRequestWatched(eventId: string, requestId: string, value: boolean): void
 }
 
 export class FirestoreRequestDetailRepository implements RequestDetailRepository {
@@ -50,5 +57,23 @@ export class FirestoreRequestDetailRepository implements RequestDetailRepository
   
   getConferenceName$(conferenceId: string): Observable<string> {
     return Firestore.getConferenceName$(conferenceId)
+  }
+
+  isAdmin$(): Observable<boolean> {
+    return FirebaseAuth.isAdmin$()
+  }
+
+  updateRequestWatched(eventId: string, requestId: string, value: boolean): void {
+    runDetached(async () => {
+      const firestore = await getFirestore()
+      const collectionRef = collection(firestore, "events", eventId, "requests")
+      const docRef = doc(collectionRef, requestId)
+      await runTransaction(firestore, async (transaction) => {
+        const doc = await transaction.get(docRef)
+        if (doc.exists()) {
+          transaction.update(docRef, { watched: value })
+        }
+      })
+    })
   }
 }
