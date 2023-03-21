@@ -54,6 +54,7 @@ export interface RequestDetailLogic extends Logic {
   makeItWatched(): void
   makeItUnwatched(): void
   
+  isWatched$: Observable<boolean | undefined>
   requestDetail$: Observable<RequestDetailIRDE>
   isAdmin$: Observable<boolean>
 }
@@ -65,11 +66,13 @@ export class NullRequestDetailLogic implements RequestDetailLogic {
   makeItWatched(): void {}
   makeItUnwatched(): void {}
 
+  isWatched$ = NEVER
   requestDetail$ = NEVER
   isAdmin$ = NEVER
 }
 
 export class AppRequestDetailLogic implements RequestDetailLogic {
+  isWatched$ = new BehaviorSubject<boolean | undefined>(undefined)
   requestDetail$ = new BehaviorSubject<RequestDetailIRDE>({ type: IRDETypes.Initial })
   
   constructor(private readonly repository: RequestDetailRepository) {
@@ -125,6 +128,7 @@ export class AppRequestDetailLogic implements RequestDetailLogic {
       {
         next: (request) => {
           this.latestRequest = request
+          this.isWatched$.next(request.isWatched)
           if (request.sessionId !== this.latestSessionId) {
             this.subscribeSession(request.sessionId)
           } else {

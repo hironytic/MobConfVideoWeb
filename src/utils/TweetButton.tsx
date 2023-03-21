@@ -31,18 +31,22 @@ interface TweetButtonProps {
   hashtags?: string[]
 }
 
-export function TweetButton({ text, url, hashtags }: TweetButtonProps): JSX.Element {
+export function createTweetUrl({ text, url, hashtags }: TweetButtonProps): string {
   const tweetUrl = new URL("https://twitter.com/intent/tweet")
   if (hashtags !== undefined && hashtags.length > 0) {
     tweetUrl.searchParams.set("hashtags", hashtags.join(","))
   }
   if (text !== undefined) {
-    tweetUrl.searchParams.set("text", text)  
+    tweetUrl.searchParams.set("text", text)
   }
   if (url !== undefined) {
     tweetUrl.searchParams.set("url", url)
   }
-  const tweetUrlString = tweetUrl.toString()
+  return tweetUrl.toString()
+}
+
+export function TweetButton(props: TweetButtonProps): JSX.Element {
+  const tweetUrlString = createTweetUrl(props)
   
   return (
     <Button href={tweetUrlString} target="_blank" rel="noopener noreferrer" color="primary">
