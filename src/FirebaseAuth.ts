@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-import { map, Observable, of, shareReplay, startWith, switchMap, tap } from "rxjs"
+import { map, Observable, of, shareReplay, startWith, switchMap } from "rxjs"
 import { onAuthStateChanged, User } from "firebase/auth"
 import { withAuth, withFirestore } from "./Firebase"
 import { collection, doc, DocumentSnapshot, onSnapshot } from "firebase/firestore"
