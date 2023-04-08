@@ -22,18 +22,18 @@
 // THE SOFTWARE.
 //
 
-import { Button, CircularProgress, Dialog, DialogContent, Grid, Typography } from "@mui/material"
-import { Note, OndemandVideo } from "@mui/icons-material"
+import { Button, CircularProgress, Dialog, DialogContent, Grid, Menu, MenuItem, Typography } from "@mui/material"
+import { Note, OndemandVideo, VerifiedUser } from "@mui/icons-material"
 import { IRDETypes } from "../../utils/IRDE"
 import { RequestDetail } from "./RequestDetailLogic"
 import { useNavigate, useParams } from "react-router-dom"
 import { WatchedEvents } from "../session_detail/WatchedEvents"
 import { Description } from "../session_detail/Description"
 import { Speakers } from "../session_detail/Speakers"
-import { useContext, useEffect } from "react"
+import { useContext, useEffect, useState, MouseEvent } from "react"
 import { RequestDetailContext } from "./RequestDetailContext"
 import { useObservableState } from "observable-hooks"
-import { TweetButton } from "../../utils/TweetButton"
+import { createTweetUrl, TweetButton } from "../../utils/TweetButton"
 
 export function RequestDetailDialog(): JSX.Element {
   const navigate = useNavigate()
@@ -98,6 +98,44 @@ interface RequestDetailDoneBodyProps {
   requestDetail: RequestDetail
 }
 function RequestDetailDoneBody({ requestDetail }: RequestDetailDoneBodyProps): JSX.Element {
+  const logic = useContext(RequestDetailContext)
+  const isWatched = useObservableState(logic.isWatched$, undefined)
+  const isAdmin = useObservableState(logic.isAdmin$, false)
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  function handleShowAdminMenu(event: MouseEvent<HTMLButtonElement>) {
+    setAnchorEl(event.currentTarget)
+  }
+  function handleCloseAdminMenu() {
+    setAnchorEl(null)
+  }
+  function handleMakeItWatched() {
+    logic.makeItWatched()
+    handleCloseAdminMenu()
+  }
+  function handleMakeItUnwatched() {
+    logic.makeItUnwatched()
+    handleCloseAdminMenu()
+  }
+  function handleAnnounceTweet1() {
+    const announceTweetUrl1 = createTweetUrl({
+      text: `${requestDetail.conference}から「${requestDetail.title}」`,
+      url: requestDetail.videoUrl,
+      hashtags: ["mobconfvideo"],
+    })
+    window.open(announceTweetUrl1, "_blank", "noopener,noreferrer")
+  }
+  function handleAnnounceTweet2() {
+    if (requestDetail.slideUrl !== undefined) {
+      const announceTweetUrl2 = createTweetUrl({
+        text: "この動画のスライドはこちらです。",
+        url: requestDetail.slideUrl,
+        hashtags: ["mobconfvideo"],
+      })
+      window.open(announceTweetUrl2, "_blank", "noopener,noreferrer")
+    }
+  }
+  
   return (
     <Grid container={true} spacing={2} justifyContent="space-between">
       <Grid item={true} xs={12}>
@@ -140,6 +178,27 @@ function RequestDetailDoneBody({ requestDetail }: RequestDetailDoneBodyProps): J
           )}
           <Grid item={true} style={{flexGrow: 1}}>
             <Grid container={true} spacing={0} alignItems="center" justifyContent="flex-end">
+              <Grid item={true}>
+                {isAdmin && (
+                  <>
+                    <Button onClick={handleShowAdminMenu}>
+                      <VerifiedUser/> 運営メニュー
+                    </Button>
+                    <Menu open={anchorEl !== null} anchorEl={anchorEl} onClose={handleCloseAdminMenu}>
+                      <MenuItem onClick={() => void handleAnnounceTweet1()}>開始ツイート1</MenuItem>
+                      {requestDetail.slideUrl !== undefined && (
+                        <MenuItem onClick={() => void handleAnnounceTweet2()}>開始ツイート2</MenuItem>
+                      )}
+                      {isWatched !== true && (
+                        <MenuItem onClick={() => void handleMakeItWatched()}>鑑賞済みにする</MenuItem>
+                      )}
+                      {isWatched !== false && (
+                        <MenuItem onClick={() => void handleMakeItUnwatched()}>未鑑賞に戻す</MenuItem>
+                      )}
+                    </Menu>
+                  </>
+                )}
+              </Grid>
               <Grid item={true}>
                 {requestDetail.videoUrl !== undefined && (
                   <TweetButton url={requestDetail.videoUrl} hashtags={["mobconfvideo"]}/>

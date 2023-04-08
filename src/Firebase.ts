@@ -23,8 +23,9 @@
 //
 
 import { FirebaseApp, initializeApp } from 'firebase/app'
+import { Auth, getAuth as getAuthFromApp } from 'firebase/auth'
 import { Firestore, getFirestore as getFireStoreFromApp } from 'firebase/firestore'
-import { getFunctions as getFunctionsFromApp, Functions, httpsCallable } from 'firebase/functions'
+import { Functions, getFunctions as getFunctionsFromApp, httpsCallable } from 'firebase/functions'
 import { from, Observable, switchMap } from "rxjs"
 import { HttpsCallable } from "@firebase/functions"
 
@@ -63,4 +64,14 @@ export async function getFunctions(): Promise<Functions> {
 
 export async function getFunction<RequestData = unknown, ResponseData = unknown>(name: string): Promise<HttpsCallable<RequestData, ResponseData>> {
   return httpsCallable<RequestData, ResponseData>(await getFunctions(), name)
+}
+
+export async function getAuth(): Promise<Auth> {
+  return getAuthFromApp(await getFirebaseApp())
+}
+
+export function withAuth<T>(builder: (auth: Auth) => Observable<T>): Observable<T> {
+  return from(getAuth()).pipe(
+    switchMap(auth => builder(auth))
+  )
 }

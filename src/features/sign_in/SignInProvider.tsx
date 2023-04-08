@@ -1,5 +1,5 @@
 //
-// TweetButton.tsx
+// SignInProvider.tsx
 //
 // Copyright (c) 2023 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,35 +22,16 @@
 // THE SOFTWARE.
 //
 
-import { Button } from "@mui/material"
-import { Twitter } from "@mui/icons-material"
+import { ProviderProps } from "../../utils/ProviderProps"
+import { LogicProvider } from "../../utils/LogicProvider"
+import { SignInContext } from "./SignInContext"
+import { AppSignInLogic } from "./SignInLogic"
+import { FirebaseSignInRepository } from "./SignInRepository"
 
-interface TweetButtonProps {
-  text?: string
-  url?: string
-  hashtags?: string[]
-}
-
-export function createTweetUrl({ text, url, hashtags }: TweetButtonProps): string {
-  const tweetUrl = new URL("https://twitter.com/intent/tweet")
-  if (hashtags !== undefined && hashtags.length > 0) {
-    tweetUrl.searchParams.set("hashtags", hashtags.join(","))
-  }
-  if (text !== undefined) {
-    tweetUrl.searchParams.set("text", text)
-  }
-  if (url !== undefined) {
-    tweetUrl.searchParams.set("url", url)
-  }
-  return tweetUrl.toString()
-}
-
-export function TweetButton(props: TweetButtonProps): JSX.Element {
-  const tweetUrlString = createTweetUrl(props)
-  
+export function SignInProvider({ children }: ProviderProps): JSX.Element {
   return (
-    <Button href={tweetUrlString} target="_blank" rel="noopener noreferrer" color="primary">
-      <Twitter/> ツイート
-    </Button>
+    <LogicProvider context={SignInContext} creator={() => new AppSignInLogic(new FirebaseSignInRepository())}>
+      {children}
+    </LogicProvider>
   )
 }

@@ -1,5 +1,5 @@
 //
-// TweetButton.tsx
+// SignInContext.ts
 //
 // Copyright (c) 2023 Hironori Ichimiya <hiron@hironytic.com>
 //
@@ -22,35 +22,7 @@
 // THE SOFTWARE.
 //
 
-import { Button } from "@mui/material"
-import { Twitter } from "@mui/icons-material"
+import { NullSignInLogic, SignInLogic } from "./SignInLogic"
+import React from "react"
 
-interface TweetButtonProps {
-  text?: string
-  url?: string
-  hashtags?: string[]
-}
-
-export function createTweetUrl({ text, url, hashtags }: TweetButtonProps): string {
-  const tweetUrl = new URL("https://twitter.com/intent/tweet")
-  if (hashtags !== undefined && hashtags.length > 0) {
-    tweetUrl.searchParams.set("hashtags", hashtags.join(","))
-  }
-  if (text !== undefined) {
-    tweetUrl.searchParams.set("text", text)
-  }
-  if (url !== undefined) {
-    tweetUrl.searchParams.set("url", url)
-  }
-  return tweetUrl.toString()
-}
-
-export function TweetButton(props: TweetButtonProps): JSX.Element {
-  const tweetUrlString = createTweetUrl(props)
-  
-  return (
-    <Button href={tweetUrlString} target="_blank" rel="noopener noreferrer" color="primary">
-      <Twitter/> ツイート
-    </Button>
-  )
-}
+export const SignInContext = React.createContext<SignInLogic>(new NullSignInLogic())

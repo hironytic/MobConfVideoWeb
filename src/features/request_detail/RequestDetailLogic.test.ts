@@ -85,6 +85,8 @@ class MockRequestDetailRepository implements RequestDetailRepository {
   getSession$ = jest.fn((_sessionId: string) => NEVER.pipe(startWith(session1)))
   getAllEvents$ = jest.fn(() => NEVER.pipe(startWith(eventList1)))
   getConferenceName$ = jest.fn((_conferenceId: string) => NEVER.pipe(startWith(conferenceName1)))
+  isAdmin$ = jest.fn(() => NEVER.pipe(startWith(false)))
+  updateRequestWatched = jest.fn((_eventId: string, _requestId: string, _value: boolean) => {})
 }
 
 let mockRequestDetailRepository: MockRequestDetailRepository
