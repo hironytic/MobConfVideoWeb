@@ -201,7 +201,7 @@ function RequestDetailDoneBody({ requestDetail }: RequestDetailDoneBodyProps): J
               </Grid>
               <Grid item={true}>
                 {requestDetail.videoUrl !== undefined && (
-                  <TweetButton url={requestDetail.videoUrl} hashtags={["mobconfvideo"]}/>
+                  <TweetButton text={`鑑賞中！\n\n${requestDetail.title}`} url={requestDetail.videoUrl} hashtags={["mobconfvideo"]}/>
                 )}
               </Grid>
               <Grid item={true}>
