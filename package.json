@@ -19,7 +19,7 @@
     "observable-hooks": "^4.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.11.2",
+    "react-router-dom": "^6.14.0",
     "react-scripts": "5.0.1",
     "rxjs": "^7.8.1",
     "typescript": "^4.7.4",
