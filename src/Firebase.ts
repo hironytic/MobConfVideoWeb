@@ -30,8 +30,8 @@ import { from, Observable, switchMap } from "rxjs"
 import { HttpsCallable } from "@firebase/functions"
 
 async function getFirebaseConfig(): Promise<object> {
-  if (import.meta.env.VITE_ENV !== 'production') {
-    const config = JSON.parse(import.meta.env.VITE_APP_FIREBASE_CONFIG!)
+  if (import.meta.env.MODE !== 'production') {
+    const config = JSON.parse(import.meta.env.VITE_FIREBASE_CONFIG!)
     return config
   } else {
     return (await fetch('/__/firebase/init.json')).json()

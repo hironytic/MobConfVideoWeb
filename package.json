@@ -28,7 +28,6 @@
     "start": "vite",
     "build": "tsc && vite build",
     "test": "vite test",
-    "eject": "vite eject",
     "serve": "vite preview"
   },
   "eslintConfig": {
