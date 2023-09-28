@@ -22,6 +22,7 @@
 // THE SOFTWARE.
 //
 
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { SessionRepository } from "./SessionRepository"
 import { NEVER, startWith, Subscription, throwError } from "rxjs"
 import { Event } from "../../entities/Event"
@@ -45,9 +46,9 @@ import { delay } from "../../utils/Delay"
 import { FilteredSessions, SessionFilter } from "../../Firestore"
 
 class MockSessionRepository implements SessionRepository {
-  getAllConferences$ = jest.fn(() => NEVER.pipe(startWith(conferences1)))
-  getAllEvents = jest.fn(async () => events1)
-  getSessions = jest.fn(async (_: SessionFilter) => ({ sessions: sessions1, more: undefined } as FilteredSessions))
+  getAllConferences$ = vi.fn(() => NEVER.pipe(startWith(conferences1)))
+  getAllEvents = vi.fn(async () => events1)
+  getSessions = vi.fn(async (_: SessionFilter) => ({ sessions: sessions1, more: undefined } as FilteredSessions))
 }
 
 const conferences1: Conference[] = [

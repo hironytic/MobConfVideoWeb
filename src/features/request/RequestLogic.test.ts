@@ -22,6 +22,7 @@
 // THE SOFTWARE.
 //
 
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { RequestRepository } from "./RequestRepository"
 import { NEVER, Observable, startWith, Subject, Subscription, throwError } from "rxjs"
 import { Event } from "../../entities/Event"
@@ -37,8 +38,8 @@ import { EventuallyObserver } from "../../utils/EventuallyObserver"
 import { IRDEDone, IRDEError, IRDETypes } from "../../utils/IRDE"
 
 class MockRequestRepository implements RequestRepository {
-  getAllEvents$ = jest.fn(() => NEVER as Observable<Event[]>)
-  getAllRequests$ = jest.fn(eventId => NEVER as Observable<Request[]>)
+  getAllEvents$ = vi.fn(() => NEVER as Observable<Event[]>)
+  getAllRequests$ = vi.fn(_eventId => NEVER as Observable<Request[]>)
 }
 
 const eventData1: Event[] = [
@@ -270,13 +271,13 @@ describe("getAllRequests$", () => {
     const logic = createLogic()
     
     const observer = new EventuallyObserver<RequestListIRDE>()
-    const expecationOfRequestForEvent1 = observer.expectValue(requestList => {
+    const expectationOfRequestForEvent1 = observer.expectValue(requestList => {
       expect(requestList.type).toBe(IRDETypes.Done)
       expect((requestList as IRDEDone<RequestListDProps>).requests).toBe(requestData1)
     })
     subscription.add(logic.requestList$.subscribe(observer))
     logic.setCurrentEventId("e1")
-    await expecationOfRequestForEvent1
+    await expectationOfRequestForEvent1
     
     const expectationOfLoadingRequestsForEvent2 = observer.expectValue(requestList => {
       expect(requestList.type).toBe(IRDETypes.Running)

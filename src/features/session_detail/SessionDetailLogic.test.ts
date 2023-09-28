@@ -22,6 +22,7 @@
 // THE SOFTWARE.
 //
 
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { Event } from "../../entities/Event"
 import { Session } from "../../entities/Session"
 import { SessionDetailRepository } from "./SessionDetailRepository"
@@ -57,14 +58,14 @@ const eventList1 = [
 const conferenceName1 = "Conf 1"
 
 class MockSessionDetailRepository implements SessionDetailRepository {
-  getSession$ = jest.fn((sessionId: string): Observable<Session> => NEVER.pipe(startWith(session1)))
-  getAllEvents$ = jest.fn((): Observable<Event[]> => NEVER.pipe(startWith(eventList1)))
-  getConferenceName$ = jest.fn((conferenceId: string): Observable<string> => NEVER.pipe(startWith(conferenceName1)))
+  getSession$ = vi.fn((_sessionId: string): Observable<Session> => NEVER.pipe(startWith(session1)))
+  getAllEvents$ = vi.fn((): Observable<Event[]> => NEVER.pipe(startWith(eventList1)))
+  getConferenceName$ = vi.fn((_conferenceId: string): Observable<string> => NEVER.pipe(startWith(conferenceName1)))
 }
 
 class MockRequestSubmissionLogic implements RequestSubmissionLogic {
   dispose() {}
-  submitNewRequestFromSession = jest.fn((sessionId: string): void => {})
+  submitNewRequestFromSession = vi.fn((_sessionId: string): void => {})
   phase$ = NEVER
 }
 
