@@ -6,12 +6,10 @@ MobConfVideo is a browser app to assist the meetup "カンファレンス動画�
 
 ## How to Develop
 
-The project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
 This app uses Firebase Cloud Firestore in backend. A file `env.development.local` on root of project directory is needed for developing. It contains firebase project configuration like below:
 
 ```
-REACT_APP_FIREBASE_CONFIG={ /* project configuration here */ }
+VITE_FIREBASE_CONFIG={ /* project configuration here */ }
 ```
 
 ### Run
@@ -52,7 +50,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ## Architecture in Codes
 
-The program is devided into several features.
+The program is divided into several features.
 Each feature is implemented in a directory in `src/features/`.
 
 The feature directory may contain:
