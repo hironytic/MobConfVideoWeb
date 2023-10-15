@@ -65,7 +65,7 @@ export interface SessionListDoneProp {
 export interface SessionListErrorProp {
   message: string
 }
-export type SessionListIRDE = IRDE<{}, {}, SessionListDoneProp, SessionListErrorProp>
+export type SessionListIRDE = IRDE<object, object, SessionListDoneProp, SessionListErrorProp>
 
 export interface FilterParams {
   conference: string | undefined

@@ -38,8 +38,8 @@ export interface SessionItem {
   watchedEvents: IdAndName[]
 }
 
-export interface SessionDetailIProps {}
-export interface SessionDetailRProps {}
+export type SessionDetailIProps = object
+export type SessionDetailRProps = object
 export interface SessionDetailDProps { sessionItem: SessionItem }
 export interface SessionDetailEProps { message: string }
 export type SessionDetailIRDE = IRDE<SessionDetailIProps, SessionDetailRProps, SessionDetailDProps, SessionDetailEProps>

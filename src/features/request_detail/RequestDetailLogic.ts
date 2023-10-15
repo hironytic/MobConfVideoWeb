@@ -43,8 +43,8 @@ export interface RequestDetail {
   videoUrl: string | undefined
 }
 
-export interface RequestDetailIProps {}
-export interface RequestDetailRProps {}
+export type RequestDetailIProps = object
+export type RequestDetailRProps = object
 export interface RequestDetailDProps { requestDetail: RequestDetail }
 export interface RequestDetailEProps { message: string }
 export type RequestDetailIRDE = IRDE<RequestDetailIProps, RequestDetailRProps, RequestDetailDProps, RequestDetailEProps>
