@@ -7,15 +7,24 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "friday"
     open-pull-requests-limit: 10
     labels:
       - "dependencies"
+    groups:
+      semver-patch:
+        update-types:
+          - "patch"
+      typescript-eslint:
+        patterns:
+          - "@typescript-eslint/*"
   
   # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+      day: "friday"
     labels:
       - "dependencies"
