@@ -26,6 +26,7 @@
   "scripts": {
     "start": "vite",
     "build": "tsc && vite build",
+    "check": "tsc",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx src/",
     "test": "vitest run",
     "coverage": "vitest run --coverage",
