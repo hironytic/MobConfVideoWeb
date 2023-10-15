@@ -44,9 +44,9 @@ export interface RequestLogic extends Logic {
 }
 
 export class NullRequestLogic implements RequestLogic {
-  dispose() {}
+  dispose() { /* do nothing */ }
 
-  setCurrentEventId(eventId: string | undefined): void {}
+  setCurrentEventId(eventId: string | undefined): void { /* do nothing */ }
   
   allEvents$ = NEVER
   currentEventId$ = NEVER

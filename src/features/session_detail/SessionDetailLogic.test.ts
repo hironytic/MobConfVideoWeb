@@ -64,8 +64,8 @@ class MockSessionDetailRepository implements SessionDetailRepository {
 }
 
 class MockRequestSubmissionLogic implements RequestSubmissionLogic {
-  dispose() {}
-  submitNewRequestFromSession = vi.fn((_sessionId: string): void => {})
+  dispose() { /* do nothing */ }
+  submitNewRequestFromSession = vi.fn((_sessionId: string): void => { /* do nothing */ })
   phase$ = NEVER
 }
 

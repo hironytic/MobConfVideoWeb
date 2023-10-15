@@ -60,11 +60,11 @@ export interface RequestDetailLogic extends Logic {
 }
 
 export class NullRequestDetailLogic implements RequestDetailLogic {
-  dispose() {}
-  setCurrentRequest(eventId: string, requestId: string): void {}
+  dispose() { /* do nothing */ }
+  setCurrentRequest(eventId: string, requestId: string): void { /* do nothing */ }
 
-  makeItWatched(): void {}
-  makeItUnwatched(): void {}
+  makeItWatched(): void { /* do nothing */ }
+  makeItUnwatched(): void { /* do nothing */ }
 
   isWatched$ = NEVER
   requestDetail$ = NEVER

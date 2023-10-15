@@ -89,14 +89,14 @@ export interface SessionLogic extends Logic {
 }
 
 export class NullSessionLogic implements SessionLogic {
-  dispose() {}
+  dispose() { /* do nothing */ }
   
-  expandFilterPanel(isExpand: boolean) {}
-  filterConferenceChanged(value: string) {}
-  filterSessionTimeChanged(value: string) {}
-  filterKeywordsChanged(value: string) {}
-  executeFilter(params: FilterParams, force: boolean) {}
-  clearFilter() {}
+  expandFilterPanel(isExpand: boolean) { /* do nothing */ }
+  filterConferenceChanged(value: string) { /* do nothing */ }
+  filterSessionTimeChanged(value: string) { /* do nothing */ }
+  filterKeywordsChanged(value: string) { /* do nothing */ }
+  executeFilter(params: FilterParams, force: boolean) { /* do nothing */ }
+  clearFilter() { /* do nothing */ }
 
   isFilterPanelExpanded$ = NEVER
   filterConference$ = NEVER

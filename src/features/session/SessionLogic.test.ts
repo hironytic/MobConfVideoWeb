@@ -387,7 +387,7 @@ describe("session list", () => {
   })
   
   it("contains found sessions", async () => {
-    let searchResultResolver: (value: FilteredSessions) => void = _ => {}
+    let searchResultResolver: (value: FilteredSessions) => void = _ => { /* do nothing */ }
     mockSessionRepository.getSessions.mockReturnValue(new Promise(resolve => { searchResultResolver = resolve }))
     
     const logic = createLogic()

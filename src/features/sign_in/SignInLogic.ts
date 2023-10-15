@@ -36,11 +36,11 @@ export interface SignInLogic extends Logic {
 }
 
 export class NullSignInLogic implements SignInLogic {
-  dispose() {}
+  dispose() { /* do nothing */ }
   get isAuthenticated$(): Observable<boolean> { return NEVER }
   // get isLinkedToGoogle$(): Observable<boolean> { return NEVER }
-  signOut() {}
-  signInWithGoogle() {}
+  signOut() { /* do nothing */ }
+  signInWithGoogle() { /* do nothing */ }
 }
 
 export class AppSignInLogic implements SignInLogic {
@@ -48,6 +48,7 @@ export class AppSignInLogic implements SignInLogic {
   }
   
   dispose() {
+    /* do nothing */
   }
   
   get isAuthenticated$(): Observable<boolean> {

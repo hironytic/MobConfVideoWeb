@@ -87,7 +87,7 @@ class MockRequestDetailRepository implements RequestDetailRepository {
   getAllEvents$ = vi.fn(() => NEVER.pipe(startWith(eventList1)))
   getConferenceName$ = vi.fn((_conferenceId: string) => NEVER.pipe(startWith(conferenceName1)))
   isAdmin$ = vi.fn(() => NEVER.pipe(startWith(false)))
-  updateRequestWatched = vi.fn((_eventId: string, _requestId: string, _value: boolean) => {})
+  updateRequestWatched = vi.fn((_eventId: string, _requestId: string, _value: boolean) => { /* do nothing */ })
 }
 
 let mockRequestDetailRepository: MockRequestDetailRepository
