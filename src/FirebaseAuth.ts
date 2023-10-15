@@ -31,46 +31,44 @@ import { DocumentData } from "@firebase/firestore"
 let _currentUser$: Observable<User | undefined> | undefined = undefined
 let _isAdmin$: Observable<boolean> | undefined = undefined
 
-export namespace FirebaseAuth {
-  export function getCurrentUser$(): Observable<User | undefined> {
-    if (_currentUser$ === undefined) {
-      _currentUser$ = withAuth(auth => {
-        return new Observable<User | undefined>(subscriber => {
-          return onAuthStateChanged(auth, user => {
-            subscriber.next(user ?? undefined)
-          })
-        }).pipe(
-          shareReplay(1),
-        )
-      })
-    }
-    return _currentUser$
-  }
-  
-  export function isAdmin$(): Observable<boolean> {
-    if (_isAdmin$ === undefined) {
-      _isAdmin$ = getCurrentUser$().pipe(
-        switchMap(user => {
-          if (user === undefined) {
-            return of(false)
-          } else {
-            return withFirestore(firestore => {
-              const collectionRef = collection(firestore, "config", "private", "admins")
-              const docRef = doc(collectionRef, user.uid)
-              return new Observable<DocumentSnapshot<DocumentData>>(subscriber => {
-                return onSnapshot(docRef, subscriber)
-              }).pipe(
-                map(snapshot => {
-                  return snapshot.data() !== undefined
-                }),
-              )
-            })
-          }
-        }),
-        startWith(false),
+export function getCurrentUser$(): Observable<User | undefined> {
+  if (_currentUser$ === undefined) {
+    _currentUser$ = withAuth(auth => {
+      return new Observable<User | undefined>(subscriber => {
+        return onAuthStateChanged(auth, user => {
+          subscriber.next(user ?? undefined)
+        })
+      }).pipe(
         shareReplay(1),
       )
-    }
-    return _isAdmin$
+    })
   }
+  return _currentUser$
+}
+
+export function isAdmin$(): Observable<boolean> {
+  if (_isAdmin$ === undefined) {
+    _isAdmin$ = getCurrentUser$().pipe(
+      switchMap(user => {
+        if (user === undefined) {
+          return of(false)
+        } else {
+          return withFirestore(firestore => {
+            const collectionRef = collection(firestore, "config", "private", "admins")
+            const docRef = doc(collectionRef, user.uid)
+            return new Observable<DocumentSnapshot<DocumentData>>(subscriber => {
+              return onSnapshot(docRef, subscriber)
+            }).pipe(
+              map(snapshot => {
+                return snapshot.data() !== undefined
+              }),
+            )
+          })
+        }
+      }),
+      startWith(false),
+      shareReplay(1),
+    )
+  }
+  return _isAdmin$
 }

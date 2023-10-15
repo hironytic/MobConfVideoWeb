@@ -76,8 +76,8 @@ export interface RequestSubmissionLogic extends Logic {
 }
 
 export class NullRequestSubmissionLogic implements RequestSubmissionLogic {
-  dispose() {}
-  submitNewRequestFromSession(sessionId: string) {}
+  dispose() { /* do nothing */ }
+  submitNewRequestFromSession(_sessionId: string) { /* do nothing */ }
   
   phase$ = NEVER
 }

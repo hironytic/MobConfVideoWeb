@@ -22,6 +22,7 @@
 // THE SOFTWARE.
 //
 
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { RequestDetailRepository } from "./RequestDetailRepository"
 import { NEVER, startWith, Subscription, throwError } from "rxjs"
 import { Request } from "../../entities/Request"
@@ -81,12 +82,12 @@ const eventList1 = [
 const conferenceName1 = "Conf 1"
 
 class MockRequestDetailRepository implements RequestDetailRepository {
-  getRequest$ = jest.fn((_eventId: string, _requestId: string) => NEVER.pipe(startWith(request1)))
-  getSession$ = jest.fn((_sessionId: string) => NEVER.pipe(startWith(session1)))
-  getAllEvents$ = jest.fn(() => NEVER.pipe(startWith(eventList1)))
-  getConferenceName$ = jest.fn((_conferenceId: string) => NEVER.pipe(startWith(conferenceName1)))
-  isAdmin$ = jest.fn(() => NEVER.pipe(startWith(false)))
-  updateRequestWatched = jest.fn((_eventId: string, _requestId: string, _value: boolean) => {})
+  getRequest$ = vi.fn((_eventId: string, _requestId: string) => NEVER.pipe(startWith(request1)))
+  getSession$ = vi.fn((_sessionId: string) => NEVER.pipe(startWith(session1)))
+  getAllEvents$ = vi.fn(() => NEVER.pipe(startWith(eventList1)))
+  getConferenceName$ = vi.fn((_conferenceId: string) => NEVER.pipe(startWith(conferenceName1)))
+  isAdmin$ = vi.fn(() => NEVER.pipe(startWith(false)))
+  updateRequestWatched = vi.fn((_eventId: string, _requestId: string, _value: boolean) => { /* do nothing */ })
 }
 
 let mockRequestDetailRepository: MockRequestDetailRepository

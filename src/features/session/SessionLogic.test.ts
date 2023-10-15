@@ -22,6 +22,7 @@
 // THE SOFTWARE.
 //
 
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { SessionRepository } from "./SessionRepository"
 import { NEVER, startWith, Subscription, throwError } from "rxjs"
 import { Event } from "../../entities/Event"
@@ -45,9 +46,9 @@ import { delay } from "../../utils/Delay"
 import { FilteredSessions, SessionFilter } from "../../Firestore"
 
 class MockSessionRepository implements SessionRepository {
-  getAllConferences$ = jest.fn(() => NEVER.pipe(startWith(conferences1)))
-  getAllEvents = jest.fn(async () => events1)
-  getSessions = jest.fn(async (_: SessionFilter) => ({ sessions: sessions1, more: undefined } as FilteredSessions))
+  getAllConferences$ = vi.fn(() => NEVER.pipe(startWith(conferences1)))
+  getAllEvents = vi.fn(async () => events1)
+  getSessions = vi.fn(async (_: SessionFilter) => ({ sessions: sessions1, more: undefined } as FilteredSessions))
 }
 
 const conferences1: Conference[] = [
@@ -286,7 +287,7 @@ describe("session time filter", () => {
   it("changes selection by user's operation", async () => {
     const logic = createLogic()
 
-    let candidate: string = ""
+    let candidate = ""
     const observer = new EventuallyObserver<DropdownState>()
     const expectation1 = observer.expectValue(filterSessionTime => {
       const otherValue = filterSessionTime.items.find(item => item.value !== filterSessionTime.value)
@@ -386,7 +387,7 @@ describe("session list", () => {
   })
   
   it("contains found sessions", async () => {
-    let searchResultResolver: (value: FilteredSessions) => void = _ => {}
+    let searchResultResolver: (value: FilteredSessions) => void = _ => { /* do nothing */ }
     mockSessionRepository.getSessions.mockReturnValue(new Promise(resolve => { searchResultResolver = resolve }))
     
     const logic = createLogic()
@@ -437,11 +438,11 @@ describe("session list", () => {
   })
   
   it("can search more sessions", async () => {
-    let secondResult: FilteredSessions = {
+    const secondResult: FilteredSessions = {
       sessions: sessions2,
       more: undefined,
     }
-    let firstResult: FilteredSessions = {
+    const firstResult: FilteredSessions = {
       sessions: sessions1,
       more: async () => {
         return secondResult

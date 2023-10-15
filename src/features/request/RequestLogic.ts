@@ -29,8 +29,8 @@ import { BehaviorSubject, NEVER, Observable, Subscription } from "rxjs"
 import { Logic } from "../../utils/LogicProvider"
 import { RequestRepository } from "./RequestRepository"
 
-export interface RequestListIProps {}
-export interface RequestListRProps {}
+export type RequestListIProps = object
+export type RequestListRProps = object
 export interface RequestListDProps { requests: Request[] }
 export interface RequestListEProps { message: string }
 export type RequestListIRDE = IRDE<RequestListIProps, RequestListRProps, RequestListDProps, RequestListEProps>
@@ -44,9 +44,9 @@ export interface RequestLogic extends Logic {
 }
 
 export class NullRequestLogic implements RequestLogic {
-  dispose() {}
+  dispose() { /* do nothing */ }
 
-  setCurrentEventId(eventId: string | undefined): void {}
+  setCurrentEventId(_eventId: string | undefined): void { /* do nothing */ }
   
   allEvents$ = NEVER
   currentEventId$ = NEVER

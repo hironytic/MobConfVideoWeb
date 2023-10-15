@@ -38,8 +38,8 @@ export interface SessionItem {
   watchedEvents: IdAndName[]
 }
 
-export interface SessionDetailIProps {}
-export interface SessionDetailRProps {}
+export type SessionDetailIProps = object
+export type SessionDetailRProps = object
 export interface SessionDetailDProps { sessionItem: SessionItem }
 export interface SessionDetailEProps { message: string }
 export type SessionDetailIRDE = IRDE<SessionDetailIProps, SessionDetailRProps, SessionDetailDProps, SessionDetailEProps>
@@ -56,11 +56,11 @@ export interface SessionDetailLogic extends Logic {
 }
 
 export class NullSessionDetailLogic implements SessionDetailLogic {
-  dispose() {}
-  setRequestSubmissionLogic(requestSubmissionLogic: RequestSubmissionLogic) {}
-  setCurrentSession(sessionId: string) {}
-  requestCurrentSession() {}
-  answerToConfirmation(perform: boolean): void {}
+  dispose() { /* do nothing */ }
+  setRequestSubmissionLogic(_requestSubmissionLogic: RequestSubmissionLogic) { /* do nothing */ }
+  setCurrentSession(_sessionId: string) { /* do nothing */ }
+  requestCurrentSession() { /* do nothing */ }
+  answerToConfirmation(_perform: boolean): void { /* do nothing */ }
 
   sessionDetail$ = NEVER
   sessionTitle$ = NEVER

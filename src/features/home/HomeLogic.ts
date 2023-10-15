@@ -43,9 +43,9 @@ export interface HomeLogic extends Logic {
 }
 
 export class NullHomeLogic implements HomeLogic {
-  dispose() {}
+  dispose() { /* do nothing */ }
   
-  setLocation(value: Location) {}
+  setLocation(_value: Location) { /* do nothing */ }
 
   isInMaintenance$ = NEVER
   homeTab$ = NEVER

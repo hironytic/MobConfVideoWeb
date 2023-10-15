@@ -22,6 +22,7 @@
 // THE SOFTWARE.
 //
 
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { RequestSubmissionRepository } from "./RequestSubmissionRepository"
 import { AddRequestFromSessionParams } from "../../entities/AddRequestFromSessionParams"
 import { Subscription } from "rxjs"
@@ -35,7 +36,7 @@ import {
 import { EventuallyObserver } from "../../utils/EventuallyObserver"
 
 class MockRequestSubmissionRepository implements RequestSubmissionRepository {
-  addRequestFromSession = jest.fn(async (params: AddRequestFromSessionParams): Promise<void> => { })
+  addRequestFromSession = vi.fn(async (_params: AddRequestFromSessionParams): Promise<void> => { /* do nothing */ })
 }
 
 class UIMediator {

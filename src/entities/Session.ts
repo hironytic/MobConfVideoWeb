@@ -44,9 +44,7 @@ export interface Speaker {
   icon: string | undefined
 }
 
-export interface WatchedOn {
-  [eventId: string]: number
-}
+export type WatchedOn = Record<string, number>
 
 interface FSSession {
   conferenceId: string

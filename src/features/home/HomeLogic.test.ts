@@ -22,6 +22,7 @@
 // THE SOFTWARE.
 //
 
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { Config } from "../../entities/Config"
 import { HomeRepository } from "./HomeRepository"
 import { NEVER, startWith, Subject, Subscription } from "rxjs"
@@ -38,7 +39,7 @@ const config2 = {
 } as Config
 
 class MockHomeRepository implements HomeRepository {
-  getConfig$ = jest.fn(() => NEVER.pipe(startWith(config1)))
+  getConfig$ = vi.fn(() => NEVER.pipe(startWith(config1)))
 }
 
 let mockHomeRepository: MockHomeRepository

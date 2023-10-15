@@ -23,7 +23,7 @@
 //
 
 import { map, Observable } from "rxjs"
-import { FirebaseAuth } from "../../FirebaseAuth"
+import * as FirebaseAuth from "../../FirebaseAuth"
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth"
 import { getAuth } from "../../Firebase"
 
