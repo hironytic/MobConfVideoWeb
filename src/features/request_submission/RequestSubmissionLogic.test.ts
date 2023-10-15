@@ -36,7 +36,7 @@ import {
 import { EventuallyObserver } from "../../utils/EventuallyObserver"
 
 class MockRequestSubmissionRepository implements RequestSubmissionRepository {
-  addRequestFromSession = vi.fn(async (_params: AddRequestFromSessionParams): Promise<void> => { })
+  addRequestFromSession = vi.fn(async (_params: AddRequestFromSessionParams): Promise<void> => { /* do nothing */ })
 }
 
 class UIMediator {

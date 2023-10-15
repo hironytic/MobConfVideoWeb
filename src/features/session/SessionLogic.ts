@@ -65,7 +65,7 @@ export interface SessionListDoneProp {
 export interface SessionListErrorProp {
   message: string
 }
-export type SessionListIRDE = IRDE<{}, {}, SessionListDoneProp, SessionListErrorProp>
+export type SessionListIRDE = IRDE<object, object, SessionListDoneProp, SessionListErrorProp>
 
 export interface FilterParams {
   conference: string | undefined
@@ -89,14 +89,14 @@ export interface SessionLogic extends Logic {
 }
 
 export class NullSessionLogic implements SessionLogic {
-  dispose() {}
+  dispose() { /* do nothing */ }
   
-  expandFilterPanel(isExpand: boolean) {}
-  filterConferenceChanged(value: string) {}
-  filterSessionTimeChanged(value: string) {}
-  filterKeywordsChanged(value: string) {}
-  executeFilter(params: FilterParams, force: boolean) {}
-  clearFilter() {}
+  expandFilterPanel(_isExpand: boolean) { /* do nothing */ }
+  filterConferenceChanged(_value: string) { /* do nothing */ }
+  filterSessionTimeChanged(_value: string) { /* do nothing */ }
+  filterKeywordsChanged(_value: string) { /* do nothing */ }
+  executeFilter(_params: FilterParams, _force: boolean) { /* do nothing */ }
+  clearFilter() { /* do nothing */ }
 
   isFilterPanelExpanded$ = NEVER
   filterConference$ = NEVER

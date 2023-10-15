@@ -83,7 +83,7 @@ function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCa
     
     // Convert form data to search params.
     const formData = new FormData(event.currentTarget)
-    const params: { [key: string]: string } = {}
+    const params: Record<string, string> = {}
     const formDataToParams = (name: string, except: string | undefined, none: string | undefined) => {
       const data = formData.get(name)
       if (data !== null && typeof data === "string" && data !== except) {

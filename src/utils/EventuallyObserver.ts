@@ -32,7 +32,7 @@ interface IExpectation<T> {
 }
 
 export class EventuallyObserver<T> implements Observer<T> {
-  private static onReceived<T>(expectations: Array<IExpectation<T>>, value: T) {
+  private static onReceived<T>(expectations: IExpectation<T>[], value: T) {
     const resolves: ExpectationResolve[] = []
     const resolvedIndices: number[] = []
     for (let index = 0; index < expectations.length; index++) {
@@ -53,14 +53,14 @@ export class EventuallyObserver<T> implements Observer<T> {
     })
   }
 
-  private nextExpectations: Array<IExpectation<T>> = []
-  private errorExpectations: Array<IExpectation<any>> = []
+  private nextExpectations: IExpectation<T>[] = []
+  private errorExpectations: IExpectation<unknown>[] = []
 
   public next(value: T) {
     EventuallyObserver.onReceived(this.nextExpectations, value)
   }
 
-  public error(err: any) {
+  public error(err: unknown) {
     EventuallyObserver.onReceived(this.errorExpectations, err)
   }
 
@@ -77,7 +77,7 @@ export class EventuallyObserver<T> implements Observer<T> {
     })
   }
 
-  public expectError(checker: (error: any) => void): Promise<void> {
+  public expectError(checker: (error: unknown) => void): Promise<void> {
     return new Promise(resolve => {
       this.errorExpectations.push({
         checker,

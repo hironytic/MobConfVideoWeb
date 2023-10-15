@@ -43,8 +43,8 @@ export interface RequestDetail {
   videoUrl: string | undefined
 }
 
-export interface RequestDetailIProps {}
-export interface RequestDetailRProps {}
+export type RequestDetailIProps = object
+export type RequestDetailRProps = object
 export interface RequestDetailDProps { requestDetail: RequestDetail }
 export interface RequestDetailEProps { message: string }
 export type RequestDetailIRDE = IRDE<RequestDetailIProps, RequestDetailRProps, RequestDetailDProps, RequestDetailEProps>
@@ -60,11 +60,11 @@ export interface RequestDetailLogic extends Logic {
 }
 
 export class NullRequestDetailLogic implements RequestDetailLogic {
-  dispose() {}
-  setCurrentRequest(eventId: string, requestId: string): void {}
+  dispose() { /* do nothing */ }
+  setCurrentRequest(_eventId: string, _requestId: string): void { /* do nothing */ }
 
-  makeItWatched(): void {}
-  makeItUnwatched(): void {}
+  makeItWatched(): void { /* do nothing */ }
+  makeItUnwatched(): void { /* do nothing */ }
 
   isWatched$ = NEVER
   requestDetail$ = NEVER

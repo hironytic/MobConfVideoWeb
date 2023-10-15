@@ -31,7 +31,7 @@ import { getFirestore } from "../../Firebase"
 import { runTransaction } from 'firebase/firestore'
 import { runDetached } from "../../utils/RunDetached"
 import { collection, doc } from "firebase/firestore"
-import { FirebaseAuth } from "../../FirebaseAuth"
+import * as FirebaseAuth from "../../FirebaseAuth"
 
 export interface RequestDetailRepository {
   getRequest$(eventId: string, requestId: string): Observable<Request>
