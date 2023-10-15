@@ -287,7 +287,7 @@ describe("session time filter", () => {
   it("changes selection by user's operation", async () => {
     const logic = createLogic()
 
-    let candidate: string = ""
+    let candidate = ""
     const observer = new EventuallyObserver<DropdownState>()
     const expectation1 = observer.expectValue(filterSessionTime => {
       const otherValue = filterSessionTime.items.find(item => item.value !== filterSessionTime.value)
