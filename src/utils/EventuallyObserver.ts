@@ -54,13 +54,13 @@ export class EventuallyObserver<T> implements Observer<T> {
   }
 
   private nextExpectations: IExpectation<T>[] = []
-  private errorExpectations: IExpectation<any>[] = []
+  private errorExpectations: IExpectation<unknown>[] = []
 
   public next(value: T) {
     EventuallyObserver.onReceived(this.nextExpectations, value)
   }
 
-  public error(err: any) {
+  public error(err: unknown) {
     EventuallyObserver.onReceived(this.errorExpectations, err)
   }
 
@@ -77,7 +77,7 @@ export class EventuallyObserver<T> implements Observer<T> {
     })
   }
 
-  public expectError(checker: (error: any) => void): Promise<void> {
+  public expectError(checker: (error: unknown) => void): Promise<void> {
     return new Promise(resolve => {
       this.errorExpectations.push({
         checker,
