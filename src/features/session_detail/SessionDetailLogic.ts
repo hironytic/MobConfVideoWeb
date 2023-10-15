@@ -57,10 +57,10 @@ export interface SessionDetailLogic extends Logic {
 
 export class NullSessionDetailLogic implements SessionDetailLogic {
   dispose() { /* do nothing */ }
-  setRequestSubmissionLogic(requestSubmissionLogic: RequestSubmissionLogic) { /* do nothing */ }
-  setCurrentSession(sessionId: string) { /* do nothing */ }
+  setRequestSubmissionLogic(_requestSubmissionLogic: RequestSubmissionLogic) { /* do nothing */ }
+  setCurrentSession(_sessionId: string) { /* do nothing */ }
   requestCurrentSession() { /* do nothing */ }
-  answerToConfirmation(perform: boolean): void { /* do nothing */ }
+  answerToConfirmation(_perform: boolean): void { /* do nothing */ }
 
   sessionDetail$ = NEVER
   sessionTitle$ = NEVER
