@@ -43,7 +43,7 @@ async function initializeFirebaseApp(): Promise<FirebaseApp> {
   return initializeApp(config)
 }
 
-let firebaseApp: Promise<FirebaseApp> = initializeFirebaseApp()
+const firebaseApp: Promise<FirebaseApp> = initializeFirebaseApp()
 async function getFirebaseApp(): Promise<FirebaseApp> {
   return firebaseApp
 }

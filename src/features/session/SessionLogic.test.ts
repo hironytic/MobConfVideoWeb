@@ -438,11 +438,11 @@ describe("session list", () => {
   })
   
   it("can search more sessions", async () => {
-    let secondResult: FilteredSessions = {
+    const secondResult: FilteredSessions = {
       sessions: sessions2,
       more: undefined,
     }
-    let firstResult: FilteredSessions = {
+    const firstResult: FilteredSessions = {
       sessions: sessions1,
       more: async () => {
         return secondResult
