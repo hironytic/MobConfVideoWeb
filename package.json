@@ -26,41 +26,10 @@
   "scripts": {
     "start": "vite",
     "build": "tsc && vite build",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx src/",
     "test": "vitest run",
     "coverage": "vitest run --coverage",
     "serve": "vite preview"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app"
-    ],
-    "rules": {
-      "eqeqeq": [
-        "error",
-        "always"
-      ],
-      "semi": [
-        "error",
-        "never",
-        {
-          "beforeStatementContinuationChars": "never"
-        }
-      ],
-      "semi-spacing": [
-        "error",
-        {
-          "after": true,
-          "before": false
-        }
-      ],
-      "semi-style": [
-        "error",
-        "first"
-      ],
-      "no-extra-semi": "error",
-      "no-unexpected-multiline": "error",
-      "no-unreachable": "error"
-    }
   },
   "browserslist": {
     "production": [
