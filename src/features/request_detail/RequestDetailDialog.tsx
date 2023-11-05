@@ -185,9 +185,9 @@ function RequestDetailDoneBody({ requestDetail }: RequestDetailDoneBodyProps): J
                       <VerifiedUser/> 運営メニュー
                     </Button>
                     <Menu open={anchorEl !== null} anchorEl={anchorEl} onClose={handleCloseAdminMenu}>
-                      <MenuItem onClick={() => void handleAnnounceTweet1()}>開始ツイート1</MenuItem>
+                      <MenuItem onClick={() => void handleAnnounceTweet1()}>Xに開始をポスト1</MenuItem>
                       {requestDetail.slideUrl !== undefined && (
-                        <MenuItem onClick={() => void handleAnnounceTweet2()}>開始ツイート2</MenuItem>
+                        <MenuItem onClick={() => void handleAnnounceTweet2()}>Xに開始をポスト2</MenuItem>
                       )}
                       {isWatched !== true && (
                         <MenuItem onClick={() => void handleMakeItWatched()}>鑑賞済みにする</MenuItem>
