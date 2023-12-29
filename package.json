@@ -3,14 +3,14 @@
   "version": "2.1.0",
   "private": true,
   "dependencies": {
-    "@emotion/react": "^11.11.1",
+    "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.8",
     "@mui/icons-material": "^5.14.16",
     "@mui/material": "^5.14.16",
     "@types/node": "^20.8.10",
-    "@types/react": "^18.2.34",
-    "@types/react-dom": "^18.2.14",
+    "@types/react": "^18.2.46",
+    "@types/react-dom": "^18.2.18",
     "firebase": "^10.5.2",
     "observable-hooks": "^4.2.3",
     "react": "^18.2.0",
@@ -18,7 +18,7 @@
     "react-router-dom": "^6.18.0",
     "rxjs": "^7.8.1",
     "typescript": "^5.2.2",
-    "web-vitals": "^3.5.0"
+    "web-vitals": "^3.5.1"
   },
   "scripts": {
     "start": "vite",
@@ -55,7 +55,7 @@
     "happy-dom": "^12.10.3",
     "vite": "^4.5.0",
     "vite-plugin-svgr": "^4.1.0",
-    "vite-tsconfig-paths": "^4.2.1",
+    "vite-tsconfig-paths": "^4.2.3",
     "vitest": "^0.34.6"
   }
 }
