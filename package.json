@@ -10,7 +10,7 @@
     "@mui/icons-material": "^5.15.18",
     "@mui/material": "^5.15.18",
     "@types/node": "^20.12.12",
-    "@types/react": "^18.3.2",
+    "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "firebase": "^10.11.1",
     "observable-hooks": "^4.2.3",
