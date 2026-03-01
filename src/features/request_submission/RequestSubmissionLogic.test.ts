@@ -347,12 +347,12 @@ describe("new request from session", () => {
     const expectProcessing = observer.expectValue(phase => {
       expect(phase.type).toBe(PhaseTypes.Processing)
     })
-    await uiMediator.answerToRequestKey(true, "request-key")
-    await expectProcessing
-
     const expectation = observer.expectValue(phase => {
       expect(phase.type).toBe(PhaseTypes.RequestKeyNeeded)
     })
+
+    await uiMediator.answerToRequestKey(true, "request-key")
+    await expectProcessing
     await expectation
   })
   
