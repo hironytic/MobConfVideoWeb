@@ -41,7 +41,7 @@ export class EventuallyObserver<T> implements Observer<T> {
         expectation.checker(value)
         resolves.push(expectation.resolve)
         resolvedIndices.push(index)
-      } catch (e) {
+      } catch (_e) {
         /* do nothing */
       }
     }
