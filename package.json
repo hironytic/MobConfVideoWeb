@@ -9,17 +9,12 @@
     "@fontsource/roboto": "^5.0.13",
     "@mui/icons-material": "^5.15.18",
     "@mui/material": "^5.15.18",
-    "@types/react": "^18.3.2",
-    "@types/react-dom": "^18.3.0",
     "firebase": "^12.11.0",
     "observable-hooks": "^4.2.3",
     "react": "^18.2.0",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.23.1",
-    "rxjs": "^7.8.1",
-    "typescript": "^5.4.5",
-    "typescript-eslint": "^8.57.2",
-    "web-vitals": "^5.2.0"
+    "rxjs": "^7.8.1"
   },
   "scripts": {
     "start": "vite",
@@ -46,6 +41,8 @@
     "node": "24.14.0"
   },
   "devDependencies": {
+    "@types/react": "^18.3.2",
+    "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^8.57.2",
     "@typescript-eslint/parser": "^8.57.2",
     "@vitejs/plugin-react": "^6.0.1",
@@ -53,9 +50,12 @@
     "eslint": "^9.39.3",
     "eslint-plugin-react": "^7.37.5",
     "happy-dom": "^20.8.9",
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^8.57.2",
     "vite": "^8.0.3",
     "vite-plugin-svgr": "^4.2.0",
     "vite-tsconfig-paths": "^6.1.1",
-    "vitest": "^4.1.2"
+    "vitest": "^4.1.2",
+    "web-vitals": "^5.2.0"
   }
 }
