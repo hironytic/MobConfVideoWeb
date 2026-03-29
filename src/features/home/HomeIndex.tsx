@@ -22,12 +22,12 @@
 // THE SOFTWARE.
 //
 
-import { useContext, useEffect } from "react"
+import React, { useContext, useEffect } from "react"
 import { RequestContext } from "../request/RequestContext"
 import { useNavigate } from "react-router-dom"
 import { useObservableState } from "observable-hooks"
 
-export function HomeIndex(): JSX.Element {
+export function HomeIndex(): React.JSX.Element {
   const requestLogic = useContext(RequestContext)
   const currentEventId = useObservableState(requestLogic.currentEventId$)
   const navigate = useNavigate()

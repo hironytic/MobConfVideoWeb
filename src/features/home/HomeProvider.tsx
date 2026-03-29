@@ -22,13 +22,14 @@
 // THE SOFTWARE.
 //
 
+import React from "react"
 import { HomeContext } from "./HomeContext"
 import { ProviderProps } from "../../utils/ProviderProps"
 import { FirestoreHomeRepository } from "./HomeRepository"
 import { AppHomeLogic } from "./HomeLogic"
 import { LogicProvider } from "../../utils/LogicProvider"
 
-export function HomeProvider({ children }: ProviderProps): JSX.Element {
+export function HomeProvider({ children }: ProviderProps): React.JSX.Element {
   return (
     <LogicProvider context={HomeContext} creator={() => new AppHomeLogic(new FirestoreHomeRepository())}>
       {children}

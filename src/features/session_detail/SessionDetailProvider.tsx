@@ -28,7 +28,7 @@ import { SessionDetailContext } from "./SessionDetailContext"
 import { FirestoreSessionDetailRepository } from "./SessionDetailRepository"
 import { AppSessionDetailLogic } from "./SessionDetailLogic"
 
-export function SessionDetailProvider({ children }: ProviderProps): JSX.Element {
+export function SessionDetailProvider({ children }: ProviderProps): React.JSX.Element {
   return (
     <LogicProvider context={SessionDetailContext} creator={() => new AppSessionDetailLogic(new FirestoreSessionDetailRepository())}>
       {children}

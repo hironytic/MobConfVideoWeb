@@ -22,13 +22,14 @@
 // THE SOFTWARE.
 //
 
+import React from "react"
 import { ProviderProps } from "../../utils/ProviderProps"
 import { LogicProvider } from "../../utils/LogicProvider"
 import { RequestContext } from "./RequestContext"
 import { AppRequestLogic } from "./RequestLogic"
 import { FirestoreRequestRepository } from "./RequestRepository"
 
-export function RequestProvider({ children }: ProviderProps): JSX.Element {
+export function RequestProvider({ children }: ProviderProps): React.JSX.Element {
   return (
     <LogicProvider context={RequestContext} creator={() => new AppRequestLogic(new FirestoreRequestRepository())}>
       {children}

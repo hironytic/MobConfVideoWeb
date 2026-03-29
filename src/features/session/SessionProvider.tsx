@@ -28,7 +28,9 @@ import { SessionContext } from "./SessionContext"
 import { AppSessionLogic } from "./SessionLogic"
 import { FirestoreSessionRepository } from "./SessionRepository"
 
-export function SessionProvider({ children }: ProviderProps): JSX.Element {
+import React from "react"
+
+export function SessionProvider({ children }: ProviderProps): React.JSX.Element {
   return (
     <LogicProvider context={SessionContext} creator={() => new AppSessionLogic(new FirestoreSessionRepository())}>
       {children}

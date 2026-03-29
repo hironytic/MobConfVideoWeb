@@ -28,7 +28,7 @@ import { SignInContext } from "./SignInContext"
 import { AppSignInLogic } from "./SignInLogic"
 import { FirebaseSignInRepository } from "./SignInRepository"
 
-export function SignInProvider({ children }: ProviderProps): JSX.Element {
+export function SignInProvider({ children }: ProviderProps): React.JSX.Element {
   return (
     <LogicProvider context={SignInContext} creator={() => new AppSignInLogic(new FirebaseSignInRepository())}>
       {children}

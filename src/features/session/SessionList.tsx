@@ -31,7 +31,9 @@ import { useContext } from "react"
 import { useObservableState } from "observable-hooks"
 import { TipsAndUpdatesOutlined } from "@mui/icons-material"
 
-export function SessionList(): JSX.Element {
+import React from "react"
+
+export function SessionList(): React.JSX.Element {
   const sessionLogic = useContext(SessionContext)
   const sessionList = useObservableState(sessionLogic.sessionList$, { type: IRDETypes.Initial })
 
@@ -47,11 +49,11 @@ export function SessionList(): JSX.Element {
   }
 }
 
-function SessionListInitialBody(): JSX.Element {
+function SessionListInitialBody(): React.JSX.Element {
   return <></>
 }
 
-function SessionListRunningBody(): JSX.Element {
+function SessionListRunningBody(): React.JSX.Element {
   return (
     <Box sx={{ mt: 8, textAlign: "center" }}>
       <CircularProgress />
@@ -64,7 +66,7 @@ interface SessionListDoneBodyProps {
   keywordList: string[]
   moreRequest: MoreRequest
 }
-function SessionListDoneBody({ sessions, keywordList, moreRequest }: SessionListDoneBodyProps): JSX.Element {
+function SessionListDoneBody({ sessions, keywordList, moreRequest }: SessionListDoneBodyProps): React.JSX.Element {
   if (sessions.length === 0 && moreRequest.type === MoreRequestTypes.Unrequestable) {
     return (
       <Box sx={{ mt: 8, textAlign: "center" }}>
@@ -99,7 +101,7 @@ interface SearchMoreProps {
   moreRequest: MoreRequest
   hasKeywords: boolean
 }
-function SearchMore({ moreRequest, hasKeywords }: SearchMoreProps): JSX.Element {
+function SearchMore({ moreRequest, hasKeywords }: SearchMoreProps): React.JSX.Element {
   if (moreRequest.type === MoreRequestTypes.Unrequestable) {
     return <></>
   }
@@ -139,7 +141,7 @@ function SearchMore({ moreRequest, hasKeywords }: SearchMoreProps): JSX.Element 
 interface SessionListErrorBodyProps {
   message: string
 }
-function SessionListErrorBody({ message }: SessionListErrorBodyProps): JSX.Element {
+function SessionListErrorBody({ message }: SessionListErrorBodyProps): React.JSX.Element {
   return (
     <Box sx={{ mt: 8, textAlign: "center" }}>
       <Typography variant="body2" color="error">

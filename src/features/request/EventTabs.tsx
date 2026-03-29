@@ -22,6 +22,7 @@
 // THE SOFTWARE.
 //
 
+import React from "react"
 import { Event } from "../../entities/Event"
 import { Box, CircularProgress, Tab, Tabs } from "@mui/material"
 
@@ -31,7 +32,7 @@ interface EventTabsProps {
   onCurrentIdChanged: (currentId: string | false) => void
 }
 
-export function EventTabs({ events, currentId, onCurrentIdChanged }: EventTabsProps): JSX.Element {
+export function EventTabs({ events, currentId, onCurrentIdChanged }: EventTabsProps): React.JSX.Element {
   if (events.length === 0) {
     return (
       <Box sx={{ textAlign: "center" }}>

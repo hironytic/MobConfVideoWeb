@@ -42,7 +42,7 @@ import { SessionContext } from "./SessionContext"
 import { useObservableState } from "observable-hooks"
 import { useSearchParams } from "react-router-dom"
 
-export function SessionSearchFilter(): JSX.Element {
+export function SessionSearchFilter(): React.JSX.Element {
   const sessionLogic = useContext(SessionContext)
   const isExpanded = useObservableState(sessionLogic.isFilterPanelExpanded$, true)
 
@@ -57,7 +57,7 @@ interface SessionSearchFilterCardProps {
   isExpanded: boolean
   onExpand: (isExpanded: boolean) => void
 }
-function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCardProps): JSX.Element {
+function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCardProps): React.JSX.Element {
   const sessionLogic = useContext(SessionContext)
   const conference = useObservableState(sessionLogic.filterConference$, EMPTY_DROPDOWN)
   const sessionTime = useObservableState(sessionLogic.filterSessionTime$, EMPTY_DROPDOWN)

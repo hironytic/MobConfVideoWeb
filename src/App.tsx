@@ -35,7 +35,7 @@ import { SessionDetailPage } from "./features/session_detail/SessionDetailPage"
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom"
 import { RequestPage } from "./features/request/RequestPage"
 import { SessionPage } from "./features/session/SessionPage"
-import { useContext } from "react"
+import React, { useContext } from "react"
 import { HomeContext } from "./features/home/HomeContext"
 import { useObservableState } from "observable-hooks"
 import { CssBaseline } from "@mui/material"
@@ -44,7 +44,7 @@ import { HomeIndex } from "./features/home/HomeIndex"
 import { SignInPage } from "./features/sign_in/SignInPage"
 import { SignInProvider } from "./features/sign_in/SignInProvider"
 
-export function App(): JSX.Element {
+export function App(): React.JSX.Element {
   return (
     <>
       <CssBaseline />
@@ -71,7 +71,7 @@ export function App(): JSX.Element {
   )
 }
 
-function Root(): JSX.Element {
+function Root(): React.JSX.Element {
   return (
     <HomeProvider>
       <HomeOrMaintenance/>
@@ -79,7 +79,7 @@ function Root(): JSX.Element {
   )
 }
 
-function HomeOrMaintenance(): JSX.Element {
+function HomeOrMaintenance(): React.JSX.Element {
   const homeLogic = useContext(HomeContext)
   const isInMaintenance = useObservableState(homeLogic.isInMaintenance$)
   return (
@@ -102,7 +102,7 @@ function HomeOrMaintenance(): JSX.Element {
   )
 }
 
-function RequestDetail(): JSX.Element {
+function RequestDetail(): React.JSX.Element {
   return (
     <RequestDetailProvider>
       <RequestDetailDialog/>
@@ -110,7 +110,7 @@ function RequestDetail(): JSX.Element {
   )
 }
 
-function SessionDetail(): JSX.Element {
+function SessionDetail(): React.JSX.Element {
   return (
     <SessionDetailProvider>
       <SessionDetailPage/>
@@ -118,7 +118,7 @@ function SessionDetail(): JSX.Element {
   )
 }
 
-function SignIn(): JSX.Element {
+function SignIn(): React.JSX.Element {
   return (
     <SignInProvider>
       <SignInPage/>

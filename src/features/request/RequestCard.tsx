@@ -22,6 +22,7 @@
 // THE SOFTWARE.
 //
 
+import React from "react"
 import { Request } from "../../entities/Request"
 import { Card, CardActionArea, Grid, SxProps, Typography } from "@mui/material"
 import { lime, yellow } from "@mui/material/colors"
@@ -32,7 +33,7 @@ interface RequestCardProps {
   onClick: () => void
 }
 
-export function RequestCard({ request, onClick }: RequestCardProps): JSX.Element {
+export function RequestCard({ request, onClick }: RequestCardProps): React.JSX.Element {
   const cardSx: SxProps = {
     mx: "auto",
     textAlign: "start",

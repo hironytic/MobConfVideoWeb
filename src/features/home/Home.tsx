@@ -24,10 +24,10 @@
 
 import { HomeAppBar } from "./HomeAppBar"
 import { Outlet, useLocation } from "react-router-dom"
-import { useContext, useEffect } from "react"
+import React, { useContext, useEffect } from "react"
 import { HomeContext } from "./HomeContext"
 
-export function Home(): JSX.Element {
+export function Home(): React.JSX.Element {
   const location = useLocation()
   const homeLogic = useContext(HomeContext)
 

@@ -22,6 +22,7 @@
 // THE SOFTWARE.
 //
 
+import React from "react"
 import { Grid, styled, Typography } from "@mui/material"
 import { Check } from "@mui/icons-material"
 
@@ -46,7 +47,7 @@ export interface IdAndName {
 interface WatchedEventsProps {
   events: IdAndName[]
 }
-export function WatchedEvents({ events }: WatchedEventsProps): JSX.Element {
+export function WatchedEvents({ events }: WatchedEventsProps): React.JSX.Element {
   return (
     <Grid container={true} spacing={2} justifyContent="flex-start">
       {events.map(event => (

@@ -27,12 +27,12 @@ import { List, VideoLabel } from "@mui/icons-material"
 import { Link } from "react-router-dom"
 import { AppBar } from "../../utils/AppBar"
 import { HomeTab, HomeTabs } from "./HomeLogic"
-import { useContext } from "react"
+import React, { useContext } from "react"
 import { HomeContext } from "./HomeContext"
 import { useObservableState } from "observable-hooks"
 import { RequestContext } from "../request/RequestContext"
 
-export function HomeAppBar(): JSX.Element {
+export function HomeAppBar(): React.JSX.Element {
   const homeLogic = useContext(HomeContext)
   const isInMaintenance = useObservableState(homeLogic.isInMaintenance$, false)
   const tab = useObservableState(homeLogic.homeTab$, false)
@@ -48,7 +48,7 @@ export function HomeAppBar(): JSX.Element {
 }
 
 
-function AppTabs( { tab }: { tab: HomeTab }): JSX.Element {
+function AppTabs( { tab }: { tab: HomeTab }): React.JSX.Element {
   const requestLogic = useContext(RequestContext)
   const currentEventId = useObservableState(requestLogic.currentEventId$)
   const requestLink = "/request/" + (currentEventId ?? "")

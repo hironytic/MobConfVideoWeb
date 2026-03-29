@@ -23,6 +23,7 @@
 //
 
 
+import React from "react"
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material"
 
 export interface DropdownState {
@@ -46,7 +47,7 @@ interface DropdownProps {
 
 export const EMPTY_DROPDOWN: DropdownState = { value: "", items: [] }
 
-export function Dropdown({ name, labelId, label, state, minWidth, onChange }: DropdownProps): JSX.Element {
+export function Dropdown({ name, labelId, label, state, minWidth, onChange }: DropdownProps): React.JSX.Element {
   return (
     <FormControl sx={{ minWidth }}>
       <InputLabel id={labelId}>{label}</InputLabel>

@@ -22,12 +22,13 @@
 // THE SOFTWARE.
 //
 
+import React from "react"
 import { Box, Button, Typography } from "@mui/material"
 import { useContext } from "react"
 import { SignInContext } from "./SignInContext"
 import { useObservableState } from "observable-hooks"
 
-export function SignInPage(): JSX.Element {
+export function SignInPage(): React.JSX.Element {
   const logic = useContext(SignInContext)
   const isAuthenticated = useObservableState(logic.isAuthenticated$, false)
   
@@ -40,7 +41,7 @@ export function SignInPage(): JSX.Element {
   )
 }
 
-function Authenticated(): JSX.Element {
+function Authenticated(): React.JSX.Element {
   const logic = useContext(SignInContext)
   return (
     <>
@@ -50,7 +51,7 @@ function Authenticated(): JSX.Element {
   )
 }
 
-function Unauthenticated(): JSX.Element {
+function Unauthenticated(): React.JSX.Element {
   const logic = useContext(SignInContext)
   return (
     <>

@@ -28,6 +28,7 @@ import { CaseInsensitiveSearch } from "../../utils/CaseInsensitiveSearch"
 import { Speaker } from "../../entities/Session"
 import { WatchedEvents } from "../session_detail/WatchedEvents"
 import { Link } from "react-router-dom"
+import React from "react"
 
 export interface SessionCardProps {
   sessionItem: SessionItem
@@ -35,7 +36,7 @@ export interface SessionCardProps {
   linkTo: string
 }
 
-export function SessionCard({ sessionItem, keywordList, linkTo }: SessionCardProps): JSX.Element {
+export function SessionCard({ sessionItem, keywordList, linkTo }: SessionCardProps): React.JSX.Element {
   const sessionTitleLwbr = detectBoldRange(sessionItem.session.title, keywordList)
   return (
     <Card sx={{ mx: "auto" }} elevation={3}>
@@ -81,7 +82,7 @@ interface DescriptionProps {
   description: string
   keywordList: string[]
 }
-function Description({ description, keywordList }: DescriptionProps): JSX.Element {
+function Description({ description, keywordList }: DescriptionProps): React.JSX.Element {
   const maxLines = 3
   const maxChars = 140
 
@@ -161,7 +162,7 @@ interface OneSpeakerProps {
   speaker: Speaker
   keywordList: string[]
 }
-function OneSpeaker({ speaker, keywordList }: OneSpeakerProps): JSX.Element {
+function OneSpeaker({ speaker, keywordList }: OneSpeakerProps): React.JSX.Element {
   const lwbr = detectBoldRange(speaker.name, keywordList)
   return (
     <Grid container={true} spacing={1} alignItems="center" justifyItems="flex-start">
@@ -214,8 +215,8 @@ function detectBoldRange(line: string, keywordList: string[]): LineWithBoldRange
 interface BoldableLineProps {
   lwbr: LineWithBoldRange
 }
-function BoldableLine({ lwbr }: BoldableLineProps): JSX.Element {
-  const elements: JSX.Element[] = []
+function BoldableLine({ lwbr }: BoldableLineProps): React.JSX.Element {
+  const elements: React.JSX.Element[] = []
   let current = 0
   let key = 0
   for (const range of lwbr.boldRanges) {

@@ -22,13 +22,14 @@
 // THE SOFTWARE.
 //
 
+import React from "react"
 import { Speaker } from "../../entities/Session"
 import { Avatar, Grid, Typography } from "@mui/material"
 
 interface SpeakersProps {
   speakers: Speaker[]
 }
-export function Speakers({ speakers }: SpeakersProps): JSX.Element {
+export function Speakers({ speakers }: SpeakersProps): React.JSX.Element {
   return (
     <>
       {speakers.map((speaker, index) => <OneSpeaker key={index} speaker={speaker}/>)}
@@ -39,7 +40,7 @@ export function Speakers({ speakers }: SpeakersProps): JSX.Element {
 interface OneSpeakerProps {
   speaker: Speaker
 }
-function OneSpeaker({ speaker }: OneSpeakerProps): JSX.Element {
+function OneSpeaker({ speaker }: OneSpeakerProps): React.JSX.Element {
   return (
     <Grid container={true} spacing={1} alignItems="center" justifyItems="flex-start">
       <Grid item={true}>
