@@ -30,12 +30,12 @@ import { useNavigate, useParams } from "react-router-dom"
 import { WatchedEvents } from "../session_detail/WatchedEvents"
 import { Description } from "../session_detail/Description"
 import { Speakers } from "../session_detail/Speakers"
-import { useContext, useEffect, useState, MouseEvent } from "react"
+import React, { useContext, useEffect, useState, MouseEvent } from "react"
 import { RequestDetailContext } from "./RequestDetailContext"
 import { useObservableState } from "observable-hooks"
 import { createTweetUrl, TweetButton } from "../../utils/TweetButton"
 
-export function RequestDetailDialog(): JSX.Element {
+export function RequestDetailDialog(): React.JSX.Element {
   const navigate = useNavigate()
   const params = useParams()
   const logic = useContext(RequestDetailContext)
@@ -66,7 +66,7 @@ export function RequestDetailDialog(): JSX.Element {
   )
 }
 
-function RequestDetailBody(): JSX.Element {
+function RequestDetailBody(): React.JSX.Element {
   const logic = useContext(RequestDetailContext)
   const irde = useObservableState(logic.requestDetail$, { type: IRDETypes.Initial })
 
@@ -82,11 +82,11 @@ function RequestDetailBody(): JSX.Element {
   }
 }
 
-function RequestDetailInitialBody(): JSX.Element {
+function RequestDetailInitialBody(): React.JSX.Element {
   return <></>
 }
 
-function RequestDetailRunningBody(): JSX.Element {
+function RequestDetailRunningBody(): React.JSX.Element {
   return (
     <div style={{ textAlign: "center" }}>
       <CircularProgress/>
@@ -97,7 +97,7 @@ function RequestDetailRunningBody(): JSX.Element {
 interface RequestDetailDoneBodyProps {
   requestDetail: RequestDetail
 }
-function RequestDetailDoneBody({ requestDetail }: RequestDetailDoneBodyProps): JSX.Element {
+function RequestDetailDoneBody({ requestDetail }: RequestDetailDoneBodyProps): React.JSX.Element {
   const logic = useContext(RequestDetailContext)
   const isWatched = useObservableState(logic.isWatched$, undefined)
   const isAdmin = useObservableState(logic.isAdmin$, false)
@@ -229,7 +229,7 @@ function RequestDetailDoneBody({ requestDetail }: RequestDetailDoneBodyProps): J
 interface RequestDetailErrorBodyProps {
   message: string
 }
-function RequestDetailErrorBody({ message }: RequestDetailErrorBodyProps): JSX.Element {
+function RequestDetailErrorBody({ message }: RequestDetailErrorBodyProps): React.JSX.Element {
   return (
     <div style={{ textAlign: "center" }}>
       <Typography variant="body2" color="error">

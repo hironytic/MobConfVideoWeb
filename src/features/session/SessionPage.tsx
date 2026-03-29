@@ -26,7 +26,9 @@ import { Box } from "@mui/material"
 import { SessionSearchFilter } from "./SessionSearchFilter"
 import { SessionList } from "./SessionList"
 
-export function SessionPage(): JSX.Element {
+import React from "react"
+
+export function SessionPage(): React.JSX.Element {
   return (
     <Box sx={{ p: 2 }}>
       <SessionSearchFilter />

@@ -24,13 +24,13 @@
 
 import { EventTabs } from "./EventTabs"
 import { RequestList } from "./RequestList"
-import { useContext, useEffect } from "react"
+import React, { useContext, useEffect } from "react"
 import { RequestContext } from "./RequestContext"
 import { Outlet, useNavigate, useParams } from "react-router-dom"
 import { IRDETypes } from "../../utils/IRDE"
 import { useObservableState } from "observable-hooks"
 
-export function RequestPage(): JSX.Element {
+export function RequestPage(): React.JSX.Element {
   const requestLogic = useContext(RequestContext)
   const navigate = useNavigate()
   const params = useParams()

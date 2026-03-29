@@ -22,12 +22,13 @@
 // THE SOFTWARE.
 //
 
+import React from "react"
 import { Typography } from "@mui/material"
 
 interface DescriptionProps {
   description: string
 }
-export function Description({ description }: DescriptionProps): JSX.Element {
+export function Description({ description }: DescriptionProps): React.JSX.Element {
   const lines = description.split(/\r\n|\r|\n/)
   return (
     <>

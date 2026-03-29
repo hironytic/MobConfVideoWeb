@@ -22,6 +22,7 @@
 // THE SOFTWARE.
 //
 
+import React from "react"
 import { Button, createSvgIcon } from "@mui/material"
 
 interface TweetButtonProps {
@@ -51,7 +52,7 @@ const XLogo = createSvgIcon(
   "X"
 )
 
-export function TweetButton(props: TweetButtonProps): JSX.Element {
+export function TweetButton(props: TweetButtonProps): React.JSX.Element {
   const tweetUrlString = createTweetUrl(props)
   
   return (

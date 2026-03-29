@@ -22,6 +22,7 @@
 // THE SOFTWARE.
 //
 
+import React from "react"
 import { IRDETypes } from "../../utils/IRDE"
 import { Request } from "../../entities/Request"
 import { RequestListIRDE } from "./RequestLogic"
@@ -33,7 +34,7 @@ interface RequestListProps {
   requestList: RequestListIRDE
 }
 
-export function RequestList({ requestList }: RequestListProps): JSX.Element {
+export function RequestList({ requestList }: RequestListProps): React.JSX.Element {
   switch (requestList.type) {
     case IRDETypes.Initial:
       return <RequestListInitialBody/>
@@ -46,11 +47,11 @@ export function RequestList({ requestList }: RequestListProps): JSX.Element {
   }
 }
 
-function RequestListInitialBody(): JSX.Element {
+function RequestListInitialBody(): React.JSX.Element {
   return <></>
 }
 
-function RequestListRunningBody(): JSX.Element {
+function RequestListRunningBody(): React.JSX.Element {
   return (
     <Box sx={{ mt: 8, textAlign: "center" }}>
       <CircularProgress />
@@ -61,7 +62,7 @@ function RequestListRunningBody(): JSX.Element {
 interface RequestListDoneBodyProps {
   requests: Request[] 
 }
-function RequestListDoneBody({ requests }: RequestListDoneBodyProps): JSX.Element {
+function RequestListDoneBody({ requests }: RequestListDoneBodyProps): React.JSX.Element {
   const navigate = useNavigate()
 
   function onCardClick(request: Request) {
@@ -96,7 +97,7 @@ function RequestListDoneBody({ requests }: RequestListDoneBodyProps): JSX.Elemen
 interface RequestListErrorBodyProps {
   message: string
 }
-function RequestListErrorBody({ message }: RequestListErrorBodyProps): JSX.Element {
+function RequestListErrorBody({ message }: RequestListErrorBodyProps): React.JSX.Element {
   return (
     <Box sx={{ mt: 8, textAlign: "center" }}>
       <Typography variant="body2" color="error">

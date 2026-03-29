@@ -55,7 +55,7 @@ const appBarTheme = createTheme({
   },
 })
 
-export function AppBar({ position, children }: AppBarProps): JSX.Element {
+export function AppBar({ position, children }: AppBarProps): React.JSX.Element {
   return (
     <ThemeProvider theme={appBarTheme}>
       <MUIAppBar position={position}>

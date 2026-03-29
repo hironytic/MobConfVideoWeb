@@ -28,7 +28,7 @@ import { RequestSubmissionContext } from "./RequestSubmissionContext"
 import { FirestoreRequestSubmissionRepository } from "./RequestSubmissionRepository"
 import { AppRequestSubmissionLogic } from "./RequestSubmissionLogic"
 
-export function RequestSubmissionProvider({ children }: ProviderProps): JSX.Element {
+export function RequestSubmissionProvider({ children }: ProviderProps): React.JSX.Element {
   return (
     <LogicProvider context={RequestSubmissionContext} creator={() => new AppRequestSubmissionLogic(new FirestoreRequestSubmissionRepository())}>
       {children}

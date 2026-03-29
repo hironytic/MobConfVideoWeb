@@ -22,10 +22,11 @@
 // THE SOFTWARE.
 //
 
+import React from "react"
 import { HomeAppBar } from "./HomeAppBar"
 import { Typography } from "@mui/material"
 
-export function Maintenance(): JSX.Element {
+export function Maintenance(): React.JSX.Element {
   return (
     <>
       <HomeAppBar />

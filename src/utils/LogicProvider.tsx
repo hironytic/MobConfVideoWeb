@@ -33,7 +33,7 @@ interface LogicProviderProps<VM extends Logic> {
   creator: () => VM
   children: React.ReactNode
 }
-export function LogicProvider<VM extends Logic>({ context, creator, children }: LogicProviderProps<VM>): JSX.Element {
+export function LogicProvider<VM extends Logic>({ context, creator, children }: LogicProviderProps<VM>): React.JSX.Element {
   const [logic, setLogic] = useState<VM | undefined>(undefined)
   useEffect(() => {
     const logic = creator()

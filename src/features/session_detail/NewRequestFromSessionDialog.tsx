@@ -22,12 +22,13 @@
 // THE SOFTWARE.
 //
 
+import React from "react"
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material"
 import { useContext } from "react"
 import { SessionDetailContext } from "./SessionDetailContext"
 import { useObservableState } from "observable-hooks"
 
-export function NewRequestFromSessionDialog(): JSX.Element {
+export function NewRequestFromSessionDialog(): React.JSX.Element {
   const logic = useContext(SessionDetailContext)
   const sessionTitle = useObservableState(logic.sessionTitle$, "")
   const isDialogOpen = useObservableState(logic.isNewRequestDialogOpen$, false)

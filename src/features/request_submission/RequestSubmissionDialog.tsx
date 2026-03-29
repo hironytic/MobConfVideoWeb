@@ -42,7 +42,7 @@ import { useObservableState } from "observable-hooks"
 import { ChangeEvent, useContext } from "react"
 import { RequestSubmissionContext } from "./RequestSubmissionContext"
 
-export function RequestSubmissionDialog(): JSX.Element {
+export function RequestSubmissionDialog(): React.JSX.Element {
   const logic = useContext(RequestSubmissionContext)
   const phase = useObservableState(logic.phase$, { type: PhaseTypes.Nothing })
   const isDialogOpen = phase.type !== PhaseTypes.Nothing
@@ -59,7 +59,7 @@ export function RequestSubmissionDialog(): JSX.Element {
 interface DialogBodyProps {
   phase: Phase
 }
-function DialogBody({ phase }: DialogBodyProps): JSX.Element {
+function DialogBody({ phase }: DialogBodyProps): React.JSX.Element {
   switch (phase.type) {
     case PhaseTypes.Nothing:
       return (<></>)  // Doesn't occur
@@ -78,7 +78,7 @@ function DialogBody({ phase }: DialogBodyProps): JSX.Element {
   }
 }
 
-function ProcessingBody(): JSX.Element {
+function ProcessingBody(): React.JSX.Element {
   return (
     <DialogContent>
       <Box sx={{ p: 1, textAlign: "center" }} >
@@ -94,7 +94,7 @@ function ProcessingBody(): JSX.Element {
 interface RequestKeyNeededBodyProps {
   phase: RequestKeyNeededPhase
 }
-function RequestKeyNeededBody({ phase }: RequestKeyNeededBodyProps): JSX.Element {
+function RequestKeyNeededBody({ phase }: RequestKeyNeededBodyProps): React.JSX.Element {
   const requestKey = useObservableState(phase.requestKey$, "")
   const onRequestKeyChange = (event: ChangeEvent<HTMLInputElement>): void => {
     phase.requestKeyValueChanged(event.target.value)
@@ -134,7 +134,7 @@ function RequestKeyNeededBody({ phase }: RequestKeyNeededBodyProps): JSX.Element
 interface FinishedBodyProps {
   phase: FinishedPhase
 }
-function FinishedBody({ phase }: FinishedBodyProps): JSX.Element {
+function FinishedBody({ phase }: FinishedBodyProps): React.JSX.Element {
   const onOK = () => {
     phase.closeDialog()
   }
@@ -159,7 +159,7 @@ function FinishedBody({ phase }: FinishedBodyProps): JSX.Element {
 interface ErrorBodyProps {
   phase: ErrorPhase
 }
-function ErrorBody({ phase }: ErrorBodyProps): JSX.Element {
+function ErrorBody({ phase }: ErrorBodyProps): React.JSX.Element {
   const onOK = () => {
     phase.closeDialog()
   }

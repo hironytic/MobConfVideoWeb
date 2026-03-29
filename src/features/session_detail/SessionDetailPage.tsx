@@ -36,7 +36,7 @@ import { useParams } from "react-router-dom"
 import { NewRequestFromSessionDialog } from "./NewRequestFromSessionDialog"
 import { RequestSubmissionContext } from "../request_submission/RequestSubmissionContext"
 
-export function SessionDetailPage(): JSX.Element {
+export function SessionDetailPage(): React.JSX.Element {
   return (
     <>
       <Box sx={{ p: 4 }}>
@@ -47,7 +47,7 @@ export function SessionDetailPage(): JSX.Element {
   )
 }
 
-function SessionDetailBody(): JSX.Element {
+function SessionDetailBody(): React.JSX.Element {
   const logic = useContext(SessionDetailContext)
   const newRequestLogic = useContext(RequestSubmissionContext)
   const params = useParams()
@@ -76,11 +76,11 @@ function SessionDetailBody(): JSX.Element {
   }
 }
 
-function SessionDetailInitialBody(): JSX.Element {
+function SessionDetailInitialBody(): React.JSX.Element {
   return <></>
 }
 
-function SessionDetailRunningBody(): JSX.Element {
+function SessionDetailRunningBody(): React.JSX.Element {
   return (
     <div style={{ textAlign: "center" }}>
       <CircularProgress/>
@@ -91,7 +91,7 @@ function SessionDetailRunningBody(): JSX.Element {
 interface SessionDetailDoneBodyProps {
   sessionItem: SessionItem
 }
-function SessionDetailDoneBody({ sessionItem }: SessionDetailDoneBodyProps): JSX.Element {
+function SessionDetailDoneBody({ sessionItem }: SessionDetailDoneBodyProps): React.JSX.Element {
   const logic = useContext(SessionDetailContext)
   const requestSession = () => {
     logic.requestCurrentSession()
@@ -165,7 +165,7 @@ function SessionDetailDoneBody({ sessionItem }: SessionDetailDoneBodyProps): JSX
 interface SessionDetailErrorBodyProps {
   message: string
 }
-function SessionDetailErrorBody({ message }: SessionDetailErrorBodyProps): JSX.Element {
+function SessionDetailErrorBody({ message }: SessionDetailErrorBodyProps): React.JSX.Element {
   return (
     <div style={{ textAlign: "center" }}>
       <Typography variant="body2" color="error">
