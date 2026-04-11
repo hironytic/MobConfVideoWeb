@@ -29,7 +29,7 @@ import {
   CardActions,
   CardContent,
   Collapse,
-  Grid,
+  Grid2 as Grid,
   IconButton,
   Stack,
   TextField,
@@ -109,12 +109,12 @@ function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCa
     <Card variant="outlined">
       <CardContent>
         <Grid container={true} alignItems="center">
-          <Grid item={true} xs={6} style={{textAlign: "start"}}>
+          <Grid size={6} style={{textAlign: "start"}}>
             <Typography variant="subtitle1" color="textPrimary">
               検索条件
             </Typography>
           </Grid>
-          <Grid item={true} xs={6} sx={{ textAlign: "end" }}>
+          <Grid size={6} sx={{ textAlign: "end" }}>
             <IconButton onClick={() => onExpand(!isExpanded)}>
               { isExpanded ? <ExpandLess/> : <ExpandMore/> }
             </IconButton>
@@ -142,7 +142,7 @@ function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCa
   
           <CardActions>
             <Grid container={true}>
-              <Grid item={true} xs={12} sx={{ textAlign: "end" }}>
+              <Grid size={12} sx={{ textAlign: "end" }}>
                 <Button size="small" color="primary" type="submit">実行</Button>
               </Grid>
             </Grid>

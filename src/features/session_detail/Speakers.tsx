@@ -24,7 +24,7 @@
 
 import React from "react"
 import { Speaker } from "../../entities/Session"
-import { Avatar, Grid, Typography } from "@mui/material"
+import { Avatar, Grid2 as Grid, Typography } from "@mui/material"
 
 interface SpeakersProps {
   speakers: Speaker[]
@@ -43,10 +43,10 @@ interface OneSpeakerProps {
 function OneSpeaker({ speaker }: OneSpeakerProps): React.JSX.Element {
   return (
     <Grid container={true} spacing={1} alignItems="center" justifyItems="flex-start">
-      <Grid item={true}>
+      <Grid>
         <Avatar src={speaker.icon}/>
       </Grid>
-      <Grid item={true}>
+      <Grid>
         <Typography variant="body2" color="textPrimary">
           {speaker.name}
         </Typography>

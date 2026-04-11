@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-import { Button, CircularProgress, Dialog, DialogContent, Grid, Menu, MenuItem, Typography } from "@mui/material"
+import { Button, CircularProgress, Dialog, DialogContent, Grid2 as Grid, Menu, MenuItem, Typography } from "@mui/material"
 import { Note, OndemandVideo, VerifiedUser } from "@mui/icons-material"
 import { IRDETypes } from "../../utils/IRDE"
 import { RequestDetail } from "./RequestDetailLogic"
@@ -138,14 +138,14 @@ function RequestDetailDoneBody({ requestDetail }: RequestDetailDoneBodyProps): R
   
   return (
     <Grid container={true} spacing={2} justifyContent="space-between">
-      <Grid item={true} xs={12}>
+      <Grid size={12}>
         <Grid container={true} spacing={2} justifyContent="space-between">
-          <Grid item={true}>
+          <Grid>
             <Typography variant="body2" color="textSecondary">
               {requestDetail.conference}
             </Typography>
           </Grid>
-          <Grid item={true} style={{textAlign: "end"}}>
+          <Grid style={{textAlign: "end"}}>
             {(requestDetail.minutes) && (
               <Typography variant="body2" color="textSecondary">
                 {requestDetail.minutes}分
@@ -155,30 +155,30 @@ function RequestDetailDoneBody({ requestDetail }: RequestDetailDoneBodyProps): R
         </Grid>
       </Grid>
       {(requestDetail.watchedEvents !== undefined && requestDetail.watchedEvents.length > 0) && (
-        <Grid item={true} xs={12}>
+        <Grid size={12}>
           <WatchedEvents events={requestDetail.watchedEvents}/>
         </Grid>
       )}
-      <Grid item={true} xs={12}>
+      <Grid size={12}>
         <Typography variant="h5" color="textPrimary">
           {requestDetail.title}
         </Typography>
       </Grid>
       {(requestDetail.description !== undefined) && (
-        <Grid item={true} xs={12}>
+        <Grid size={12}>
           <Description description={requestDetail.description}/>
         </Grid>
       )}
-      <Grid item={true} xs={12}>
+      <Grid size={12}>
         <Grid container={true} spacing={0} alignItems="flex-end" justifyContent="space-between">
-          {(requestDetail.speakers !== undefined) && ( 
-            <Grid item={true}>
+          {(requestDetail.speakers !== undefined) && (
+            <Grid>
               <Speakers speakers={requestDetail.speakers}/>
             </Grid>
           )}
-          <Grid item={true} style={{flexGrow: 1}}>
+          <Grid style={{flexGrow: 1}}>
             <Grid container={true} spacing={0} alignItems="center" justifyContent="flex-end">
-              <Grid item={true}>
+              <Grid>
                 {isAdmin && (
                   <>
                     <Button onClick={handleShowAdminMenu}>
@@ -199,19 +199,19 @@ function RequestDetailDoneBody({ requestDetail }: RequestDetailDoneBodyProps): R
                   </>
                 )}
               </Grid>
-              <Grid item={true}>
+              <Grid>
                 {requestDetail.videoUrl !== undefined && (
                   <TweetButton text={`鑑賞中！\n\n${requestDetail.title}`} url={requestDetail.videoUrl} hashtags={["mobconfvideo"]}/>
                 )}
               </Grid>
-              <Grid item={true}>
+              <Grid>
                 {requestDetail.slideUrl !== undefined && (
                   <Button href={requestDetail.slideUrl} target="_blank" rel="noopener noreferrer" color="primary">
                     <Note /> スライド
                   </Button>
                 )}
               </Grid>
-              <Grid item={true}>
+              <Grid>
                 {requestDetail.videoUrl !== undefined && (
                   <Button href={requestDetail.videoUrl} target="_blank" rel="noopener noreferrer" color="primary">
                     <OndemandVideo/> ビデオ

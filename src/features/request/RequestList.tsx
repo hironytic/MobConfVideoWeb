@@ -26,7 +26,7 @@ import React from "react"
 import { IRDETypes } from "../../utils/IRDE"
 import { Request } from "../../entities/Request"
 import { RequestListIRDE } from "./RequestLogic"
-import { Box, CircularProgress, Grid, Typography } from "@mui/material"
+import { Box, CircularProgress, Grid2 as Grid, Typography } from "@mui/material"
 import { RequestCard } from "./RequestCard"
 import { useNavigate } from "react-router-dom"
 
@@ -84,7 +84,7 @@ function RequestListDoneBody({ requests }: RequestListDoneBodyProps): React.JSX.
       <Grid container={true} spacing={3} alignItems="flex-start">
         {
           requests.map(request => (
-            <Grid key={request.id} item={true} xs={12} md={6} lg={4}>
+            <Grid key={request.id} size={{ xs: 12, md: 6, lg: 4 }}>
               <RequestCard request={request} onClick={() => onCardClick(request)}/>
             </Grid>
           ))

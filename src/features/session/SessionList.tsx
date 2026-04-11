@@ -24,7 +24,7 @@
 
 import { IRDETypes } from "../../utils/IRDE"
 import { MoreRequest, MoreRequestTypes, SessionItem } from "./SessionLogic"
-import { Box, Button, CircularProgress, Grid, Stack, Typography } from "@mui/material"
+import { Box, Button, CircularProgress, Grid2 as Grid, Stack, Typography } from "@mui/material"
 import { SessionCard } from "./SessionCard"
 import { SessionContext } from "./SessionContext"
 import { useContext } from "react"
@@ -82,14 +82,14 @@ function SessionListDoneBody({ sessions, keywordList, moreRequest }: SessionList
   return (
     <Grid container={true} spacing={3} alignItems="flex-start">
       {sessions.map(sessionItem => (
-        <Grid key={sessionItem.session.id} item={true} xs={12}>
+        <Grid key={sessionItem.session.id} size={12}>
           <SessionCard sessionItem={sessionItem}
                        keywordList={sortedKeywordList}
                        linkTo={sessionItem.session.id}/>
         </Grid>
       ))}
       {(moreRequest.type === MoreRequestTypes.Requestable || moreRequest.type === MoreRequestTypes.Requesting) && (
-        <Grid key="_more" item={true} xs={12}>
+        <Grid key="_more" size={12}>
           <SearchMore moreRequest={moreRequest} hasKeywords={keywordList.length > 0}/>
         </Grid>
       )}
