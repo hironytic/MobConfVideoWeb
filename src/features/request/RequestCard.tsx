@@ -24,7 +24,7 @@
 
 import React from "react"
 import { Request } from "../../entities/Request"
-import { Card, CardActionArea, Grid2 as Grid, SxProps, Typography } from "@mui/material"
+import { Card, CardActionArea, Grid, SxProps, Typography } from "@mui/material"
 import { lime, yellow } from "@mui/material/colors"
 import { Check } from "@mui/icons-material"
 
@@ -43,7 +43,9 @@ export function RequestCard({ request, onClick }: RequestCardProps): React.JSX.E
   return (
     <Card sx={cardSx}>
       <CardActionArea sx={{ p: 2 }} onClick={() => onClick()}>
-        <Grid container={true} spacing={2} justifyContent="space-between">
+        <Grid container={true} spacing={2} sx={{
+          justifyContent: "space-between"
+        }}>
           <Grid size={6}>
             <Typography variant="body2" color="textSecondary">
               {request.conference}

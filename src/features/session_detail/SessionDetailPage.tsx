@@ -24,7 +24,7 @@
 
 import { SessionItem } from "./SessionDetailLogic"
 import { IRDETypes } from "../../utils/IRDE"
-import { Box, Button, CircularProgress, Grid2 as Grid, Typography } from "@mui/material"
+import { Box, Button, CircularProgress, Grid, Typography } from "@mui/material"
 import { WatchedEvents } from "./WatchedEvents"
 import { Description } from "./Description"
 import { Speakers } from "./Speakers"
@@ -98,9 +98,13 @@ function SessionDetailDoneBody({ sessionItem }: SessionDetailDoneBodyProps): Rea
   }
   
   return (
-    <Grid container={true} spacing={2} justifyContent="space-between">
+    <Grid container={true} spacing={2} sx={{
+      justifyContent: "space-between"
+    }}>
       <Grid size={12}>
-        <Grid container={true} spacing={2} justifyContent="space-between">
+        <Grid container={true} spacing={2} sx={{
+          justifyContent: "space-between"
+        }}>
           <Grid>
             <Typography variant="body2" color="textSecondary">
               {sessionItem.conferenceName}
@@ -127,12 +131,24 @@ function SessionDetailDoneBody({ sessionItem }: SessionDetailDoneBodyProps): Rea
         <Description description={sessionItem.session.description}/>
       </Grid>
       <Grid size={12}>
-        <Grid container={true} spacing={0} alignItems="flex-end" justifyContent="space-between">
+        <Grid
+          container={true}
+          spacing={0}
+          sx={{
+            alignItems: "flex-end",
+            justifyContent: "space-between"
+          }}>
           <Grid>
             <Speakers speakers={sessionItem.session.speakers}/>
           </Grid>
           <Grid style={{flexGrow: 1}}>
-            <Grid container={true} spacing={0} alignItems="center" justifyContent="flex-end">
+            <Grid
+              container={true}
+              spacing={0}
+              sx={{
+                alignItems: "center",
+                justifyContent: "flex-end"
+              }}>
               <Grid>
                 {sessionItem.session.slide !== undefined && (
                   <Button href={sessionItem.session.slide} target="_blank" color="primary">
@@ -152,7 +168,9 @@ function SessionDetailDoneBody({ sessionItem }: SessionDetailDoneBodyProps): Rea
         </Grid>
       </Grid>
       <Grid size={12}>
-        <Grid container={true} spacing={0} justifyContent="center">
+        <Grid container={true} spacing={0} sx={{
+          justifyContent: "center"
+        }}>
           <Grid>
             <Button variant="contained" color="primary" onClick={requestSession}>この動画をリクエスト</Button>
           </Grid>

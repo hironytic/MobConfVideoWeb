@@ -29,7 +29,7 @@ import {
   CardActions,
   CardContent,
   Collapse,
-  Grid2 as Grid,
+  Grid,
   IconButton,
   Stack,
   TextField,
@@ -108,7 +108,9 @@ function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCa
   return (
     <Card variant="outlined">
       <CardContent>
-        <Grid container={true} alignItems="center">
+        <Grid container={true} sx={{
+          alignItems: "center"
+        }}>
           <Grid size={6} style={{textAlign: "start"}}>
             <Typography variant="subtitle1" color="textPrimary">
               検索条件
@@ -121,7 +123,6 @@ function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCa
           </Grid>
         </Grid>
       </CardContent>
-
       <Collapse in={isExpanded}>
         <form onSubmit={handleSubmit}>
           <CardContent>
@@ -132,7 +133,7 @@ function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCa
                          fullWidth={true}
                          onChange={event => sessionLogic.filterKeywordsChanged(event.target.value)}
                          value={keyword}
-                         InputLabelProps={{ shrink: true }}/>
+                         slotProps={{ inputLabel: { shrink: true } }}/>
               <Stack direction={{ xs: "column", sm: "row" }} spacing={3}>
                 <Dropdown name="c" labelId="conference" label="カンファレンス" state={conference} minWidth={150} onChange={ value => sessionLogic.filterConferenceChanged(value) }/>
                 <Dropdown name="t" labelId="minutes" label="セッション時間" state={sessionTime} minWidth={150} onChange={ value => sessionLogic.filterSessionTimeChanged(value) }/>

@@ -24,7 +24,7 @@
 
 import { IRDETypes } from "../../utils/IRDE"
 import { MoreRequest, MoreRequestTypes, SessionItem } from "./SessionLogic"
-import { Box, Button, CircularProgress, Grid2 as Grid, Stack, Typography } from "@mui/material"
+import { Box, Button, CircularProgress, Grid, Stack, Typography } from "@mui/material"
 import { SessionCard } from "./SessionCard"
 import { SessionContext } from "./SessionContext"
 import { useContext } from "react"
@@ -80,7 +80,9 @@ function SessionListDoneBody({ sessions, keywordList, moreRequest }: SessionList
   // sort keywords in order from longest to shortest
   const sortedKeywordList = [...keywordList].sort((left, right) => right.length - left.length)
   return (
-    <Grid container={true} spacing={3} alignItems="flex-start">
+    <Grid container={true} spacing={3} sx={{
+      alignItems: "flex-start"
+    }}>
       {sessions.map(sessionItem => (
         <Grid key={sessionItem.session.id} size={12}>
           <SessionCard sessionItem={sessionItem}
@@ -107,7 +109,13 @@ function SearchMore({ moreRequest, hasKeywords }: SearchMoreProps): React.JSX.El
   }
 
   return (
-    <Stack direction="column" alignItems="center" spacing={1} sx={{ px: 8 }}>
+    <Stack
+      direction="column"
+      spacing={1}
+      sx={{
+        alignItems: "center",
+        px: 8
+      }}>
       <TipsAndUpdatesOutlined fontSize="small" />
       {(hasKeywords) ? (
         <div>

@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-import { Button, CircularProgress, Dialog, DialogContent, Grid2 as Grid, Menu, MenuItem, Typography } from "@mui/material"
+import { Button, CircularProgress, Dialog, DialogContent, Grid, Menu, MenuItem, Typography } from "@mui/material"
 import { Note, OndemandVideo, VerifiedUser } from "@mui/icons-material"
 import { IRDETypes } from "../../utils/IRDE"
 import { RequestDetail } from "./RequestDetailLogic"
@@ -137,9 +137,13 @@ function RequestDetailDoneBody({ requestDetail }: RequestDetailDoneBodyProps): R
   }
   
   return (
-    <Grid container={true} spacing={2} justifyContent="space-between">
+    <Grid container={true} spacing={2} sx={{
+      justifyContent: "space-between"
+    }}>
       <Grid size={12}>
-        <Grid container={true} spacing={2} justifyContent="space-between">
+        <Grid container={true} spacing={2} sx={{
+          justifyContent: "space-between"
+        }}>
           <Grid>
             <Typography variant="body2" color="textSecondary">
               {requestDetail.conference}
@@ -170,14 +174,26 @@ function RequestDetailDoneBody({ requestDetail }: RequestDetailDoneBodyProps): R
         </Grid>
       )}
       <Grid size={12}>
-        <Grid container={true} spacing={0} alignItems="flex-end" justifyContent="space-between">
+        <Grid
+          container={true}
+          spacing={0}
+          sx={{
+            alignItems: "flex-end",
+            justifyContent: "space-between"
+          }}>
           {(requestDetail.speakers !== undefined) && (
             <Grid>
               <Speakers speakers={requestDetail.speakers}/>
             </Grid>
           )}
           <Grid style={{flexGrow: 1}}>
-            <Grid container={true} spacing={0} alignItems="center" justifyContent="flex-end">
+            <Grid
+              container={true}
+              spacing={0}
+              sx={{
+                alignItems: "center",
+                justifyContent: "flex-end"
+              }}>
               <Grid>
                 {isAdmin && (
                   <>

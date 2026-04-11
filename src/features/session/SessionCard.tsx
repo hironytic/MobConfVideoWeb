@@ -23,7 +23,7 @@
 //
 
 import { SessionItem } from "./SessionLogic"
-import { Avatar, Card, CardActionArea, Grid2 as Grid, Typography } from "@mui/material"
+import { Avatar, Card, CardActionArea, Grid, Typography } from "@mui/material"
 import { CaseInsensitiveSearch } from "../../utils/CaseInsensitiveSearch"
 import { Speaker } from "../../entities/Session"
 import { WatchedEvents } from "../session_detail/WatchedEvents"
@@ -41,9 +41,13 @@ export function SessionCard({ sessionItem, keywordList, linkTo }: SessionCardPro
   return (
     <Card sx={{ mx: "auto" }} elevation={3}>
       <CardActionArea sx={{ p: 2 }} component={Link} to={linkTo}>
-        <Grid container={true} spacing={2} justifyContent="space-between">
+        <Grid container={true} spacing={2} sx={{
+          justifyContent: "space-between"
+        }}>
           <Grid size={12}>
-            <Grid container={true} spacing={2} justifyContent="space-between">
+            <Grid container={true} spacing={2} sx={{
+              justifyContent: "space-between"
+            }}>
               <Grid>
                 <Typography variant="body2" color="textSecondary">
                   {sessionItem.conferenceName}
@@ -165,7 +169,13 @@ interface OneSpeakerProps {
 function OneSpeaker({ speaker, keywordList }: OneSpeakerProps): React.JSX.Element {
   const lwbr = detectBoldRange(speaker.name, keywordList)
   return (
-    <Grid container={true} spacing={1} alignItems="center" justifyItems="flex-start">
+    <Grid
+      container={true}
+      spacing={1}
+      sx={{
+        alignItems: "center",
+        justifyItems: "flex-start"
+      }}>
       <Grid>
         <Avatar src={speaker.icon}/>
       </Grid>
