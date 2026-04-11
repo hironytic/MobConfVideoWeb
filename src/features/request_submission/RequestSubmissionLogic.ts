@@ -135,7 +135,7 @@ export class AppRequestSubmissionLogic implements RequestSubmissionLogic {
           }
         }
         tryCount++
-        if (tryCount >= 3) {
+        if (tryAgain && tryCount >= 3) {
           // forbid user to try another request code repeatably
           await delay(5000)
           tryCount = 0
