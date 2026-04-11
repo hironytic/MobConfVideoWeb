@@ -81,10 +81,12 @@ function RequestListDoneBody({ requests }: RequestListDoneBodyProps): React.JSX.
   
   return (
     <Box sx={{ mt: 2, p: 2 }}>
-      <Grid container={true} spacing={3} alignItems="flex-start">
+      <Grid container={true} spacing={3} sx={{
+        alignItems: "flex-start"
+      }}>
         {
           requests.map(request => (
-            <Grid key={request.id} item={true} xs={12} md={6} lg={4}>
+            <Grid key={request.id} size={{ xs: 12, md: 6, lg: 4 }}>
               <RequestCard request={request} onClick={() => onCardClick(request)}/>
             </Grid>
           ))

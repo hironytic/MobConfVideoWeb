@@ -82,7 +82,9 @@ function ProcessingBody(): React.JSX.Element {
   return (
     <DialogContent>
       <Box sx={{ p: 1, textAlign: "center" }} >
-        <Stack direction="column" spacing={4} alignItems="center">
+        <Stack direction="column" spacing={4} sx={{
+          alignItems: "center"
+        }}>
           <Typography variant="body1" component="span">リクエスト処理中</Typography>
           <CircularProgress/>
         </Stack>

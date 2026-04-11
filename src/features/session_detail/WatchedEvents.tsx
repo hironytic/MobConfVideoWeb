@@ -49,9 +49,11 @@ interface WatchedEventsProps {
 }
 export function WatchedEvents({ events }: WatchedEventsProps): React.JSX.Element {
   return (
-    <Grid container={true} spacing={2} justifyContent="flex-start">
+    <Grid container={true} spacing={2} sx={{
+      justifyContent: "flex-start"
+    }}>
       {events.map(event => (
-        <Grid key={event.id} item={true}>
+        <Grid key={event.id}>
           <WatchedTypography variant="body2" color="textSecondary">
             <WatchedCheck/>{event.name}
           </WatchedTypography>

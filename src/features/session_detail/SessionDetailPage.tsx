@@ -98,15 +98,19 @@ function SessionDetailDoneBody({ sessionItem }: SessionDetailDoneBodyProps): Rea
   }
   
   return (
-    <Grid container={true} spacing={2} justifyContent="space-between">
-      <Grid item={true} xs={12}>
-        <Grid container={true} spacing={2} justifyContent="space-between">
-          <Grid item={true}>
+    <Grid container={true} spacing={2} sx={{
+      justifyContent: "space-between"
+    }}>
+      <Grid size={12}>
+        <Grid container={true} spacing={2} sx={{
+          justifyContent: "space-between"
+        }}>
+          <Grid>
             <Typography variant="body2" color="textSecondary">
               {sessionItem.conferenceName}
             </Typography>
           </Grid>
-          <Grid item={true} style={{textAlign: "end"}}>
+          <Grid style={{textAlign: "end"}}>
             <Typography variant="body2" color="textSecondary">
               {sessionItem.session.minutes}分
             </Typography>
@@ -114,33 +118,45 @@ function SessionDetailDoneBody({ sessionItem }: SessionDetailDoneBodyProps): Rea
         </Grid>
       </Grid>
       {(sessionItem.watchedEvents.length > 0) && (
-        <Grid item={true} xs={12}>
+        <Grid size={12}>
           <WatchedEvents events={sessionItem.watchedEvents}/>
         </Grid>
       )}
-      <Grid item={true} xs={12}>
+      <Grid size={12}>
         <Typography variant="h5" color="textPrimary">
           {sessionItem.session.title}
         </Typography>
       </Grid>
-      <Grid item={true} xs={12}>
+      <Grid size={12}>
         <Description description={sessionItem.session.description}/>
       </Grid>
-      <Grid item={true} xs={12}>
-        <Grid container={true} spacing={0} alignItems="flex-end" justifyContent="space-between">
-          <Grid item={true}>
+      <Grid size={12}>
+        <Grid
+          container={true}
+          spacing={0}
+          sx={{
+            alignItems: "flex-end",
+            justifyContent: "space-between"
+          }}>
+          <Grid>
             <Speakers speakers={sessionItem.session.speakers}/>
           </Grid>
-          <Grid item={true} style={{flexGrow: 1}}>
-            <Grid container={true} spacing={0} alignItems="center" justifyContent="flex-end">
-              <Grid item={true}>
+          <Grid style={{flexGrow: 1}}>
+            <Grid
+              container={true}
+              spacing={0}
+              sx={{
+                alignItems: "center",
+                justifyContent: "flex-end"
+              }}>
+              <Grid>
                 {sessionItem.session.slide !== undefined && (
                   <Button href={sessionItem.session.slide} target="_blank" color="primary">
                     <Note /> スライド
                   </Button>
                 )}
               </Grid>
-              <Grid item={true}>
+              <Grid>
                 {sessionItem.session.video !== undefined && (
                   <Button href={sessionItem.session.video} target="_blank" color="primary">
                     <OndemandVideo/> ビデオ
@@ -151,9 +167,11 @@ function SessionDetailDoneBody({ sessionItem }: SessionDetailDoneBodyProps): Rea
           </Grid>
         </Grid>
       </Grid>
-      <Grid item={true} xs={12}>
-        <Grid container={true} spacing={0} justifyContent="center">
-          <Grid item={true}>
+      <Grid size={12}>
+        <Grid container={true} spacing={0} sx={{
+          justifyContent: "center"
+        }}>
+          <Grid>
             <Button variant="contained" color="primary" onClick={requestSession}>この動画をリクエスト</Button>
           </Grid>
         </Grid>

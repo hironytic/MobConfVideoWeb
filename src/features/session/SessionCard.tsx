@@ -41,15 +41,19 @@ export function SessionCard({ sessionItem, keywordList, linkTo }: SessionCardPro
   return (
     <Card sx={{ mx: "auto" }} elevation={3}>
       <CardActionArea sx={{ p: 2 }} component={Link} to={linkTo}>
-        <Grid container={true} spacing={2} justifyContent="space-between">
-          <Grid item={true} xs={12}>
-            <Grid container={true} spacing={2} justifyContent="space-between">
-              <Grid item={true}>
+        <Grid container={true} spacing={2} sx={{
+          justifyContent: "space-between"
+        }}>
+          <Grid size={12}>
+            <Grid container={true} spacing={2} sx={{
+              justifyContent: "space-between"
+            }}>
+              <Grid>
                 <Typography variant="body2" color="textSecondary">
                   {sessionItem.conferenceName}
                 </Typography>
               </Grid>
-              <Grid item={true} style={{textAlign: "end"}}>
+              <Grid style={{textAlign: "end"}}>
                 <Typography variant="body2" color="textSecondary">
                   {sessionItem.session.minutes}分
                 </Typography>
@@ -57,19 +61,19 @@ export function SessionCard({ sessionItem, keywordList, linkTo }: SessionCardPro
             </Grid>
           </Grid>
           {(sessionItem.watchedEvents.length > 0) && (
-            <Grid item={true} xs={12}>
+            <Grid size={12}>
               <WatchedEvents events={sessionItem.watchedEvents}/>
             </Grid>
           )}
-          <Grid item={true} xs={12}>
+          <Grid size={12}>
             <Typography variant="h5" color="textPrimary">
               <BoldableLine lwbr={sessionTitleLwbr}/>
             </Typography>
           </Grid>
-          <Grid item={true} xs={12}>
+          <Grid size={12}>
             <Description description={sessionItem.session.description} keywordList={keywordList}/>
           </Grid>
-          <Grid item={true} xs={12}>
+          <Grid size={12}>
             {sessionItem.session.speakers.map((speaker, index) => <OneSpeaker key={index} speaker={speaker} keywordList={keywordList}/>)}
           </Grid>
         </Grid>
@@ -165,11 +169,17 @@ interface OneSpeakerProps {
 function OneSpeaker({ speaker, keywordList }: OneSpeakerProps): React.JSX.Element {
   const lwbr = detectBoldRange(speaker.name, keywordList)
   return (
-    <Grid container={true} spacing={1} alignItems="center" justifyItems="flex-start">
-      <Grid item={true}>
+    <Grid
+      container={true}
+      spacing={1}
+      sx={{
+        alignItems: "center",
+        justifyItems: "flex-start"
+      }}>
+      <Grid>
         <Avatar src={speaker.icon}/>
       </Grid>
-      <Grid item={true}>
+      <Grid>
         <Typography variant="body2" color="textPrimary">
           <BoldableLine lwbr={lwbr}/>
         </Typography>

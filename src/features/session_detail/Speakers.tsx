@@ -42,11 +42,17 @@ interface OneSpeakerProps {
 }
 function OneSpeaker({ speaker }: OneSpeakerProps): React.JSX.Element {
   return (
-    <Grid container={true} spacing={1} alignItems="center" justifyItems="flex-start">
-      <Grid item={true}>
+    <Grid
+      container={true}
+      spacing={1}
+      sx={{
+        alignItems: "center",
+        justifyItems: "flex-start"
+      }}>
+      <Grid>
         <Avatar src={speaker.icon}/>
       </Grid>
-      <Grid item={true}>
+      <Grid>
         <Typography variant="body2" color="textPrimary">
           {speaker.name}
         </Typography>

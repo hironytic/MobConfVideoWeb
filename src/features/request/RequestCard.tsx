@@ -43,26 +43,28 @@ export function RequestCard({ request, onClick }: RequestCardProps): React.JSX.E
   return (
     <Card sx={cardSx}>
       <CardActionArea sx={{ p: 2 }} onClick={() => onClick()}>
-        <Grid container={true} spacing={2} justifyContent="space-between">
-          <Grid item={true} xs={6}>
+        <Grid container={true} spacing={2} sx={{
+          justifyContent: "space-between"
+        }}>
+          <Grid size={6}>
             <Typography variant="body2" color="textSecondary">
               {request.conference}
             </Typography>
           </Grid>
-          <Grid item={true} xs={6} style={{textAlign: "end"}}>
+          <Grid size={6} style={{textAlign: "end"}}>
             {(request.minutes !== undefined) && (
               <Typography variant="body2" color="textSecondary">
                 {request.minutes}分
               </Typography>
             )}
           </Grid>
-          <Grid item={true} xs={12}>
+          <Grid size={12}>
             <Typography variant="h5" color="textPrimary">
               {request.title}
             </Typography>
           </Grid>
-          <Grid item={true} xs={12} style={{textAlign: "end"}}>
-            <Grid item={true}>
+          <Grid size={12} style={{textAlign: "end"}}>
+            <Grid>
               {(request.isWatched) && (
                 <Check htmlColor="green" />
               )}

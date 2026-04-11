@@ -80,16 +80,18 @@ function SessionListDoneBody({ sessions, keywordList, moreRequest }: SessionList
   // sort keywords in order from longest to shortest
   const sortedKeywordList = [...keywordList].sort((left, right) => right.length - left.length)
   return (
-    <Grid container={true} spacing={3} alignItems="flex-start">
+    <Grid container={true} spacing={3} sx={{
+      alignItems: "flex-start"
+    }}>
       {sessions.map(sessionItem => (
-        <Grid key={sessionItem.session.id} item={true} xs={12}>
+        <Grid key={sessionItem.session.id} size={12}>
           <SessionCard sessionItem={sessionItem}
                        keywordList={sortedKeywordList}
                        linkTo={sessionItem.session.id}/>
         </Grid>
       ))}
       {(moreRequest.type === MoreRequestTypes.Requestable || moreRequest.type === MoreRequestTypes.Requesting) && (
-        <Grid key="_more" item={true} xs={12}>
+        <Grid key="_more" size={12}>
           <SearchMore moreRequest={moreRequest} hasKeywords={keywordList.length > 0}/>
         </Grid>
       )}
@@ -107,7 +109,13 @@ function SearchMore({ moreRequest, hasKeywords }: SearchMoreProps): React.JSX.El
   }
 
   return (
-    <Stack direction="column" alignItems="center" spacing={1} sx={{ px: 8 }}>
+    <Stack
+      direction="column"
+      spacing={1}
+      sx={{
+        alignItems: "center",
+        px: 8
+      }}>
       <TipsAndUpdatesOutlined fontSize="small" />
       {(hasKeywords) ? (
         <div>

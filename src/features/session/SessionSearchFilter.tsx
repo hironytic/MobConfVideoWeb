@@ -108,20 +108,21 @@ function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCa
   return (
     <Card variant="outlined">
       <CardContent>
-        <Grid container={true} alignItems="center">
-          <Grid item={true} xs={6} style={{textAlign: "start"}}>
+        <Grid container={true} sx={{
+          alignItems: "center"
+        }}>
+          <Grid size={6} style={{textAlign: "start"}}>
             <Typography variant="subtitle1" color="textPrimary">
               検索条件
             </Typography>
           </Grid>
-          <Grid item={true} xs={6} sx={{ textAlign: "end" }}>
+          <Grid size={6} sx={{ textAlign: "end" }}>
             <IconButton onClick={() => onExpand(!isExpanded)}>
               { isExpanded ? <ExpandLess/> : <ExpandMore/> }
             </IconButton>
           </Grid>
         </Grid>
       </CardContent>
-
       <Collapse in={isExpanded}>
         <form onSubmit={handleSubmit}>
           <CardContent>
@@ -132,7 +133,7 @@ function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCa
                          fullWidth={true}
                          onChange={event => sessionLogic.filterKeywordsChanged(event.target.value)}
                          value={keyword}
-                         InputLabelProps={{ shrink: true }}/>
+                         slotProps={{ inputLabel: { shrink: true } }}/>
               <Stack direction={{ xs: "column", sm: "row" }} spacing={3}>
                 <Dropdown name="c" labelId="conference" label="カンファレンス" state={conference} minWidth={150} onChange={ value => sessionLogic.filterConferenceChanged(value) }/>
                 <Dropdown name="t" labelId="minutes" label="セッション時間" state={sessionTime} minWidth={150} onChange={ value => sessionLogic.filterSessionTimeChanged(value) }/>
@@ -142,7 +143,7 @@ function SessionSearchFilterCard({ isExpanded, onExpand }: SessionSearchFilterCa
   
           <CardActions>
             <Grid container={true}>
-              <Grid item={true} xs={12} sx={{ textAlign: "end" }}>
+              <Grid size={12} sx={{ textAlign: "end" }}>
                 <Button size="small" color="primary" type="submit">実行</Button>
               </Grid>
             </Grid>
