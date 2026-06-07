@@ -53,6 +53,7 @@ export interface RequestDetailLogic extends Logic {
   setCurrentRequest(eventId: string, requestId: string): void
   makeItWatched(): void
   makeItUnwatched(): void
+  deleteRequest(): void
   
   isWatched$: Observable<boolean | undefined>
   requestDetail$: Observable<RequestDetailIRDE>
@@ -65,6 +66,7 @@ export class NullRequestDetailLogic implements RequestDetailLogic {
 
   makeItWatched(): void { /* do nothing */ }
   makeItUnwatched(): void { /* do nothing */ }
+  deleteRequest(): void { /* do nothing */ }
 
   isWatched$ = NEVER
   requestDetail$ = NEVER
@@ -274,10 +276,20 @@ export class AppRequestDetailLogic implements RequestDetailLogic {
       this.repository.updateRequestWatched(this.latestEventId, this.latestRequestId, true)
     }
   }
-  
+
   makeItUnwatched() {
     if (this.latestEventId !== undefined && this.latestRequestId !== undefined) {
       this.repository.updateRequestWatched(this.latestEventId, this.latestRequestId, false)
+    }
+  }
+
+  deleteRequest() {
+    if (this.latestEventId !== undefined && this.latestRequestId !== undefined) {
+      // Unsubscribe before deleting so that the deletion event from Firestore,
+      // which causes getRequest$ to throw because the document no longer exists, is not received.
+      this.requestSubscription?.unsubscribe()
+      this.requestSubscription = undefined
+      this.repository.deleteRequest(this.latestEventId, this.latestRequestId)
     }
   }
 }

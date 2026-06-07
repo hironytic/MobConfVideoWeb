@@ -88,6 +88,7 @@ class MockRequestDetailRepository implements RequestDetailRepository {
   getConferenceName$ = vi.fn((_conferenceId: string) => NEVER.pipe(startWith(conferenceName1)))
   isAdmin$ = vi.fn(() => NEVER.pipe(startWith(false)))
   updateRequestWatched = vi.fn((_eventId: string, _requestId: string, _value: boolean) => { /* do nothing */ })
+  deleteRequest = vi.fn((_eventId: string, _requestId: string) => { /* do nothing */ })
 }
 
 let mockRequestDetailRepository: MockRequestDetailRepository
@@ -249,5 +250,23 @@ describe("request detail", () => {
     await expectation
 
     expect(requestDetail.conference).toBe("")
+  })
+})
+
+describe("deleteRequest", () => {
+  it("should call repository.deleteRequest with current event and request id", async () => {
+    const logic = createLogic()
+
+    const observer = new EventuallyObserver<RequestDetailIRDE>()
+    const expectation = observer.expectValue(irde => {
+      expect(irde.type).toBe(IRDETypes.Done)
+    })
+    subscription.add(logic.requestDetail$.subscribe(observer))
+
+    logic.setCurrentRequest("e1", "r1")
+    await expectation
+
+    logic.deleteRequest()
+    expect(mockRequestDetailRepository.deleteRequest).toHaveBeenCalledWith("e1", "r1")
   })
 })

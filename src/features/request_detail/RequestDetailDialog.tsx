@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-import { Button, CircularProgress, Dialog, DialogContent, Grid, Menu, MenuItem, Typography } from "@mui/material"
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Menu, MenuItem, Typography } from "@mui/material"
 import { Note, OndemandVideo, VerifiedUser } from "@mui/icons-material"
 import { IRDETypes } from "../../utils/IRDE"
 import { RequestDetail } from "./RequestDetailLogic"
@@ -98,11 +98,14 @@ interface RequestDetailDoneBodyProps {
   requestDetail: RequestDetail
 }
 function RequestDetailDoneBody({ requestDetail }: RequestDetailDoneBodyProps): React.JSX.Element {
+  const navigate = useNavigate()
   const logic = useContext(RequestDetailContext)
   const isWatched = useObservableState(logic.isWatched$, undefined)
   const isAdmin = useObservableState(logic.isAdmin$, false)
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
+
   function handleShowAdminMenu(event: MouseEvent<HTMLButtonElement>) {
     setAnchorEl(event.currentTarget)
   }
@@ -116,6 +119,17 @@ function RequestDetailDoneBody({ requestDetail }: RequestDetailDoneBodyProps): R
   function handleMakeItUnwatched() {
     logic.makeItUnwatched()
     handleCloseAdminMenu()
+  }
+  function handleDeleteRequest() {
+    setDeleteConfirmOpen(true)
+    handleCloseAdminMenu()
+  }
+  function handleConfirmDelete() {
+    logic.deleteRequest()
+    navigate("..", { replace: true })
+  }
+  function handleCancelDelete() {
+    setDeleteConfirmOpen(false)
   }
   function handleAnnounceTweet1() {
     const announceTweetUrl1 = createTweetUrl({
@@ -211,7 +225,20 @@ function RequestDetailDoneBody({ requestDetail }: RequestDetailDoneBodyProps): R
                       {isWatched !== false && (
                         <MenuItem onClick={() => void handleMakeItUnwatched()}>未鑑賞に戻す</MenuItem>
                       )}
+                      <MenuItem onClick={handleDeleteRequest}>削除</MenuItem>
                     </Menu>
+                    <Dialog open={deleteConfirmOpen} onClose={handleCancelDelete}>
+                      <DialogTitle>リクエストの削除</DialogTitle>
+                      <DialogContent>
+                        <DialogContentText>
+                          このリクエストを削除します。よろしいですか？
+                        </DialogContentText>
+                      </DialogContent>
+                      <DialogActions>
+                        <Button onClick={handleCancelDelete}>キャンセル</Button>
+                        <Button onClick={handleConfirmDelete} color="error">削除する</Button>
+                      </DialogActions>
+                    </Dialog>
                   </>
                 )}
               </Grid>
