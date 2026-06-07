@@ -13,7 +13,7 @@
     "observable-hooks": "^4.2.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^7.0.0",
+    "react-router-dom": "^7.16.0",
     "rxjs": "^7.8.1"
   },
   "scripts": {
