@@ -28,7 +28,7 @@ import { Session } from "../../entities/Session"
 import { Event } from "../../entities/Event"
 import { Firestore } from "../../Firestore"
 import { getFirestore } from "../../Firebase"
-import { runTransaction } from 'firebase/firestore'
+import { deleteDoc, runTransaction } from 'firebase/firestore'
 import { runDetached } from "../../utils/RunDetached"
 import { collection, doc } from "firebase/firestore"
 import * as FirebaseAuth from "../../FirebaseAuth"
@@ -40,6 +40,7 @@ export interface RequestDetailRepository {
   getConferenceName$(conferenceId: string): Observable<string>
   isAdmin$(): Observable<boolean>
   updateRequestWatched(eventId: string, requestId: string, value: boolean): void
+  deleteRequest(eventId: string, requestId: string): void
 }
 
 export class FirestoreRequestDetailRepository implements RequestDetailRepository {
@@ -74,6 +75,15 @@ export class FirestoreRequestDetailRepository implements RequestDetailRepository
           transaction.update(docRef, { watched: value })
         }
       })
+    })
+  }
+
+  deleteRequest(eventId: string, requestId: string): void {
+    runDetached(async () => {
+      const firestore = await getFirestore()
+      const collectionRef = collection(firestore, "events", eventId, "requests")
+      const docRef = doc(collectionRef, requestId)
+      await deleteDoc(docRef)
     })
   }
 }
