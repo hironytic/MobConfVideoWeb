@@ -128,7 +128,6 @@ describe("homeTab", () => {
       pathname: "/request/mobconfvideo-1",
       search: "",
       hash: "",
-      unstable_mask: undefined,
     })
     await expectation
   })
@@ -148,7 +147,6 @@ describe("homeTab", () => {
       pathname: "/session",
       search: "",
       hash: "",
-      unstable_mask: undefined,
     })
     await expectation
   })
@@ -168,7 +166,6 @@ describe("homeTab", () => {
       pathname: "/notfound",
       search: "",
       hash: "",
-      unstable_mask: undefined,
     })
     await expectation
   })
