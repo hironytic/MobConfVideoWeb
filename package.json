@@ -9,7 +9,7 @@
     "@fontsource/roboto": "^5.0.13",
     "@mui/icons-material": "^9.1.1",
     "@mui/material": "^9.0.0",
-    "firebase": "^12.11.0",
+    "firebase": "^12.15.0",
     "observable-hooks": "^4.2.3",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
